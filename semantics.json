@@ -1,0 +1,97 @@
+[
+    {
+        "type": "text",
+        "name": "instructions",
+        "widget": "textarea",
+        "label": "Instructions",
+        "description": "Write instructions as markdown code",
+        "tags": [
+            "strong",
+            "em",
+            "sub",
+            "code"
+        ],
+        "font": {
+            "size": true,
+            "family": true,
+            "color": true,
+            "background": true
+        }
+    },
+    {
+        "label": "Database",
+        "name": "dbFile",
+        "type": "file",
+        "optional": false,
+        "description": "Database File (as .txt)"
+      },
+    {
+        "name": "gradingMethod",
+        "type": "select",
+        "label": "Grading method",
+        "description": "Grading methods",
+        "default": "ioTestCases",
+        "options": [
+            {
+                "value": "ioTestCases",
+                "label": "Input/Output TestCases"
+            }
+        ]
+    },
+    {
+        "name": "testCases",
+        "type": "list",
+        "label": "Test Cases",
+        "entity": "testcase",
+        "min": 1,
+        "max": 1,
+        "field": {
+            "name": "testCase",
+            "type": "list",
+            "label": "Test Case",
+            "entity": "test",
+            "min": 1,
+            "max": 1,
+            "field": {
+                "name": "test",
+                "type": "group",
+                "label": "Test",
+                "fields": [
+                    {
+                        "name": "output",
+                        "type": "text",
+                        "label": "Expected Output",
+                        "widget": "textarea",
+                        "description": "Output"
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "label": "StartingCode",
+        "name": "startingCode",
+        "type": "text",
+        "widget": "codeWidget",
+        "default": "SELECT * FROM HelloWorld",
+        "description": "select *",
+        "options": [
+            {
+                "language": "sql"
+            }
+        ]
+    },
+    {
+        "label": "Optional: Solution",
+        "name": "solution",
+        "type": "text",
+        "widget": "codeWidget",
+        "default": "",
+        "description": "Solution: Warning - can be seen in website source code! *",
+        "options": [
+            {
+                "language": "sql"
+            }
+        ]
+    }
+]

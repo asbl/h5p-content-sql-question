@@ -1,0 +1,44 @@
+{
+  "title": "SQL Question",
+  "description": "Displays a SQL Editor with Skulpt",
+  "majorVersion": 2,
+  "minorVersion": 1,
+  "patchVersion": 48,
+  "runnable": 1,
+  "coreApi": {
+    "majorVersion": 1,
+    "minorVersion": 12
+  },
+  "author": "Andreas Siebel",
+  "license": "MIT",
+  "machineName": "H5P.SQLQuestion",
+  "embedTypes": [
+    "iframe"
+  ],
+  "preloadedJs": [
+    {
+      "path": "dist/h5p-sql-question.js"
+    },
+    {
+      "path": "lib/ascii-table.js"
+    }
+  ],
+  "preloadedCss": [
+    {
+      "path": "dist/h5p-sql-question.css"
+    }
+  ],
+
+  "preloadedDependencies": [
+    {
+      "machineName": "H5P.CodeQuestion",
+      "majorVersion": 2,
+      "minorVersion": 1
+    },
+    {
+      "machineName": "LibSQL",
+      "majorVersion": 1,
+      "minorVersion": 1
+    }
+  ]
+}
