@@ -17,6 +17,9 @@
   ],
   "preloadedJs": [
     {
+      "path": "lib/sql.js"
+    },
+    {
       "path": "dist/h5p-sql-question.js"
     },
     {
@@ -33,11 +36,6 @@
     {
       "machineName": "H5P.CodeQuestion",
       "majorVersion": 2,
-      "minorVersion": 1
-    },
-    {
-      "machineName": "LibSQL",
-      "majorVersion": 1,
       "minorVersion": 1
     }
   ]
