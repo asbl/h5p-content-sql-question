@@ -5,9 +5,11 @@ export default class SQLTester extends H5P.CodeTester {
     this.targetTable = targetTable;
     this.sqlConsoleID = `sql-console-${H5P.createUUID()}`;
     this.outputTableTableID = `h5p_output_table_${H5P.createUUID()}`;
+    this.copyID = `copy_${H5P.createUUID()}`;
     this.l10n = {
       outputTableHeader: 'SQL Table',
-      expectedTableHeader: 'Expected Table'
+      expectedTableHeader: 'Expected Table',
+      copy: 'Copy'
     };
   }
 
@@ -31,6 +33,8 @@ export default class SQLTester extends H5P.CodeTester {
     let html = '';
     html = `<h4>${this.l10n.outputTableHeader}</h4>`;
     html += `<pre id="${this.outputTableTableID}"class="h5p sql-question output-table">` + outputTable + '</pre>';
+    html += `<button id="${this.copyID}">${this.l10n.copy}</button`;
+    // Add copy-button Listener
     outputDiv.innerHTML = html;
     let expectedDiv = document.createElement('div');
     expectedDiv.classList.add('console-column');
@@ -51,6 +55,20 @@ export default class SQLTester extends H5P.CodeTester {
     sqlConsole.innerHTML = '';
     sqlConsole.appendChild(outputDiv);
     sqlConsole.appendChild(expectedDiv);
+
+
+    const copybutton = document.getElementById(this.copyID);
+    copybutton.onclick = () => {
+      let tableCopy = outputTable;
+      navigator.clipboard.writeText(tableCopy).then(
+        function () {
+          alert('Table copied to clipboard'); // success 
+        })
+        .catch(
+          function () {
+            alert('Error when copying the table to the clipboard.'); // error
+          });
+    };
   }
       
   generateTestCasesArea() {

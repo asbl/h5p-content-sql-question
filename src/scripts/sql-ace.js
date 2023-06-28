@@ -1,4 +1,4 @@
-export default class SQLAce extends H5P.AceEditor {
+export default class SQLAce extends H5P.CodeQuestionAce {
 
   getMode() {
     return 'ace/mode/sql';
@@ -19,6 +19,7 @@ export default class SQLAce extends H5P.AceEditor {
         this.addPage(table[0], '<pre class="h5p sql-question db-table">' + tableContent.toString() + '</pre>', 'sql-table');
         this.buttons.push({
           identifier: table[0],
+          label: table[0],
           name: table[0],
           class: table[0],
           page: table[0],
@@ -37,7 +38,7 @@ export default class SQLAce extends H5P.AceEditor {
    */
   _addRunListener() {
     const container = this.getContainer();
-    const runButton = container.getElementsByClassName('run_button')[0];
+    const runButton = container.getElementsByClassName('run_code')[0];
     if (runButton && !runButton.isInitialized) {
       runButton.isInitialized = true;
       runButton.addEventListener('click', () => {

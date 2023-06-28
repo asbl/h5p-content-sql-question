@@ -86,6 +86,7 @@ export default class SQLRuntime extends H5P.Runtime {
     return allTablesPromise;
   }
 
+  
   /**
    * Called when runtime Promise has an error.
    * @param {string} errorMessage The error
