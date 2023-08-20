@@ -28,7 +28,7 @@ export default class SQLRuntime extends H5P.Runtime {
     return db;
   }
 
-  async run_test(code) {
+  async runTest(code) {
     this.isTest = true;
     this.testCaseNumber = this.testCaseNumber + 1;
     this._run(code);
@@ -51,7 +51,9 @@ export default class SQLRuntime extends H5P.Runtime {
       this.onSuccess(); 
     }).catch((error) => {
       this.onError(error);
-    }).finally(() => {});
+    }).finally(() => {
+      this.question.trigger('resize');
+    });
   }
 
   /* Gets all Tables of the SQlite Database
@@ -92,8 +94,33 @@ export default class SQLRuntime extends H5P.Runtime {
    * @param {string} errorMessage The error
    */
   onError(errorMessage) {
-    this.codeTester.onError(errorMessage);
-    this.notifyError(errorMessage);
+    if (this.isTest === true) {
+      this.codeTester.onError(errorMessage);
+      this.notifyError(errorMessage);
+    }
+    else {
+      this.editor.getConsole().value = errorMessage;
+      this.editor.getConsole().style.display = 'block';
+    }
+
   }
+
+
+  /**
+   * Called, wehen user performed a manual run.
+   */
+  onSuccessManualRun() {
+    let tableHTML = '';
+    const table = AsciiTable.factory({
+      heading: this.outputArray[0].columns
+      , rows: this.outputArray[0].values
+    });
+    tableHTML = table.toString();
+    const editorConsole = this.editor.getConsole();
+    editorConsole.parentElement.style.display = 'block';
+    editorConsole.innerHTML = '';
+    editorConsole.innerHTML += tableHTML;
+  }
+
 
 }

@@ -1,4 +1,17 @@
-export default class SQLAce extends H5P.CodeQuestionAce {
+export default class SQLAce extends H5P.AceEditor {
+
+  async setup() {
+    await super.setup();
+    this.getContainer().classList.add('sql-editor');
+  }
+
+  setupRuntime() {
+    const editorConsole = this.getConsole();
+    this.runtime.setConsole(editorConsole);
+    if (this.consoleHidden) {
+      editorConsole.parentElement.style.display = 'none';
+    }
+  }
 
   getMode() {
     return 'ace/mode/sql';
@@ -7,16 +20,22 @@ export default class SQLAce extends H5P.CodeQuestionAce {
   /**
    * Show all SQL pages
    */
-  setupPages() {
-    this.runtime.getAllTables().then((result) => { 
+  async setupPages() {
+    await super.setupPages();
+    try {
+      const result = await this.runtime.getAllTables();
       this.tables = result;
       let tableContent = '';
-      this.tables.forEach((table) => {
+      for (const table of this.tables) {
         tableContent = AsciiTable.factory({
-          heading: table[1].columns
-          , rows: table[1].values
+          heading: table[1].columns,
+          rows: table[1].values,
         });
-        this.addPage(table[0], '<pre class="h5p sql-question db-table">' + tableContent.toString() + '</pre>', 'sql-table');
+        this.addPage(
+          table[0],
+          '<pre class="h5p sql-question db-table">' + tableContent.toString() + '</pre>',
+          'sql-table'
+        );
         this.buttons.push({
           identifier: table[0],
           label: table[0],
@@ -25,13 +44,15 @@ export default class SQLAce extends H5P.CodeQuestionAce {
           page: table[0],
           additionalClass: 'sql-table-button',
         });
-        this.pages.push({ name: table[0], });
-      });
-      this.reloadButtons(); 
-    });
-    this.showPage('code'); // Show code page; Hide other pages
+        this.pages.push({ name: table[0] });
+      }
+    }
+    catch (error) {
+      console.error('Error fetching tables:', error);
+      // Handle the error if needed
+    }
   }
-
+  
   /**
    * Add Listener for Run-Button - Always Run SQL Code as Test
    * @protected
@@ -44,9 +65,10 @@ export default class SQLAce extends H5P.CodeQuestionAce {
       runButton.addEventListener('click', () => {
         this.showPage('code');
         this.runtime.resetTest();
-        this.runtime.run_test(this.getCode());
+        this.runtime.runTest(this.getCode());
       });
     }
+    
   }
 
   onError() {

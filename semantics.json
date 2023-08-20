@@ -1,96 +1,305 @@
 [
     {
-        "type": "text",
-        "name": "instructions",
-        "widget": "textarea",
-        "label": "Instructions",
-        "description": "Write instructions as markdown code",
-        "tags": [
-            "strong",
-            "em",
-            "sub",
-            "code"
-        ],
-        "font": {
-            "size": true,
-            "family": true,
-            "color": true,
-            "background": true
-        }
-    },
-    {
-        "label": "Database",
-        "name": "dbFile",
-        "type": "file",
-        "optional": false,
-        "description": "Database File (as .txt)"
-      },
-    {
-        "name": "gradingMethod",
+        "name": "contentType",
         "type": "select",
-        "label": "Grading method",
-        "description": "Grading methods",
-        "default": "ioTestCases",
+        "label": "Type",
+        "description": "Type of H5P Content ",
         "options": [
             {
-                "value": "ioTestCases",
-                "label": "Input/Output TestCases"
+                "value": "ide_only",
+                "label": "IDE only"
+            },
+            {
+                "value": "text_only",
+                "label": "Text only"
+            },
+            {
+                "value": "text_and_ide",
+                "label": "Text and IDE"
+            }
+        ],
+        "default": "text_and_ide"
+    },
+    {
+        "name": "databaseSettings",
+        "type": "group",
+        "label": "Database Settings",
+        "description": "This defines the database which should be used by all editor-widgets",
+        "expanded": true,
+        "fields": [
+            {
+                "label": "Database",
+                "name": "dbFile",
+                "type": "file",
+                "optional": true,
+                "description": "Database File (as .txt)"
             }
         ]
     },
     {
-        "name": "testCases",
+        "name": "contents",
         "type": "list",
-        "label": "Test Cases",
-        "entity": "testcase",
-        "min": 1,
-        "max": 1,
+        "label": "Content",
+        "widget": "showWhen",
+        "showWhen": {
+            "rules": [
+                {
+                    "field": "contentType",
+                    "equals": [
+                        "text_only",
+                        "text_and_ide"
+                    ]
+                }
+            ]
+        },
+        "description": "Text can contain text, images, videos and code",
+        "expanded": true,
         "field": {
-            "name": "testCase",
-            "type": "list",
-            "label": "Test Case",
-            "entity": "test",
-            "min": 1,
-            "max": 1,
-            "field": {
-                "name": "test",
-                "type": "group",
-                "label": "Test",
-                "fields": [
+            "name": "field",
+            "type": "group",
+            "label": "Field",
+            "fields": [
+                {
+                    "name": "type",
+                    "type": "select",
+                    "label": "Type",
+                    "description": "Type of H5P Content ",
+                    "options": [
+                        {
+                            "value": "text",
+                            "label": "Text"
+                        },
+                        {
+                            "value": "image",
+                            "label": "Image"
+                        },
+                        {
+                            "value": "code",
+                            "label": "Code"
+                        }
+                    ],
+                    "default": "text"
+                },
+                {
+                    "type": "text",
+                    "name": "text",
+                    "optional": true,
+                    "label": "Text",
+                    "description": "Write general description as markdown code",
+                    "widget": "showWhen",
+                    "showWhen": {
+                        "rules": [
+                            {
+                                "field": "type",
+                                "equals": [
+                                    "text"
+                                ]
+                            }
+                        ],
+                        "widget": "codeWidget"
+                    },
+                    "options": [
+                        {
+                            "language": "markdown",
+                            "showAlways": true
+                        }
+                    ]
+                },
+                {
+                    "name": "image",
+                    "type": "image",
+                    "label": "Image",
+                    "optional": true,
+                    "description": "An optional image appended to instructions",
+                    "widget": "showWhen",
+                    "showWhen": {
+                        "rules": [
+                            {
+                                "field": "type",
+                                "equals": [
+                                    "image"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                {
+                    "type": "boolean",
+                    "name": "showEditor",
+                    "label": "Show Editor?",
+                    "description": "Should an editor displayed to the user",
+                    "default": false,
+                    "widget": "showWhen",
+                    "showWhen": {
+                        "rules": [
+                            {
+                                "field": "type",
+                                "equals": [
+                                    "code"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                {
+                    "label": "Database",
+                    "name": "dbFile",
+                    "type": "file",
+                    "optional": true,
+                    "description": "Database File (as .txt)",
+                    "widget": "showWhen",
+                    "showWhen": {
+                        "rules": [
+                            {
+                                "field": "type",
+                                "equals": [
+                                    "code"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                {
+                    "type": "text",
+                    "name": "code",
+                    "optional": true,
+                    "label": "Code",
+                    "description": "Write general description as markdown code",
+                    "widget": "showWhen",
+                    "showWhen": {
+                        "rules": [
+                            {
+                                "field": "type",
+                                "equals": [
+                                    "code"
+                                ]
+                            }
+                        ],
+                        "widget": "codeWidget"
+                    },
+                    "options": [
+                        {
+                            "language": "python",
+                            "showAlways": true
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    {
+        "name": "editorSettings",
+        "type": "group",
+        "label": "Editor Settings",
+        "description": "This defines how the actual editor is pre-populated and whether code should be executed before or after user input.",
+        "expanded": true,
+        "fields": [
+            {
+                "type": "text",
+                "name": "instructions",
+                "widget": "codeWidget",
+                "optional": true,
+                "label": "Instructions",
+                "description": "Write instructions as markdown code",
+                "options": [
                     {
-                        "name": "output",
-                        "type": "text",
-                        "label": "Expected Output",
-                        "widget": "textarea",
-                        "description": "Output"
+                        "language": "markdown",
+                        "showAlways": true
+                    }
+                ]
+            },
+            {
+                "name": "image",
+                "type": "image",
+                "label": "Image",
+                "optional": true,
+                "description": "An optional image appended to instructions"
+            },
+            {
+                "label": "Database",
+                "name": "dbFile",
+                "type": "file",
+                "optional": false,
+                "description": "Database File (as .txt)"
+            },
+            {
+                "label": "StartingCode",
+                "name": "startingCode",
+                "type": "text",
+                "widget": "codeWidget",
+                "default": "SELECT * FROM HelloWorld",
+                "description": "select *",
+                "options": [
+                    {
+                        "language": "sql"
+                    }
+                ]
+            },
+            {
+                "label": "Optional: Solution",
+                "name": "solution",
+                "optional": true,
+                "type": "text",
+                "widget": "codeWidget",
+                "default": "",
+                "description": "Solution: Warning - can be seen in website source code! *",
+                "options": [
+                    {
+                        "language": "sql"
                     }
                 ]
             }
-        }
-    },
-    {
-        "label": "StartingCode",
-        "name": "startingCode",
-        "type": "text",
-        "widget": "codeWidget",
-        "default": "SELECT * FROM HelloWorld",
-        "description": "select *",
-        "options": [
-            {
-                "language": "sql"
-            }
         ]
     },
     {
-        "label": "Optional: Solution",
-        "name": "solution",
-        "type": "text",
-        "widget": "codeWidget",
-        "default": "",
-        "description": "Solution: Warning - can be seen in website source code! *",
-        "options": [
+        "name": "gradingSettings",
+        "type": "group",
+        "label": "Grading Settings",
+        "description": "Information how the content should be graded",
+        "expanded": true,
+        "fields": [
             {
-                "language": "sql"
+                "name": "gradingMethod",
+                "type": "select",
+                "label": "Grading method",
+                "description": "Grading methods",
+                "default": "ioTestCases",
+                "options": [
+                    {
+                        "value": "ioTestCases",
+                        "label": "Input/Output TestCases"
+                    }
+                ]
+            },
+            {
+                "name": "testCases",
+                "type": "list",
+                "label": "Test Cases",
+                "entity": "testcase",
+                "min": 1,
+                "max": 1,
+                "field": {
+                    "name": "testCase",
+                    "type": "list",
+                    "label": "Test Case",
+                    "entity": "test",
+                    "min": 1,
+                    "max": 1,
+                    "field": {
+                        "name": "test",
+                        "type": "group",
+                        "label": "Test",
+                        "fields": [
+                            {
+                                "name": "output",
+                                "type": "text",
+                                "label": "Expected Output",
+                                "widget": "textarea",
+                                "description": "Output"
+                            }
+                        ]
+                    }
+                }
             }
         ]
     }

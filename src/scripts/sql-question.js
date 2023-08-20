@@ -13,11 +13,9 @@ export default class SQLQuestion extends H5P.CodeQuestion {
     this.allTables = null;
     this.tables = null;
 
-    this.dbFile = params.dbFile;
+    console.info(params, params.databaseSettings);
+    this.dbFile = params.databaseSettings;
     this.dbFilePath = H5P.getPath(this.dbFile.path, contentId);
-    this.hasCanvas = false;
-    this.hasConsole = false;
-    this.hasRunButton = false;
     this.hasCheckButton = true;
     this.hasStopButton = false;
     this.hasAssets = true;
@@ -39,6 +37,7 @@ export default class SQLQuestion extends H5P.CodeQuestion {
   getMaxScore() {
     return 1;
   }
+
 } // end of class
 
 

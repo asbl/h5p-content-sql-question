@@ -3,7 +3,7 @@
 }
 
 .h5p-sql-question .page.sql-table pre.h5p.db-table {
-    overflow: scroll;
+    overflow: auto;
     max-height: 300px;
     width: 100%;
     font-size: 10px;
@@ -16,24 +16,31 @@
   background-color: #658e9c;
 }
 
+.h5p-sql-question .h5p-ace-editor .sql-table-button:hover {
+    background-color: #3f6b7a;
+  }
+  
+
 .h5p-sql-question .testcases-area {
     background-color: #222;
     color: white;
     padding: 5px;
+    border-radius: 10px;
+    padding: 10px;
 }
 
 .h5p-sql-question .sql-console {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
-
-
+    border-radius: 10px;
 }
 
 .h5p-sql-question .sql-console .console-column {
-    overflow: scroll;
+    overflow: auto;
     padding: 5px;
     border: 1px solid #444;
+    border-radius: 10px;
 
 }
 
@@ -41,7 +48,7 @@
 .h5p-sql-question .sql-console .console-column .db-table {
     width: 100%;
     max-height: 300px;
-    overflow: scroll;
+    overflow: auto;
     font-size: 10px;
     font-family: monospace;
     line-height: 1em;
@@ -60,3 +67,8 @@
     color: rgb(196, 102, 119);
 }
 
+
+.h5p-sql-question  .sql-editor textarea {
+    white-space: pre;
+    font-size: 10px; 
+}

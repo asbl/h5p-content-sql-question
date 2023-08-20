@@ -13,8 +13,6 @@ export default class SQLTester extends H5P.CodeTester {
     };
   }
 
-  
-
   resultsToTable(outputArray) {
     let html = '';
     const table = AsciiTable.factory({
