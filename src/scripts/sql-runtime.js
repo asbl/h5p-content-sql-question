@@ -30,6 +30,7 @@ export default class SQLRuntime extends H5P.Runtime {
 
   async runTest(code) {
     this.isTest = true;
+    this.codeTester.reset();
     this.testCaseNumber = this.testCaseNumber + 1;
     this._run(code);
   }
@@ -39,7 +40,7 @@ export default class SQLRuntime extends H5P.Runtime {
     const myPromise = new Promise((resolve, reject) => {
       try {
         const selectResult = db.exec(code);
-        this.outputArray = selectResult;
+        this.codeTester.addOutput(selectResult);
         resolve();
       }
       catch (error) {
@@ -111,10 +112,7 @@ export default class SQLRuntime extends H5P.Runtime {
    */
   onSuccessManualRun() {
     let tableHTML = '';
-    const table = AsciiTable.factory({
-      heading: this.outputArray[0].columns
-      , rows: this.outputArray[0].values
-    });
+    const table = this.codeTester.getTable();
     tableHTML = table.toString();
     const editorConsole = this.editor.getConsole();
     editorConsole.parentElement.style.display = 'block';

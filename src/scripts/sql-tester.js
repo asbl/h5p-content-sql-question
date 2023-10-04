@@ -1,35 +1,41 @@
 export default class SQLTester extends H5P.CodeTester {
 
-  constructor(areaID, testSuite, targetTable) {
-    super(areaID, testSuite);
+  constructor(codeQuestion, testSuite, targetTable) {
+    super(codeQuestion, testSuite);
     this.targetTable = targetTable;
     this.sqlConsoleID = `sql-console-${H5P.createUUID()}`;
     this.outputTableTableID = `h5p_output_table_${H5P.createUUID()}`;
     this.copyID = `copy_${H5P.createUUID()}`;
+    /*
     this.l10n = {
       outputTableHeader: 'SQL Table',
       expectedTableHeader: 'Expected Table',
       copy: 'Copy'
     };
+    */
+  }
+
+  addOutput(outputText) {
+    this.outputArray[this.testCaseCounter].push(outputText[0]);
   }
 
   resultsToTable(outputArray) {
     let html = '';
     const table = AsciiTable.factory({
-      heading: outputArray[0].columns
-      , rows: outputArray[0].values
+      heading: outputArray[0][0].columns
+      , rows: outputArray[0][0].values
     });
     html = table.toString();
     return html;
   }
     
-  updateTestCaseTable(testCaseNumber, outputArray) {
+  updateTestCaseTable() {
     let sqlConsole = document.getElementById(this.sqlConsoleID);
-    let outputTable = this.resultsToTable(outputArray);
+    let outputTable = this.resultsToTable(this.outputArray);
     let outputDiv = document.createElement('div');
     outputDiv.classList.add('console-column');
     let html = '';
-    html = `<h4>${this.l10n.outputTableHeader}</h4>`;
+    html = `<h4>${this.l10n.testCase}</h4>`;
     html += `<pre id="${this.outputTableTableID}"class="h5p sql-question output-table">` + outputTable + '</pre>';
     html += `<button id="${this.copyID}">${this.l10n.copy}</button`;
     // Add copy-button Listener
@@ -37,8 +43,8 @@ export default class SQLTester extends H5P.CodeTester {
     let expectedDiv = document.createElement('div');
     expectedDiv.classList.add('console-column');
     let successClass = '';
-    const success = this.checkTest(0, 0, outputArray);
-    html = `<h4>${this.l10n.expectedTableHeader}</h4>`;
+    const success = this.checkTestCase(0);
+    html = `<h4>${this.l10n.expectedOutput}</h4>`;
     if (success) {
       successClass = 'match';
     }
@@ -59,13 +65,9 @@ export default class SQLTester extends H5P.CodeTester {
     copybutton.onclick = () => {
       let tableCopy = outputTable;
       navigator.clipboard.writeText(tableCopy).then(
-        function () {
-          alert('Table copied to clipboard'); // success 
-        })
-        .catch(
-          function () {
-            alert('Error when copying the table to the clipboard.'); // error
-          });
+        () => {
+          alert(this.l10n.copySuccess); // success 
+        });
     };
   }
       
@@ -77,13 +79,21 @@ export default class SQLTester extends H5P.CodeTester {
     return testCasesArea;
   }
 
-  checkTest(testCaseNumber, testNumber, outputArray) {
-    return (this.resultsToTable(outputArray).trim() === this.targetTable.trim());
+  checkTestCase(testCaseNumber = -1) {
+    return (this.resultsToTable(this.outputArray).trim() === this.targetTable.trim());
   }
 
   onError(_errorMessage, _errorInstance) {
     let sqlConsole = document.getElementById(this.sqlConsoleID);
     sqlConsole.innerHTML = `<div class="error">ERROR: ${_errorMessage}</div>`;
+  }
+
+  getTable() {
+    const table = AsciiTable.factory({
+      heading: this.outputArray[0][0].columns
+      , rows: this.outputArray[0][0].values
+    });
+    return table;
   }
 
 }

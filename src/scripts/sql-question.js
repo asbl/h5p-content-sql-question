@@ -12,8 +12,6 @@ export default class SQLQuestion extends H5P.CodeQuestion {
     this.question = this;
     this.allTables = null;
     this.tables = null;
-
-    console.info(params, params.databaseSettings);
     this.dbFile = params.databaseSettings;
     this.dbFilePath = H5P.getPath(this.dbFile.path, contentId);
     this.hasCheckButton = true;

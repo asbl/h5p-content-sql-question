@@ -16,7 +16,8 @@ export default class SQLQuestionFactory extends H5P.CodeQuestionFactory {
         postCode: null,
         consoleType: 'div',
         language: 'sql',
-        modifyEditor: this.modifyEditor
+        modifyEditor: this.modifyEditor,
+        l10n : this.question.l10n
       });
     }
     else {
@@ -26,6 +27,7 @@ export default class SQLQuestionFactory extends H5P.CodeQuestionFactory {
         consoleHidden : true,
         hasButtons: true,
         evaluation: false,
+        l10n : this.question.l10n
       });
     }
   }
@@ -43,13 +45,12 @@ export default class SQLQuestionFactory extends H5P.CodeQuestionFactory {
   }
   /**
    * Creates a Tester-object
-   * @param {string} areaID The area of the testCases
    * @param {Array} testSuite An array with all testCases
-   * @returns {H5P.PythonTester} The PythonTester-Object
+   * @returns {H5P.SQLTester} The SQLTester-Object
    */
-  createCodeTester(areaID, testSuite) {
+  createCodeTester(testSuite) {
     const targetTable = (this.question.params.gradingSettings.testCases[0][0] !== undefined) ? this.question.getDecodedCode(this.question.params.gradingSettings.testCases[0][0]) : 'empty';
-    return new H5P.SQLTester(areaID, testSuite, targetTable);
+    return new H5P.SQLTester(this.question, testSuite, targetTable);
   }
 
   createEditorWithRuntime(parentDiv, code) {
