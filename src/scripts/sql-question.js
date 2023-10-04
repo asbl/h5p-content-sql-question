@@ -1,4 +1,5 @@
 import SQLQuestionFactory from './sql-factory';
+import WorldSQL from './databases/world.js';
 
 export default class SQLQuestion extends H5P.CodeQuestion {
   /**
@@ -12,8 +13,22 @@ export default class SQLQuestion extends H5P.CodeQuestion {
     this.question = this;
     this.allTables = null;
     this.tables = null;
-    this.dbFile = params.databaseSettings;
-    this.dbFilePath = H5P.getPath(this.dbFile.path, contentId);
+    if (params.databaseSettings.select_db === 'from_file' && params.databaseSettings.dbFile) {
+      this.dbFile = params.databaseSettings.dbFile;
+      this.dbFilePath = H5P.getPath(this.dbFile.path, contentId);
+      this.sqlPrepare = null;
+    }
+    else if (params.databaseSettings.select_db === 'from_defaults' && params.databaseSettings.selectDatabase) {
+      
+      this.dbFile = null;
+      this.dbFilePath = null;
+      this.sqlPrepare = new WorldSQL().sql;
+    }
+    else {
+      this.dbFile = null;
+      this.dbFilePath = null;
+      this.sqlPrepare = null;
+    }
     this.hasCheckButton = true;
     this.hasStopButton = false;
     this.hasAssets = true;

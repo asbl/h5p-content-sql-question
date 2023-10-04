@@ -11,6 +11,7 @@ export default class SQLRuntime extends H5P.Runtime {
     this.testNumber = options.testNumber;
     this.options = options || {};
     this.dbFile = options.dbFile;
+    this.sqlPrepare = options.sqlPrepare;
     this.console = options.console || null;
   }
 
@@ -22,9 +23,20 @@ export default class SQLRuntime extends H5P.Runtime {
         '../lib/' + file;  
       }
     });
-    const dataPromise = fetch(this.dbFile).then((res) => res.arrayBuffer());
-    const [SQL, buf] = await Promise.all([sqlPromise, dataPromise]);
-    const db = new SQL.Database(new Uint8Array(buf));
+    let db = null;
+    if (this.dbFile) {
+      const dataPromise = fetch(this.dbFile).then((res) => res.arrayBuffer());
+      let [SQL, buf] = await Promise.all([sqlPromise, dataPromise]);
+      db = new SQL.Database(new Uint8Array(buf));
+    }
+    else {
+      let SQL = await Promise.resolve(sqlPromise);
+      db = new SQL.Database();
+      if (this.sqlPrepare) {
+        db.run(this.sqlPrepare);
+      }
+    }
+
     return db;
   }
 
@@ -72,9 +84,12 @@ export default class SQLRuntime extends H5P.Runtime {
         reject();
       }
     });
-
+    
     let allTablesPromise = selectPromise.then((results) => {
       let promises = [];
+      if (results[0] === undefined) {
+        return;
+      }
       results[0].values.forEach((table) => {
         promises.push(new Promise((resolve, reject) => {
           let code = `SELECT * FROM ${table[0]}`;

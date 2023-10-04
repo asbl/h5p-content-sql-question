@@ -37,9 +37,9 @@ export default class SQLQuestionFactory extends H5P.CodeQuestionFactory {
    * @returns  {H5P.SQLRuntime} The generated Runtime
    */
   createRuntime() {
-    const path = this.question.dbFilePath;   
     return new H5P.SQLRuntime(this.question, {
-      dbFile: path,
+      dbFile: this.question.dbFilePath,
+      sqlPrepare: this.question.sqlPrepare,
       saveOutput: true,
     });
   }
@@ -49,7 +49,7 @@ export default class SQLQuestionFactory extends H5P.CodeQuestionFactory {
    * @returns {H5P.SQLTester} The SQLTester-Object
    */
   createCodeTester(testSuite) {
-    const targetTable = (this.question.params.gradingSettings.testCases[0][0] !== undefined) ? this.question.getDecodedCode(this.question.params.gradingSettings.testCases[0][0]) : 'empty';
+    const targetTable = (this.question.params.gradingSettings.testCases !== undefined && this.question.params.gradingSettings.testCases[0][0] !== undefined) ? this.question.getDecodedCode(this.question.params.gradingSettings.testCases[0][0]) : 'empty';
     return new H5P.SQLTester(this.question, testSuite, targetTable);
   }
 

@@ -109,7 +109,7 @@
         "options": [
             {
                 "value": "ide_only",
-                "label": "IDE only"
+                "label": "Assigmnent only"
             },
             {
                 "value": "text_only",
@@ -117,10 +117,10 @@
             },
             {
                 "value": "text_and_ide",
-                "label": "Text and IDE"
+                "label": "Text and coding Assigmnent"
             }
         ],
-        "default": "text_and_ide"
+        "default": "text_only"
     },
     {
         "name": "databaseSettings",
@@ -130,11 +130,67 @@
         "expanded": true,
         "fields": [
             {
+                "name": "select_db",
+                "type": "select",
+                "label": "Select...",
+                "description": "Select database",
+                "options": [
+                    {
+                        "value": "from_file",
+                        "label": "From File"
+                    },
+                    {
+                        "value": "from_defaults",
+                        "label": "From Defaults"
+                    },
+                    {
+                        "value": "empty_db",
+                        "label": "Empty database"
+                    }
+                ],
+                "default": "text_only"
+            },
+            {
                 "label": "Database",
                 "name": "dbFile",
                 "type": "file",
                 "optional": true,
-                "description": "Database File (as .txt)"
+                "description": "Database File (as .txt)",
+                "widget": "showWhen",
+                "showWhen": {
+                    "rules": [
+                        {
+                            "field": "select_db",
+                            "equals": [
+                                "from_file"
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "selectDatabase",
+                "type": "select",
+                "label": "Type",
+                "description": "Select predefined Database",
+                "widget": "showWhen",
+                "showWhen": {
+                    "rules": [
+                        {
+                            "field": "select_db",
+                            "equals": [
+                                "from_defaults"
+                            ]
+                        }
+                    ]
+                },
+                "options": [
+                    {
+                        "value": "world",
+                        "label": "World (from sqlzoo)"
+                    }
+                ],
+                "default": "world"
             }
         ]
     },
@@ -244,24 +300,6 @@
                     }
                 },
                 {
-                    "label": "Database",
-                    "name": "dbFile",
-                    "type": "file",
-                    "optional": true,
-                    "description": "Database File (as .txt)",
-                    "widget": "showWhen",
-                    "showWhen": {
-                        "rules": [
-                            {
-                                "field": "type",
-                                "equals": [
-                                    "code"
-                                ]
-                            }
-                        ]
-                    }
-                },
-                {
                     "type": "text",
                     "name": "code",
                     "optional": true,
@@ -295,6 +333,18 @@
         "label": "Editor Settings",
         "description": "This defines how the actual editor is pre-populated and whether code should be executed before or after user input.",
         "expanded": true,
+        "widget": "showWhen",
+        "showWhen": {
+            "rules": [
+                {
+                    "field": "contentType",
+                    "equals": [
+                        "ide_only",
+                        "text_and_ide"
+                    ]
+                }
+            ]
+        },
         "fields": [
             {
                 "type": "text",
@@ -316,13 +366,6 @@
                 "label": "Image",
                 "optional": true,
                 "description": "An optional image appended to instructions"
-            },
-            {
-                "label": "Database",
-                "name": "dbFile",
-                "type": "file",
-                "optional": false,
-                "description": "Database File (as .txt)"
             },
             {
                 "label": "StartingCode",
@@ -359,6 +402,18 @@
         "label": "Grading Settings",
         "description": "Information how the content should be graded",
         "expanded": true,
+        "widget": "showWhen",
+        "showWhen": {
+            "rules": [
+                {
+                    "field": "contentType",
+                    "equals": [
+                        "ide_only",
+                        "text_and_ide"
+                    ]
+                }
+            ]
+        },
         "fields": [
             {
                 "name": "gradingMethod",

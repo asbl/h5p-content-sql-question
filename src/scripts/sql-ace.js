@@ -25,6 +25,9 @@ export default class SQLAce extends H5P.AceEditor {
     try {
       const result = await this.runtime.getAllTables();
       this.tables = result;
+      if (this.tables === undefined) {
+        return;
+      }
       let tableContent = '';
       for (const table of this.tables) {
         tableContent = AsciiTable.factory({
