@@ -6,13 +6,9 @@ export default class SQLRuntime extends H5P.Runtime {
   constructor(question, options) {
     super(question);
     this.isTest = true;
-    this.testCaseNumber = -1;
-    this.test = options.test;
-    this.testNumber = options.testNumber;
-    this.options = options || {};
     this.dbFile = options.dbFile;
-    this.sqlPrepare = options.sqlPrepare;
-    this.console = options.console || null;
+    this.sqlPrepare = options.sqlPrepare; // String with sql commands to prepare database
+    this.solutionPrepare = options.solutionPrepare; // String with sql commands to generate output Table
   }
 
   async prepare() {
@@ -36,14 +32,16 @@ export default class SQLRuntime extends H5P.Runtime {
         db.run(this.sqlPrepare);
       }
     }
-
+    console.info('prepare solution', this.solutionPrepare);
+    if (this.solutionPrepare) {
+      this.codeTester.generateTargetTable(db.exec(this.solutionPrepare));
+    }
     return db;
   }
 
   async runTest(code) {
     this.isTest = true;
     this.codeTester.reset();
-    this.testCaseNumber = this.testCaseNumber + 1;
     this._run(code);
   }
 
@@ -121,18 +119,15 @@ export default class SQLRuntime extends H5P.Runtime {
 
   }
 
-
   /**
    * Called, wehen user performed a manual run.
    */
   onSuccessManualRun() {
     let tableHTML = '';
-    const table = this.codeTester.getTable();
-    tableHTML = table.toString();
+    const outputHTML = this.codeTester.getOutput();
     const editorConsole = this.editor.getConsole();
     editorConsole.parentElement.style.display = 'block';
-    editorConsole.innerHTML = '';
-    editorConsole.innerHTML += tableHTML;
+    editorConsole.innerHTML = outputHTML;
   }
 
 

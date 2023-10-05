@@ -148,7 +148,7 @@
                         "label": "Empty database"
                     }
                 ],
-                "default": "text_only"
+                "default": "from_defaults"
             },
             {
                 "label": "Database",
@@ -188,6 +188,10 @@
                     {
                         "value": "world",
                         "label": "World (from sqlzoo)"
+                    },
+                    {
+                        "value": "world23",
+                        "label": "World (with german data from 2023, wikidata)"
                     }
                 ],
                 "default": "world"
@@ -379,20 +383,6 @@
                         "language": "sql"
                     }
                 ]
-            },
-            {
-                "label": "Optional: Solution",
-                "name": "solution",
-                "optional": true,
-                "type": "text",
-                "widget": "codeWidget",
-                "default": "",
-                "description": "Solution: Warning - can be seen in website source code! *",
-                "options": [
-                    {
-                        "language": "sql"
-                    }
-                ]
             }
         ]
     },
@@ -425,6 +415,10 @@
                     {
                         "value": "ioTestCases",
                         "label": "Input/Output TestCases"
+                    },
+                    {
+                        "value": "bySolution",
+                        "label": "By Solution"
                     }
                 ]
             },
@@ -435,6 +429,17 @@
                 "entity": "testcase",
                 "min": 1,
                 "max": 1,
+                "widget": "showWhen",
+                "showWhen": {
+                    "rules": [
+                        {
+                            "field": "gradingMethod",
+                            "equals": [
+                                "ioTestCases"
+                            ]
+                        }
+                    ]
+                },
                 "field": {
                     "name": "testCase",
                     "type": "list",
@@ -452,11 +457,36 @@
                                 "type": "text",
                                 "label": "Expected Output",
                                 "widget": "textarea",
-                                "description": "Output"
+                                "description": "Output",
+                                "default": ""
                             }
                         ]
                     }
                 }
+            },
+            {
+                "label": "Solution",
+                "name": "solution",
+                "type": "text",
+                "widget": "showWhen",
+                "showWhen": {
+                    "rules": [
+                        {
+                            "field": "gradingMethod",
+                            "equals": [
+                                "bySolution"
+                            ]
+                        }
+                    ],
+                    "widget": "codeWidget"
+                },
+                "default": "",
+                "description": "Solution: Warning - can be seen in website source code! *",
+                "options": [
+                    {
+                        "language": "sql"
+                    }
+                ]
             }
         ]
     }

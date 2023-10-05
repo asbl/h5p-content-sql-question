@@ -66,8 +66,10 @@ export default class SQLAce extends H5P.AceEditor {
     if (runButton && !runButton.isInitialized) {
       runButton.isInitialized = true;
       runButton.addEventListener('click', () => {
+        // if (this.getCode() !== '') {
         this.showPage('code');
         this.runtime.runTest(this.getCode());
+        // }
       });
     }
   }
