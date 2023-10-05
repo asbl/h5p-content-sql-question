@@ -37,6 +37,7 @@ export default class SQLQuestion extends H5P.CodeQuestion {
     this.hasCheckButton = true;
     this.hasStopButton = false;
     this.hasAssets = true;
+    this.language = 'sql';
   } // end of constructor
 
   /**

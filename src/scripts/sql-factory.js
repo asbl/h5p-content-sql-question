@@ -37,12 +37,11 @@ export default class SQLQuestionFactory extends H5P.CodeQuestionFactory {
    * @returns  {H5P.SQLRuntime} The generated Runtime
    */
   createRuntime() {
-    console.info('question solution prepare,', this.question.solutionPrepare);
     return new H5P.SQLRuntime(this.question, {
       dbFile: this.question.dbFilePath,
-      sqlPrepare: this.question.sqlPrepare,
+      sqlPrepare: this.question.getDecodedCode(this.question.sqlPrepare),
       saveOutput: true,
-      solutionPrepare: this.question.solutionPrepare
+      solutionPrepare: this.question.getDecodedCode(this.question.solutionPrepare)
     });
   }
   /**

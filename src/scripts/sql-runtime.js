@@ -32,7 +32,6 @@ export default class SQLRuntime extends H5P.Runtime {
         db.run(this.sqlPrepare);
       }
     }
-    console.info('prepare solution', this.solutionPrepare);
     if (this.solutionPrepare) {
       this.codeTester.generateTargetTable(db.exec(this.solutionPrepare));
     }
@@ -108,13 +107,18 @@ export default class SQLRuntime extends H5P.Runtime {
    * @param {string} errorMessage The error
    */
   onError(errorMessage) {
-    if (this.isTest === true) {
-      this.codeTester.onError(errorMessage);
-      this.notifyError(errorMessage);
+    try {
+      if (this.isTest === true) {
+        this.codeTester.onError(errorMessage);
+        this.notifyError(errorMessage);
+      }
+      else {
+        this.editor.getConsole().value = errorMessage;
+        this.editor.getConsole().style.display = 'block';
+      }
     }
-    else {
-      this.editor.getConsole().value = errorMessage;
-      this.editor.getConsole().style.display = 'block';
+    catch {
+      console.info(errorMessage);
     }
 
   }
@@ -123,8 +127,7 @@ export default class SQLRuntime extends H5P.Runtime {
    * Called, wehen user performed a manual run.
    */
   onSuccessManualRun() {
-    let tableHTML = '';
-    const outputHTML = this.codeTester.getOutput();
+    const outputHTML = this.codeTester.resultsTable;
     const editorConsole = this.editor.getConsole();
     editorConsole.parentElement.style.display = 'block';
     editorConsole.innerHTML = outputHTML;

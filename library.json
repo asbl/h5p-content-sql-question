@@ -2,8 +2,8 @@
   "title": "SQL Question",
   "description": "Displays a SQL Editor with Skulpt",
   "majorVersion": 4,
-  "minorVersion": 6,
-  "patchVersion": 0,
+  "minorVersion": 14,
+  "patchVersion": 1,
   "fullscreen": 1,
   "runnable": 1,
   "coreApi": {
@@ -36,12 +36,12 @@
     {
       "machineName": "H5P.CodeQuestion",
       "majorVersion": 4,
-      "minorVersion": 5
+      "minorVersion": 14
     },
     {
       "machineName": "H5P.LibCodeTools",
       "majorVersion": 4,
-      "minorVersion": 5
+      "minorVersion": 14
     }
   ],
   "editorDependencies": [

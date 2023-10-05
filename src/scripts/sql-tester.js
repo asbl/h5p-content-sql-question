@@ -37,7 +37,6 @@ export default class SQLTester extends H5P.CodeTester {
   }
 
   generateTargetTable(sqlResult) {
-    console.info('generate auto table');
     this.targetTable = this._sqlToTable(sqlResult);
   }
 

@@ -376,7 +376,7 @@
                 "name": "startingCode",
                 "type": "text",
                 "widget": "codeWidget",
-                "default": "SELECT * FROM HelloWorld",
+                "default": "SELECT ...",
                 "description": "select *",
                 "options": [
                     {

@@ -72,3 +72,6 @@
     white-space: pre;
     font-size: 10px; 
 }
+.h5p-sql-question .h5p-ace-editor .ace.console.console-body {
+    height: 250px;
+}
