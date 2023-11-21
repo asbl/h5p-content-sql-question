@@ -2,42 +2,27 @@ export default class SQLTester extends H5P.CodeTester {
 
   constructor(codeQuestion, testSuite) {
     super(codeQuestion, testSuite);
-    this.targetTable = '';
+    this.question = codeQuestion;
     this.solution = null;
-    if (this.gradingMethod === 'ioTestCases') {
-      this.targetTable = (this.question.params.gradingSettings.testCases !== undefined && this.question.params.gradingSettings.testCases[0][0] !== undefined) ? this.question.getDecodedCode(this.question.params.gradingSettings.testCases[0][0]) : '-';
-    }
+    this.targetTable = (this.question.params.gradingSettings.testCases !== undefined && this.question.params.gradingSettings.testCases[0][0] !== undefined) ? this.question.getDecodedCode(this.question.params.gradingSettings.testCases[0][0]) : '-';
     this.solution = codeQuestion.solution;
     this.sqlConsoleID = `sql-console-${H5P.createUUID()}`;
     this.copyID = `copy_${H5P.createUUID()}`;
     this.resultsTableID = `h5p_output_table_${H5P.createUUID()}`;
     this.resultsTable = '';
   }
-
-  _sqlToTable(sqlResult) {
-    if (sqlResult[0] === undefined) {
-      return '';
-    }
-    else {
-      const table = AsciiTable.factory({
-        heading: sqlResult[0].columns
-        , rows: sqlResult[0].values
-      });
-      return table.toString().trim();    
-    }
+  
+  setTargetTable(table) {
+    this.targetTable = table;
   }
   /**
    * Adds output to outputArray
-   * @param {*} outputText 
-   * @param sqlResult
+   * @param {*} sqlResult Result of a sql query
+   * @param {string} sqlAsciiTable
    */
-  addOutput(sqlResult) {
+  addOutput(sqlResult, sqlAsciiTable) {
     this.outputArray[this.testCaseCounter].push(sqlResult[0]);
-    this.resultsTable = this._sqlToTable(sqlResult);
-  }
-
-  generateTargetTable(sqlResult) {
-    this.targetTable = this._sqlToTable(sqlResult);
+    this.resultsTable = sqlAsciiTable;
   }
 
   updateTestCaseTable() {
@@ -92,12 +77,5 @@ export default class SQLTester extends H5P.CodeTester {
   checkTestCase(testCaseNumber = -1) {
     return this.resultsTable === this.targetTable.trim();
   }
-
-  onError(_errorMessage, _errorInstance) {
-    let sqlConsole = document.getElementById(this.sqlConsoleID);
-    sqlConsole.innerHTML = `<div class="error">ERROR: ${_errorMessage}</div>`;
-  }
-
-
 
 }

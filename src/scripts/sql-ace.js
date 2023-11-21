@@ -1,16 +1,10 @@
+import AsciiTable from 'ascii-table';
+
 export default class SQLAce extends H5P.AceEditor {
 
   async setup() {
     await super.setup();
     this.getContainer().classList.add('sql-editor');
-  }
-
-  setupRuntime() {
-    const editorConsole = this.getConsole();
-    this.runtime.setConsole(editorConsole);
-    if (this.consoleHidden) {
-      editorConsole.parentElement.style.display = 'none';
-    }
   }
 
   getMode() {
@@ -23,7 +17,8 @@ export default class SQLAce extends H5P.AceEditor {
   async setupPages() {
     await super.setupPages();
     try {
-      const result = await this.runtime.getAllTables();
+      const runtime = this.question.factory.createRuntime();
+      const result = await runtime.getAllTables();
       this.tables = result;
       if (this.tables === undefined) {
         return;
@@ -66,10 +61,17 @@ export default class SQLAce extends H5P.AceEditor {
     if (runButton && !runButton.isInitialized) {
       runButton.isInitialized = true;
       runButton.addEventListener('click', () => {
-        // if (this.getCode() !== '') {
         this.showPage('code');
-        this.runtime.runTest(this.getCode());
-        // }
+        if (this.isAssignment) {
+          const runtime = this.question.factory.createTestRuntime(this.question.codeTester, this.getCode());
+          runtime.reset();
+          runtime.run(this.getCode());
+        }
+        else {
+          const runtime = this.question.factory.createManualRuntime(this.getCode(), this);
+          runtime.reset();
+          runtime.run(this.getCode());
+        }   
       });
     }
   }

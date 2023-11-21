@@ -1,5 +1,7 @@
 import '../styles/h5p-sql-question.css';
 import SQLRuntime from '../scripts/sql-runtime';
+import SQLTestRuntime from '../scripts/sql-test-runtime';
+import SQLManualRuntime from '../scripts/sql-manual-runtime';
 import SQLAce from '../scripts/sql-ace';
 import SQLQuestion from '../scripts/sql-question';
 import SQLQuestionFactory from '../scripts/sql-factory';
@@ -8,5 +10,7 @@ import SQLTester from '../scripts/sql-tester';
 H5P.SQLQuestionFactory = SQLQuestionFactory;
 H5P.SQLTester = SQLTester;
 H5P.SQLRuntime = SQLRuntime;
+H5P.SQLTestRuntime = SQLTestRuntime;
+H5P.SQLManualRuntime = SQLManualRuntime;
 H5P.SQLAce = SQLAce;
 H5P.SQLQuestion = SQLQuestion;

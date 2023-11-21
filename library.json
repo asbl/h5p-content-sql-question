@@ -1,8 +1,8 @@
 {
   "title": "SQL Question",
   "description": "Displays a SQL Editor with Skulpt",
-  "majorVersion": 4,
-  "minorVersion": 14,
+  "majorVersion": 5,
+  "minorVersion": 1,
   "patchVersion": 1,
   "fullscreen": 1,
   "runnable": 1,
@@ -18,13 +18,7 @@
   ],
   "preloadedJs": [
     {
-      "path": "lib/sql.js"
-    },
-    {
       "path": "dist/h5p-sql-question.js"
-    },
-    {
-      "path": "lib/ascii-table.js"
     }
   ],
   "preloadedCss": [
@@ -35,13 +29,13 @@
   "preloadedDependencies": [
     {
       "machineName": "H5P.CodeQuestion",
-      "majorVersion": 4,
-      "minorVersion": 14
+      "majorVersion": 5,
+      "minorVersion": 1
     },
     {
       "machineName": "H5P.LibCodeTools",
-      "majorVersion": 4,
-      "minorVersion": 14
+      "majorVersion": 5,
+      "minorVersion": 1
     }
   ],
   "editorDependencies": [

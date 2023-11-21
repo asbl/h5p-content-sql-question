@@ -1,6 +1,10 @@
 import SQLQuestionFactory from './sql-factory';
 import WorldSQL from './databases/world.js';
 import World23SQL from './databases/world23.js';
+import BusSQL from './databases/bus.js';
+import TeachersSQL from './databases/teachers.js';
+import NobelSQL from './databases/nobel.js';
+import MovieSQL from './databases/movie.js';
 
 export default class SQLQuestion extends H5P.CodeQuestion {
   /**
@@ -27,6 +31,18 @@ export default class SQLQuestion extends H5P.CodeQuestion {
       else if (params.databaseSettings.selectDatabase === 'world23') {
         this.sqlPrepare = new World23SQL().sql;
       } 
+      else if (params.databaseSettings.selectDatabase === 'bus') {
+        this.sqlPrepare = new BusSQL().sql;
+      } 
+      else if (params.databaseSettings.selectDatabase === 'teachers') {
+        this.sqlPrepare = new TeachersSQL().sql;
+      } 
+      else if (params.databaseSettings.selectDatabase === 'nobel') {
+        this.sqlPrepare = new NobelSQL().sql;
+      } 
+      else if (params.databaseSettings.selectDatabase === 'movie') {
+        this.sqlPrepare = new MovieSQL().sql;
+      } 
     }
     else {
       this.dbFile = null;
@@ -34,6 +50,7 @@ export default class SQLQuestion extends H5P.CodeQuestion {
       this.sqlPrepare = null;
     }
     this.solutionPrepare = this.params.gradingSettings.gradingMethod === 'bySolution' ? this.params.gradingSettings.solution : null;
+    this.targetTable = this.params.gradingSettings.testCases;
     this.hasCheckButton = true;
     this.hasStopButton = false;
     this.hasAssets = true;

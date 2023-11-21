@@ -1,12 +1,28 @@
 const path = require('path');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 
 const nodeEnv = process.env.NODE_ENV || 'development';
 const isProd = (nodeEnv === 'production');
 
 module.exports = {
+  experiments: {
+    asyncWebAssembly: true,
+  },
   mode: nodeEnv,
+  resolve: {
+    fallback: {
+      'fs': false,
+      'tls': false,
+      'net': false,
+      'path': false,
+      'zlib': false,
+      'http': false,
+      'https': false,
+      'stream': false,
+      'crypto': false,
+    } 
+  },
   optimization: {
     minimize: isProd,
     minimizer: [
@@ -34,11 +50,13 @@ module.exports = {
   target: ['web', 'es5'], // IE11
   module: {
     rules: [
+      
       {
         test: /\.js$/,
         exclude: /node_modules/,
         loader: 'babel-loader'
       },
+      
       {
         test: /\.(s[ac]ss|css)$/,
         use: [
@@ -48,9 +66,9 @@ module.exports = {
               publicPath: ''
             }
           },
-          { loader: "css-loader" },
+          { loader: 'css-loader' },
           {
-            loader: "sass-loader"
+            loader: 'sass-loader'
           }
         ]
       },
@@ -63,6 +81,10 @@ module.exports = {
         test: /\.woff$/,
         include: path.join(__dirname, 'src/fonts'),
         type: 'asset/resource'
+      },
+      {
+        test: /\.wasm$/,
+        type: 'asset/inline',
       }
     ]
   },

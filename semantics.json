@@ -192,6 +192,19 @@
                     {
                         "value": "world23",
                         "label": "World (with german data from 2023, wikidata)"
+                    },
+                    {
+                        "value": "teachers",
+                        "label": "Teachers Database (from sqlzoo)"
+                    },
+                    {
+                        "value": "bus",
+                        "label": "Bus Database (from sqlzoo)"
+                    },
+                    {
+                                        
+                        "value": "movie",
+                        "label": "Movie Database (from sqlzoo)"
                     }
                 ],
                 "default": "world"

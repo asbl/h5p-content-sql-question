@@ -1,11 +1,16 @@
+import initSqlJs from 'sql.js';
+import AsciiTable from 'ascii-table';
+
+const sqlWasm = new URL('sql.js/dist/sql-wasm.wasm', import.meta.url);
+
 /**
  * Draws ace-editor Widget on a div
  */
 export default class SQLRuntime extends H5P.Runtime {
 
-  constructor(question, options) {
+  constructor(question, code, options) {
     super(question);
-    this.isTest = true;
+    this.code = code;
     this.dbFile = options.dbFile;
     this.sqlPrepare = options.sqlPrepare; // String with sql commands to prepare database
     this.solutionPrepare = options.solutionPrepare; // String with sql commands to generate output Table
@@ -15,9 +20,8 @@ export default class SQLRuntime extends H5P.Runtime {
     const sqlPromise = await initSqlJs({
       // Required to load the wasm binary asynchronously. 
       // Loads ../lib/sql-asm.wasm
-      locateFile: (file) => {
-        '../lib/' + file;  
-      }
+      locateFile: () => sqlWasm.href
+      
     });
     let db = null;
     if (this.dbFile) {
@@ -32,33 +36,32 @@ export default class SQLRuntime extends H5P.Runtime {
         db.run(this.sqlPrepare);
       }
     }
-    if (this.solutionPrepare) {
-      this.codeTester.generateTargetTable(db.exec(this.solutionPrepare));
-    }
     return db;
   }
 
-  async runTest(code) {
-    this.isTest = true;
-    this.codeTester.reset();
-    this._run(code);
+  async run() {
+    this.setupEnvironment();
+    await this._run();
   }
 
-  async _run(code) {
+  setupEnvironment() {
+  }
+
+  async _run() {
+    console.info('run,', this.code);
     const db = await this.prepare();
     const myPromise = new Promise((resolve, reject) => {
       try {
-        const selectResult = db.exec(code);
-        this.codeTester.addOutput(selectResult);
-        resolve();
+        const selectResult = db.exec(this.code);
+        resolve(selectResult);
       }
       catch (error) {
         this.errorMessage = error.message;
         reject(this.errorMessage);
       }
     });
-    return myPromise.then(() => {
-      this.onSuccess(); 
+    return myPromise.then((result) => {
+      this.onSuccess(result, this._sqlToTable(result)); 
     }).catch((error) => {
       this.onError(error);
     }).finally(() => {
@@ -100,7 +103,6 @@ export default class SQLRuntime extends H5P.Runtime {
     });
     return allTablesPromise;
   }
-
   
   /**
    * Called when runtime Promise has an error.
@@ -108,30 +110,30 @@ export default class SQLRuntime extends H5P.Runtime {
    */
   onError(errorMessage) {
     try {
-      if (this.isTest === true) {
-        this.codeTester.onError(errorMessage);
-        this.notifyError(errorMessage);
-      }
-      else {
-        this.editor.getConsole().value = errorMessage;
-        this.editor.getConsole().style.display = 'block';
-      }
+      const editorConsole = this.editor.getConsole();
+      editorConsole.parentElement.style.display = 'block';
+      editorConsole.innerHTML = errorMessage;
     }
     catch {
       console.info(errorMessage);
     }
-
   }
 
-  /**
-   * Called, wehen user performed a manual run.
-   */
-  onSuccessManualRun() {
-    const outputHTML = this.codeTester.resultsTable;
-    const editorConsole = this.editor.getConsole();
-    editorConsole.parentElement.style.display = 'block';
-    editorConsole.innerHTML = outputHTML;
+  onSuccess(_result) {
   }
 
+  _sqlToTable(sqlResult) {
+    if (sqlResult[0] === undefined) {
+      return '';
+    }
+    else {
+      const table = AsciiTable.factory({
+        heading: sqlResult[0].columns
+        , rows: sqlResult[0].values
+      });
+      return table.toString().trim();    
+    }
+  }
 
 }
+
