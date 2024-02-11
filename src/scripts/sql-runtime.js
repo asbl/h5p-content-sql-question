@@ -4,7 +4,7 @@ import AsciiTable from 'ascii-table';
 const sqlWasm = new URL('sql.js/dist/sql-wasm.wasm', import.meta.url);
 
 /**
- * Draws ace-editor Widget on a div
+ * Base Class for SQL Runtimes
  */
 export default class SQLRuntime extends H5P.Runtime {
 
@@ -19,7 +19,7 @@ export default class SQLRuntime extends H5P.Runtime {
   async prepare() {
     const sqlPromise = await initSqlJs({
       // Required to load the wasm binary asynchronously. 
-      // Loads ../lib/sql-asm.wasm
+      // Loads ../lib/sql-asm.wasm")
       locateFile: () => sqlWasm.href
       
     });
@@ -48,7 +48,6 @@ export default class SQLRuntime extends H5P.Runtime {
   }
 
   async _run() {
-    console.info('run,', this.code);
     const db = await this.prepare();
     const myPromise = new Promise((resolve, reject) => {
       try {
@@ -105,10 +104,11 @@ export default class SQLRuntime extends H5P.Runtime {
   }
   
   /**
-   * Called when runtime Promise has an error.
+   * Called when runtime promise has an error.
    * @param {string} errorMessage The error
    */
   onError(errorMessage) {
+    super.onError();
     try {
       const editorConsole = this.editor.getConsole();
       editorConsole.parentElement.style.display = 'block';
@@ -120,6 +120,7 @@ export default class SQLRuntime extends H5P.Runtime {
   }
 
   onSuccess(_result) {
+    super.onSuccess();
   }
 
   _sqlToTable(sqlResult) {

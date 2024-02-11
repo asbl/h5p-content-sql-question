@@ -1,5 +1,3 @@
-/*jshint esversion: 6 */
-
 /**
  * Draws ace-editor Widget on a div
  */

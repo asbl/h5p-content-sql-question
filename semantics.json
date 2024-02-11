@@ -9,7 +9,7 @@
                 "name": "checkAnswer",
                 "type": "text",
                 "label": "Check answer",
-                "default": "Check Anwer",
+                "default": "Check Answer",
                 "widget": "none"
             },
             {
@@ -191,7 +191,11 @@
                     },
                     {
                         "value": "world23",
-                        "label": "World (with german data from 2023, wikidata)"
+                        "label": "World (with german data from 2023, One row per country)"
+                    },
+                    {
+                        "value": "world23v2",
+                        "label": "World (with german data from 2023, wikidata; Multiple rows per country)"
                     },
                     {
                         "value": "teachers",
@@ -205,6 +209,11 @@
                                         
                         "value": "movie",
                         "label": "Movie Database (from sqlzoo)"
+                    },
+                    {
+                                        
+                        "value": "nobel",
+                        "label": "Nobel Database (from sqlzoo)"
                     }
                 ],
                 "default": "world"

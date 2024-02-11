@@ -17,37 +17,37 @@ export default class SQLAce extends H5P.AceEditor {
   async setupPages() {
     await super.setupPages();
     try {
-      const runtime = this.question.factory.createRuntime();
-      const result = await runtime.getAllTables();
-      this.tables = result;
+      const runtime = this.question.factory.createTablesRuntime();
+      await runtime.run();
+      this.tables = runtime.tables;
+      this.tablesMap = runtime.tablesMap;
       if (this.tables === undefined) {
         return;
       }
       let tableContent = '';
-      for (const table of this.tables) {
+      for (const [table, tableData] of this.tablesMap) {
         tableContent = AsciiTable.factory({
-          heading: table[1].columns,
-          rows: table[1].values,
+          heading: tableData[0].columns,
+          rows: tableData[0].values,
         });
         this.addPage(
-          table[0],
+          table,
           '<pre class="h5p sql-question db-table">' + tableContent.toString() + '</pre>',
           'sql-table'
         );
         this.buttons.push({
-          identifier: table[0],
-          label: table[0],
-          name: table[0],
-          class: table[0],
-          page: table[0],
+          identifier: table,
+          label: table,
+          name: table,
+          class: table,
+          page: table,
           additionalClass: 'sql-table-button',
         });
-        this.pages.push({ name: table[0] });
+        this.pages.push({ name: table });
       }
     }
     catch (error) {
       console.error('Error fetching tables:', error);
-      // Handle the error if needed
     }
   }
   
@@ -62,18 +62,24 @@ export default class SQLAce extends H5P.AceEditor {
       runButton.isInitialized = true;
       runButton.addEventListener('click', () => {
         this.showPage('code');
-        if (this.isAssignment) {
-          const runtime = this.question.factory.createTestRuntime(this.question.codeTester, this.getCode());
-          runtime.reset();
-          runtime.run(this.getCode());
-        }
-        else {
-          const runtime = this.question.factory.createManualRuntime(this.getCode(), this);
-          runtime.reset();
-          runtime.run(this.getCode());
-        }   
+        this.runAction();
       });
     }
+  }
+
+  runAction() {
+    if (this.isCodingAssignment) {
+      const runtime = this.question.factory.createTestRuntime(this.question.codeTester, this.getCode());
+      runtime.reset();
+      runtime.run(this.getCode());
+    }
+    else {
+      const runtime = this.question.factory.createManualRuntime(this);
+      runtime.reset();
+      runtime.run(this.getCode());
+      this.showConsole();
+    }
+    
   }
 
   onError() {

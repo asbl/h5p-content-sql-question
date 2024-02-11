@@ -7,23 +7,22 @@ export default class SQLTestRuntime extends SQLRuntime {
     this.isTest = true;
   }
 
-  async prepare() {
-    const db = await super.prepare();
-    if (this.solutionPrepare) {
-      this.codeTester.setTargetTable(this._sqlToTable(db.exec(this.solutionPrepare)));
-    }
-    return db;
-  }
-
   async run() {
     this.codeTester.startTest();
-    this.setupEnvironment();
-    this._run();
+    await super.run()
   }
 
   onSuccess(resultObject, resultTable ) {
+    super.onSuccess();
     this.codeTester.addOutput(resultObject, resultTable);
     this.codeTester.updateTestCaseTable();
+    this.question.evaluate();
+    this.editor.hideConsole();
+  }
+
+  onError(errorMessage) {
+    super.onError(errorMessage);
+    this.editor.showConsole();
   }
   
 

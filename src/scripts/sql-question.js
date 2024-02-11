@@ -1,6 +1,7 @@
 import SQLQuestionFactory from './sql-factory';
 import WorldSQL from './databases/world.js';
 import World23SQL from './databases/world23.js';
+import World23V2SQL from './databases/world23v2.js';
 import BusSQL from './databases/bus.js';
 import TeachersSQL from './databases/teachers.js';
 import NobelSQL from './databases/nobel.js';
@@ -31,6 +32,9 @@ export default class SQLQuestion extends H5P.CodeQuestion {
       else if (params.databaseSettings.selectDatabase === 'world23') {
         this.sqlPrepare = new World23SQL().sql;
       } 
+      else if (params.databaseSettings.selectDatabase === 'world23v2') {
+        this.sqlPrepare = new World23V2SQL().sql;
+      } 
       else if (params.databaseSettings.selectDatabase === 'bus') {
         this.sqlPrepare = new BusSQL().sql;
       } 
@@ -49,12 +53,17 @@ export default class SQLQuestion extends H5P.CodeQuestion {
       this.dbFilePath = null;
       this.sqlPrepare = null;
     }
-    this.solutionPrepare = this.params.gradingSettings.gradingMethod === 'bySolution' ? this.params.gradingSettings.solution : null;
+    this.solutionPrepare = this.params.gradingSettings.gradingMethod === 'bySolution' ? this.getDecodedCode(this.params.gradingSettings.solution) : null;
     this.targetTable = this.params.gradingSettings.testCases;
     this.hasCheckButton = true;
     this.hasStopButton = false;
     this.hasAssets = true;
     this.language = 'sql';
+    if (this.solutionPrepare ) {
+      this.solutionRuntime = this.factory.createSolutionuntime(this.codeTester, this.solutionPrepare);
+      // run is async
+      Promise.resolve(this.solutionRuntime.run());
+    }
   } // end of constructor
 
   /**
@@ -72,6 +81,13 @@ export default class SQLQuestion extends H5P.CodeQuestion {
   getMaxScore() {
     return 1;
   }
+
+  runAction() {
+    const runtime = this.factory.createTestRuntime(this.codeTester, this.editor.getCode());
+    runtime.reset();
+    runtime.run();
+  }
+
 
 } // end of class
 

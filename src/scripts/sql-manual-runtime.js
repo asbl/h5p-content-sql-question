@@ -1,7 +1,8 @@
 import SQLRuntime from './sql-runtime';
 
 export default class SQLManualRuntime extends SQLRuntime {
-  constructor(question, code, editor, options) {
+  constructor(question, editor, options) {
+    const code = editor.getCode();
     super(question, code, options);
     this.editor = editor;
     this.isTest = false;
@@ -13,8 +14,8 @@ export default class SQLManualRuntime extends SQLRuntime {
   }
 
   onSuccess(_resultObject, resultTable) {
+    super.onSuccess();
     this.editor.getConsole().value = resultTable;
+    this.editor.showConsole();
   }
-  
-
 }

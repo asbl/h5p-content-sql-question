@@ -1,4 +1,4 @@
-export default class World23SQL {
+export default class World23V2SQL {
   constructor() {
     this.sql = `BEGIN TRANSACTION;
 	CREATE TABLE IF NOT EXISTS "world" (

@@ -41,7 +41,6 @@
     padding: 5px;
     border: 1px solid #444;
     border-radius: 10px;
-
 }
 
 .h5p-sql-question .sql-console .console-column .output-table,
@@ -52,7 +51,6 @@
     font-size: 10px;
     font-family: monospace;
     line-height: 1em;
-    color: 222;
 }
 
 .h5p-sql-question .sql-console .console-column .db-table.no-match {
