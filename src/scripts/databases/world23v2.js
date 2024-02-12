@@ -1,6 +1,8 @@
 export default class World23V2SQL {
   constructor() {
-    this.sql = `BEGIN TRANSACTION;
+    this.sql = `
+	
+	BEGIN TRANSACTION;
 	CREATE TABLE IF NOT EXISTS "world" (
 		"name"	TEXT,
 		"continent"	TEXT,
@@ -8,218 +10,227 @@ export default class World23V2SQL {
 		"population"	DECIMAL(11, 0),
 		"gdp"	DECIMAL(14, 0),
 		"capital"	TEXT,
-		"tld"	TEXT,
-		PRIMARY KEY("name")
+		"tld"	TEXT
 	);
-	INSERT INTO "world" VALUES ('Vereinigte Staaten','Nordamerika',9826675,331449281,25462700000000,'Washington, D.C.','US'),
-	 ('Volksrepublik China','Asien',9596961,1443497378,17963170521080,'Peking','CN'),
-	 ('Deutschland','Europa',357587.77,83149300,4259934911822,'Berlin','DE'),
-	 ('Indien','Asien',3287263,1326093247,3385089881935,'Neu-Delhi','IN'),
-	 ('Vereinigtes Königreich','Europa',242495,67326569,3122480345925,'London','GB'),
-	 ('Frankreich','Europa',643801,67749632,2957879759264,'Paris','FR'),
-	 ('Russland','Europa, Asien',17075400,146804372,2240422438363,'Moskau','RU'),
-	 ('Kanada','Nordamerika',9984670,36991981,2206764000000,'Ottawa','CA'),
-	 ('Italien','Europa',302068,58850717,2114355756914,'Rom','IT'),
-	 ('Brasilien','Südamerika',8515767,203062512,1920095560995,'Brasília','BR'),
-	 ('Südkorea','Asien',100295,51466201,1810955871381,'Seoul','KR'),
-	 ('Australien','Ozeanien',7692024,26473055,1675418665067,'Canberra','AU'),
-	 ('Saudi-Arabien','Asien',2250000,33000000,1108148978218,'Riad','SA'),
-	 ('Schweiz','Europa',41285,8902308,807706035352,'Bern','CH'),
-	 ('Polen','Europa',312683,38382576,688176605955,'Warschau','PL'),
-	 ('Schweden','Europa',447425.16,10548336,636856236396,'Stockholm','SE'),
-	 ('Argentinien','Südamerika',2780400,47327407,632770284409,'Buenos Aires','AR'),
-	 ('Norwegen','Europa',385207,5504329,579267365866,'Oslo','NO'),
-	 ('Irland','Europa',69797,5123536,529244870223,'Dublin','IE'),
-	 ('Thailand','Asien',513119.5,66188503,505568057004,'Bangkok','TH'),
-	 ('Österreich','Europa',83878.99,8979894,480368403893,'Wien','AT'),
-	 ('Nigeria','Afrika',923768,211400708,477386120636,'Abuja','NG'),
-	 ('Ägypten','Afrika, Asien',1010407.87,94798827,476747720365,'Kairo','EG'),
-	 ('Südafrika','Afrika',1221037,60142978,419015636065,'Pretoria','ZA'),
-	 ('Vietnam','Asien',331690,96208984,408802379068,'Hanoi','VN'),
-	 ('Malaysia','Asien',330803,32447385,406305924656,'Kuala Lumpur','MY'),
-	 ('Dänemark','Europa, Nordamerika',42925.46,5827463,398303272764,'Kopenhagen','DK'),
-	 ('Iran','Asien',1648195,86758304,388544468140,'Teheran','IR'),
-	 ('Pakistan','Asien',881913,223773700,376532751807,'Islamabad','PK'),
-	 ('Kolumbien','Südamerika',1141748,49065615,343939445259,'Bogotá','CO'),
-	 ('Chile','Südamerika',756102,19458000,316713577509,'Santiago de Chile','CL'),
-	 ('Rumänien','Europa',238397,19053815,301261582924,'Bukarest','RO'),
-	 ('Finnland','Europa',338145,5516224,296387625264,'Helsinki','FI'),
-	 ('Irak','Asien',437072,38274618,264182173793,'Bagdad','IQ'),
-	 ('Tschechien','Europa',78866,10827529,250681000000,'Prag','CZ'),
-	 ('Peru','Südamerika',1285216,29381884,242631549613,'Lima','PE'),
-	 ('Katar','Asien',11437,2639211,237295575171,'Doha','QA'),
-	 ('Kasachstan','Europa, Asien',2724900,19002586,220623001967,'Astana','KZ'),
-	 ('Griechenland','Europa',131957,10482487,219065872466,'Athen','GR'),
-	 ('Algerien','Afrika',2381741,43900000,191912889421,'Algier','DZ'),
-	 ('Marokko','Afrika',446550,37076584,142866583125,'Rabat','MA'),
-	 ('Slowakei','Europa',49035,5449270,118656591909,'Bratislava','SK'),
-	 ('Ecuador','Südamerika',255586.91,16938986,115049476000,'Quito','EC'),
-	 ('Oman','Asien',309500,4829480,114667360208,'Maskat','OM'),
-	 ('Dominikanische Republik','Nordamerika',48670.82,10403761,113641857434,'Santo Domingo','DO'),
-	 ('Kenia','Afrika',581309,48468138,113420008179,'Nairobi','KE'),
-	 ('Angola','Afrika',1246700,32866270,106713618735,'Luanda','AO'),
-	 ('Guatemala','Nordamerika',108889,17263239,95003333381,'Guatemala-Stadt','GT'),
-	 ('Bulgarien','Europa',110993.6,7000039,89040398406,'Sofia','BG'),
-	 ('Sri Lanka','Asien',65610,21444000,88496535599,'Colombo','LK'),
-	 ('Ghana','Afrika',238535,32833031,79156409410,'Accra','GH'),
-	 ('Aserbaidschan','Europa, Asien',86600,10145212,78721058824,'Baku','AZ'),
-	 ('Tansania','Afrika',947303,57310019,75709289056,'Dodoma','TZ'),
-	 ('Belarus','Europa',207595,9200617,72793457588,'Minsk','BY'),
-	 ('Elfenbeinküste','Afrika',322463,24294750,71811075955,'Yamoussoukro','CI'),
-	 ('Uruguay','Südamerika',176215,3456750,71177146197,'Montevideo','UY'),
-	 ('Litauen','Europa',65300,2860002,70334299008,'Vilnius','LT'),
-	 ('Usbekistan','Asien',448978,34915100,69238900000,'Taschkent','UZ'),
-	 ('Costa Rica','Nordamerika',51100,5044197,68380838316,'San José','CR'),
-	 ('Myanmar','Asien',676577.2,53370609,65124769602,'Naypyidaw','MM'),
-	 ('Slowenien','Europa',20271,2066880,62117768015,'Ljubljana','SI'),
-	 ('Sudan','Afrika',1886068,40533330,51662241775,'Khartum','SD'),
-	 ('Jordanien','Asien',89341,10428241,47451499859,'Amman','JO'),
-	 ('Libyen','Afrika',1759541,6678567,45752336036,'Tripolis','LY'),
-	 ('Uganda','Afrika',241038,47123531,45559202049,'Kampala','UG'),
-	 ('Kamerun','Afrika',475442,24053727,45338285386,'Yaoundé','CM'),
-	 ('Paraguay','Südamerika',406756,6811297,41722295362,'Asunción','PY'),
-	 ('Lettland','Europa',64593.79,1875757,41153912663,'Riga','LV'),
-	 ('Nepal','Asien',147181.254346,29164578,40828247302,'Kathmandu','NP'),
-	 ('Estland','Europa',45339,1365884,38100812959,'Tallinn','EE'),
-	 ('El Salvador','Nordamerika',20742,5744113,32488720000,'San Salvador','SV'),
-	 ('Honduras','Nordamerika',112492,8303771,31717700115,'Tegucigalpa','HN'),
-	 ('Papua-Neuguinea','Ozeanien',462840,8935000,30633444295,'Port Moresby','PG'),
-	 ('Kambodscha','Asien',181035,16005373,29956769529,'Phnom Penh','KH'),
-	 ('Sambia','Afrika',752618,17094130,29784454056,'Lusaka','ZM'),
-	 ('Zypern','Europa',9242.45,1141166,28439052741,'Nikosia','CY'),
-	 ('Simbabwe','Afrika',390757,15178979,28371238666,'Harare','ZW'),
-	 ('Senegal','Afrika',196722,16876720,27684430244,'Dakar','SN'),
-	 ('Libanon','Asien',10452,6100075,23131941557,'Beirut','LB'),
-	 ('Haiti','Nordamerika',27750,10981229,20877414952,'Port-au-Prince','HT'),
-	 ('Botswana','Afrika',581737,2291661,20352322157,'Gaborone','BW'),
-	 ('Mali','Afrika',1240192,20250833,19309463506,'Bamako','ML'),
-	 ('Albanien','Europa',28748,2793592,18882095518,'Tirana','AL'),
-	 ('Mosambik','Afrika',801590,29668834,17851491428,'Maputo','MZ'),
-	 ('Jamaika','Nordamerika',10991.90954,2697983,17097760745,'Kingston','JM'),
-	 ('Brunei','Asien',5765.313533,428697,16681531646,'Bandar Seri Begawan','BN'),
-	 ('Nicaragua','Nordamerika',130375,5142098,15671583878,'Managua','NI'),
-	 ('Guyana','Südamerika',214970,777859,15357537068,'Georgetown','GY'),
-	 ('Madagaskar','Afrika',587295,25570895,14954967604,'Antananarivo','MG'),
-	 ('Republik Kongo','Afrika',342000,5260750,14615532210,'Brazzaville','CG'),
-	 ('Ruanda','Afrika',26338,13246394,13312796765,'Kigali','RW'),
-	 ('Malawi','Afrika',118484,18622104,13164667627,'Lilongwe','MW'),
-	 ('Tschad','Afrika',1284000,15477751,12704149842,'N’Djamena','TD'),
-	 ('Namibia','Afrika',825615,2533794,12607436976,'Windhoek','NA'),
-	 ('Kirgisistan','Asien',199951,6694200,10930644915,'Bischkek','KG'),
-	 ('Tadschikistan','Asien',143100,8921343,10492123388,'Duschanbe','TJ'),
-	 ('Kosovo','Europa',10909.02992,1883018,9429156202,'Pristina',''),
-	 ('Togo','Afrika',56785,7797694,8334047486,'Lomé','TG'),
-	 ('Somalia','Afrika',637657,11031386,8126105600,'Mogadischu','SO'),
-	 ('Liechtenstein','Europa',160,37922,7186428783,'Vaduz','LI'),
-	 ('Malediven','Asien',298,436330,6189865408,'Malé','MV'),
-	 ('Fidschi','Ozeanien',18274,905502,4943248200,'Suva','FJ'),
-	 ('Gabun','Afrika',267667,2025137,4800000000,'Libreville','GA'),
-	 ('Sierra Leone','Afrika',71740,7557212,4249234574,'Freetown','SL'),
-	 ('Liberia','Afrika',111369,5214030,4001047150,'Monrovia','LR'),
-	 ('Osttimor','Asien',14918.72,1296311,3621222400,'Dili','TL'),
-	 ('Dschibuti','Afrika',23200,956985,3515109075,'Dschibuti','DJ'),
-	 ('Andorra','Europa',468,81588,3352032737,'Andorra la Vella','AD'),
-	 ('Burundi','Afrika',27834,11530580,3073414678,'Gitega','BI'),
-	 ('Lesotho','Afrika',30355,2233339,2553459763,'Maseru','LS'),
-	 ('Zentralafrikanische Republik','Afrika',622984,4659080,2516498412,'Bangui','CF'),
-	 ('Kap Verde','Afrika',4033,555988,2314816792,'Praia','CV'),
-	 ('Gambia','Afrika',11300,2639916,2273060863,'Banjul','GM'),
-	 ('St. Lucia','Nordamerika',617.012867,167591,2065027556,'Castries','LC'),
-	 ('Salomonen','Ozeanien',28400,611343,1595710784,'Honiara','SB'),
-	 ('Seychellen','Afrika',459,95843,1588406479,'Victoria','SC'),
-	 ('Sint Maarten','Europa, Nordamerika',34,43847,1571564246,'Philipsburg','SX'),
-	 ('Komoren','Afrika',2034,902348,1296089479,'Moroni','KM'),
-	 ('Grenada','Nordamerika',348.5,114299,1256413185,'St. George’s','GD'),
-	 ('Vanuatu','Ozeanien',12190,300019,983582865,'Port Vila','VU'),
-	 ('St. Kitts und Nevis','Nordamerika',269.358763,55345,961563259,'Basseterre','KN'),
-	 ('St. Vincent und die Grenadinen','Nordamerika',389,109897,948558503,'Kingstown','VC'),
-	 ('Samoa','Ozeanien',2842,196440,843850778,'Apia','WS'),
-	 ('Dominica','Nordamerika',751.096551,74656,612048148,'Roseau','DM'),
-	 ('São Tomé und Príncipe','Afrika',1001,204327,546680342,'São Tomé','ST'),
-	 ('Föderierte Staaten von Mikronesien','Ozeanien',702,105544,427094119,'Palikir','FM'),
-	 ('Marshallinseln','Ozeanien',181.43,53127,279667900,'Majuro','MH'),
-	 ('Kiribati','Ozeanien',811,119438,227610035,'South Tarawa','KI'),
-	 ('Ungarn','Europa',93011.4,9604080,181848022.23,'Budapest','HU'),
-	 ('Nauru','Ozeanien',21,13650,150922211,'Yaren','NR'),
-	 ('Tuvalu','Ozeanien',26,11792,60349391,'Funafuti','TV'),
-	 ('England','Europa',130278,53012456,0,'London',''),
-	 ('Türkei','Asien, Europa',783562,85279553,905987824096,'Ankara','TR'),
-	 ('Niederlande','Nordamerika, Europa',41543,17590672,1011798853062,'Amsterdam',''),
-	 ('Mexiko','Nordamerika',1972550,124777324,1414187193992,'Mexiko-Stadt','MX'),
-	 ('Indonesien','Ozeanien, Asien',1904570,275439000,1319100220389,'Jakarta','ID'),
-	 ('Bahrain','Asien',785.08,1492584,44390820479,'Manama','BH'),
-	 ('Armenien','Asien',29743.423459,2930450,19502783988,'Jerewan','AM'),
-	 ('Bolivien','Südamerika',1098581,11051600,43068885673,'La Paz','BO'),
-	 ('Trinidad und Tobago','Nordamerika',5128,1369125,27899082337,'Port of Spain','TT'),
-	 ('Antigua und Barbuda','Nordamerika',440.29,101489,1757603704,'Saint John’s','AG'),
-	 ('Laos','Asien',236800,6858160,18827148530,'Vientiane','LA'),
-	 ('Vereinigte Arabische Emirate','Asien',83600,9890400,507534921715,'Abu Dhabi','AE'),
-	 ('Bangladesch','Asien',147570,169356251,460201000095,'Dhaka','BD'),
-	 ('Philippinen','Asien',343448,109035343,404284327312,'Manila','PH'),
-	 ('Tunesien','Afrika',163610,11565204,46687298709,'Tunis','TN'),
-	 ('Benin','Afrika',114763,11175692,17690083520,'Porto-Novo','BJ'),
-	 ('Demokratische Republik Kongo','Afrika',2344858,86790567,58065953573,'Kinshasa','CD'),
-	 ('Niger','Afrika',1267000,21477348,14915002098,'Niamey','NE'),
-	 ('Katalonien','Europa',31895,7747709,238308749,'Barcelona',''),
-	 ('Aruba','Nordamerika, Europa, Südamerika',178.916378,106739,3126019385,'Oranjestad','AW'),
-	 ('Japan','Asien',377972.28,125440000,5005536736792,'Tokio','JP'),
-	 ('Schottland','Europa',78782,5404700,0,'Edinburgh',''),
-	 ('Wales','Europa',20779,3113000,0,'Cardiff',''),
-	 ('Nordirland','Europa',14130,1852168,0,'Belfast',''),
-	 ('Spanien','Europa',505990,47415750,1427380681295,'Madrid','ES'),
-	 ('Belgien','Europa',30688,11584008,599880000000,'Stadt Brüssel','BE'),
-	 ('Äthiopien','Afrika',1104300,104957438,126783472501,'Addis Abeba','ET'),
-	 ('Island','Europa',103004,364260,27841648044,'Reykjavík','IS'),
-	 ('Kroatien','Europa',56594,3871833,70964606465,'Zagreb','HR'),
-	 ('Montenegro','Europa',13812,622359,6095978868,'Podgorica','ME'),
-	 ('Singapur','Asien',719.1,5866139,466788539652,'Singapur','SG'),
-	 ('Neuseeland','Ozeanien',268021,5118700,255551704626,'Wellington','NZ'),
-	 ('Mongolei','Asien',1564116,3409939,16810883361,'Ulaanbaatar','MN'),
-	 ('Turkmenistan','Asien',491210,6117933,0,'Aşgabat','TM'),
-	 ('Eritrea','Afrika',117600,3497000,0,'Asmara','ER'),
-	 ('Guinea-Bissau','Afrika',36125,1861283,1638517607,'Bissau','GW'),
-	 ('Galicien','Europa',29574,2703290,0,'Santiago de Compostela',''),
-	 ('Transnistrien','Europa',4163,469000,0,'Tiraspol',''),
-	 ('Portugal','Europa',92225,10347892,253982847571,'Lissabon','PT'),
-	 ('Malta','Europa',316,465292,17765270015,'Valletta','MT'),
-	 ('Kuba','Nordamerika',109884,11181595,0,'Havanna','CU'),
-	 ('Nordkorea','Asien',120540,25490965,0,'Pjöngjang','KP'),
-	 ('Venezuela','Südamerika',912050,28515829,0,'Caracas','VE'),
-	 ('Bahamas','Nordamerika',13878,395361,12897400000,'Nassau','BS'),
-	 ('Israel','Asien',20770,9093000,520700000000,'Jerusalem','IL'),
-	 ('Jemen','Asien',555000,28250420,0,'Sanaa','YE'),
-	 ('Syrien','Asien',185180,18499181,0,'Damaskus','SY'),
-	 ('Republik China (Taiwan)','Asien',36193,23593794,0,'Taipeh','TW'),
-	 ('Afghanistan','Asien',652230,37466414,14583135237,'Kabul','AF'),
-	 ('Südsudan','Afrika',644329,12575714,0,'Juba','SS'),
-	 ('Guinea','Afrika',245857,12717176,21227749389,'Conakry','GN'),
-	 ('Mauretanien','Afrika',1030700,4614974,10375460680,'Nouakchott','MR'),
-	 ('Cookinseln','Ozeanien',240,17434,0,'Avarua','CK'),
-	 ('Palau','Ozeanien',465.550362,21729,217800000,'Ngerulmud','PW'),
-	 ('Bhutan','Asien',38394,807610,2539551327,'Thimphu','BT'),
-	 ('Burkina Faso','Afrika',274200,20488000,19737616003,'Ouagadougou','BF'),
-	 ('Nördliche Marianen','Nordamerika',464,47329,0,'Q3273113','MP'),
-	 ('Niue','Ozeanien',260,1612,0,'Alofi','NU'),
-	 ('Ukraine','Europa',603550,41167335,199765856765,'Kiew','UA'),
-	 ('Bosnien und Herzegowina','Europa',51197,3816459,24527507288,'Sarajevo','BA'),
-	 ('Georgien','Europa, Asien',69700,3717100,24605375420,'Tiflis','GE'),
-	 ('Tonga','Ozeanien',748.506563,108020,469228124,'Nukuʻalofa','TO'),
-	 ('Suriname','Südamerika',163270,563402,3620655116,'Paramaribo','SR'),
-	 ('Panama','Südamerika, Nordamerika',74177.3,4098587,76522511781,'Panama-Stadt','PA'),
-	 ('Kuwait','Asien',17818,4600000,184558274289,'Kuweit-Stadt','KW'),
-	 ('Äquatorialguinea','Afrika',28051,1267689,12269393392,'Malabo','GQ'),
-	 ('Luxemburg','Europa',2586.36,660809,85506243834,'Luxemburg','LU'),
-	 ('Moldau','Europa',33843.5,2603813,14420947884,'Chișinău / Kischinjow','MD'),
-	 ('Nordmazedonien','Europa',25713,1836713,13825049832,'Skopje','MK'),
-	 ('Monaco','Europa',2.02,38350,8596156574,'Monaco-Ville','MC'),
-	 ('Vatikanstadt','Europa',0.49,764,0,'Vatikanstadt','VA'),
-	 ('Barbados','Nordamerika',439,303431,5637914515,'Bridgetown','BB'),
-	 ('Mauritius','Afrika',2040,1264613,12898307089,'Port Louis','MU'),
-	 ('Staat Palästina','Asien',6020,5227193,19111900000,'Jerusalem','PS'),
-	 ('San Marino','Europa',61.2,33607,1855382833,'San Marino','SM'),
-	 ('Belize','Nordamerika',22966,374681,2824081836,'Belmopan','BZ'),
-	 ('Serbien','Europa',88499,7022268,63501748652,'Belgrad','RS'),
-	 ('Eswatini','Afrika',17364,1160164,4854167638,'Mbabane','SZ');
-	COMMIT;`;
+	INSERT INTO "world" VALUES ('Vereinigte Staaten','Nordamerika',9826675,331449281,25462700000000,'Washington, D.C.','US');
+	INSERT INTO "world" VALUES ('Litauen','Europa',65300,2860002,70334299008,'Vilnius','LT');
+	INSERT INTO "world" VALUES ('Schweiz','Europa',41285,8902308,807706035352,'Bern','CH');
+	INSERT INTO "world" VALUES ('Türkei','Asien',783562,85372377,905987824096,'Ankara','TR');
+	INSERT INTO "world" VALUES ('Türkei','Europa',783562,85372377,905987824096,'Ankara','TR');
+	INSERT INTO "world" VALUES ('Uruguay','Südamerika',176215,3444263,71177146197,'Montevideo','UY');
+	INSERT INTO "world" VALUES ('Mexiko','Nordamerika',1972550,124777324,1414187193992,'Mexiko-Stadt','MX');
+	INSERT INTO "world" VALUES ('Kenia','Afrika',581309,48468138,113420008179,'Nairobi','KE');
+	INSERT INTO "world" VALUES ('Ghana','Afrika',238535,32833031,79156409410,'Accra','GH');
+	INSERT INTO "world" VALUES ('Brasilien','Südamerika',8515767,203062512,1920095560995,'Brasília','BR');
+	INSERT INTO "world" VALUES ('Russland','Europa',17075400,146804372,2240422438363,'Moskau','RU');
+	INSERT INTO "world" VALUES ('Lettland','Europa',64593.79,1883008,41153912663,'Riga','LV');
+	INSERT INTO "world" VALUES ('Ukraine','Europa',603550,41167335,199765856765,'Kiew','UA');
+	INSERT INTO "world" VALUES ('Slowenien','Europa',20271,2066880,62117768015,'Ljubljana','SI');
+	INSERT INTO "world" VALUES ('Bulgarien','Europa',110993.6,7000039,89040398406,'Sofia','BG');
+	INSERT INTO "world" VALUES ('Nordmazedonien','Europa',25713,1836713,13825049832,'Skopje','MK');
+	INSERT INTO "world" VALUES ('Bosnien und Herzegowina','Europa',51197,3816459,24527507288,'Sarajevo','BA');
+	INSERT INTO "world" VALUES ('Aserbaidschan','Europa',86600,10145212,78721058824,'Baku','AZ');
+	INSERT INTO "world" VALUES ('Aserbaidschan','Asien',86600,10145212,78721058824,'Baku','AZ');
+	INSERT INTO "world" VALUES ('Georgien','Europa',69700,3717100,24605375420,'Tiflis','GE');
+	INSERT INTO "world" VALUES ('Kasachstan','Europa',2724900,19002586,220623001967,'Astana','KZ');
+	INSERT INTO "world" VALUES ('Kasachstan','Asien',2724900,19002586,220623001967,'Astana','KZ');
+	INSERT INTO "world" VALUES ('Indonesien','Ozeanien',1904570,275439000,1319100220389,'Jakarta','ID');
+	INSERT INTO "world" VALUES ('Chile','Südamerika',756102,19458000,316713577509,'Santiago de Chile','CL');
+	INSERT INTO "world" VALUES ('Bahrain','Asien',785.08,1492584,44390820479,'Manama','BH');
+	INSERT INTO "world" VALUES ('Armenien','Asien',29743.423459,2930450,19502783988,'Jerewan','AM');
+	INSERT INTO "world" VALUES ('Peru','Südamerika',1285216,29381884,242631549613,'Lima','PE');
+	INSERT INTO "world" VALUES ('Kambodscha','Asien',181035,16005373,29956769529,'Phnom Penh','KH');
+	INSERT INTO "world" VALUES ('Tschad','Afrika',1284000,15477751,12704149842,'N’Djamena','TD');
+	INSERT INTO "world" VALUES ('Tuvalu','Ozeanien',26,11792,60349391,'Funafuti','TV');
+	INSERT INTO "world" VALUES ('Tonga','Ozeanien',748.506563,108020,469228124,'Nukuʻalofa','TO');
+	INSERT INTO "world" VALUES ('Samoa','Ozeanien',2842,198410,843850778,'Apia','WS');
+	INSERT INTO "world" VALUES ('Vanuatu','Ozeanien',12190,300019,983582865,'Port Vila','VU');
+	INSERT INTO "world" VALUES ('Papua-Neuguinea','Ozeanien',462840,8935000,30633444295,'Port Moresby','PG');
+	INSERT INTO "world" VALUES ('Föderierte Staaten von Mikronesien','Ozeanien',702,105544,427094119,'Palikir','FM');
+	INSERT INTO "world" VALUES ('Kiribati','Ozeanien',811,119438,227610035,'South Tarawa','KI');
+	INSERT INTO "world" VALUES ('Fidschi','Ozeanien',18274,905502,4943248200,'Suva','FJ');
+	INSERT INTO "world" VALUES ('Suriname','Südamerika',163270,563402,3620655116,'Paramaribo','SR');
+	INSERT INTO "world" VALUES ('Kolumbien','Südamerika',1141748,49065615,343939445259,'Bogotá','CO');
+	INSERT INTO "world" VALUES ('Bolivien','Südamerika',1098581,11051600,43068885673,'La Paz','BO');
+	INSERT INTO "world" VALUES ('Bolivien','Südamerika',1098581,11051600,43068885673,'Sucre','BO');
+	INSERT INTO "world" VALUES ('Trinidad und Tobago','Nordamerika',5128,1369125,27899082337,'Port of Spain','TT');
+	INSERT INTO "world" VALUES ('St. Vincent und die Grenadinen','Nordamerika',389,109897,948558503,'Kingstown','VC');
+	INSERT INTO "world" VALUES ('St. Lucia','Nordamerika',617.012867,167591,2065027556,'Castries','LC');
+	INSERT INTO "world" VALUES ('Grenada','Nordamerika',348.5,114299,1256413185,'St. George’s','GD');
+	INSERT INTO "world" VALUES ('Guatemala','Nordamerika',108889,17263239,95003333381,'Guatemala-Stadt','GT');
+	INSERT INTO "world" VALUES ('Antigua und Barbuda','Nordamerika',440.29,101489,1757603704,'Saint John’s','AG');
+	INSERT INTO "world" VALUES ('Honduras','Nordamerika',112492,10062994,31717700115,'Tegucigalpa','HN');
+	INSERT INTO "world" VALUES ('Dominica','Nordamerika',751.096551,74656,612048148,'Roseau','DM');
+	INSERT INTO "world" VALUES ('Irak','Asien',437072,38274618,264182173793,'Bagdad','IQ');
+	INSERT INTO "world" VALUES ('Costa Rica','Nordamerika',51100,5044197,68380838316,'San José','CR');
+	INSERT INTO "world" VALUES ('Panama','Südamerika',74177.3,4098587,76522511781,'Panama-Stadt','PA');
+	INSERT INTO "world" VALUES ('Panama','Nordamerika',74177.3,4098587,76522511781,'Panama-Stadt','PA');
+	INSERT INTO "world" VALUES ('Jordanien','Asien',89341,10428241,47451499859,'Amman','JO');
+	INSERT INTO "world" VALUES ('Kuwait','Asien',17818,4600000,184558274289,'Kuweit-Stadt','KW');
+	INSERT INTO "world" VALUES ('Laos','Asien',236800,6858160,18827148530,'Vientiane','LA');
+	INSERT INTO "world" VALUES ('Malediven','Asien',298,436330,6189865408,'Malé','MV');
+	INSERT INTO "world" VALUES ('Malaysia','Asien',330803,32447385,406305924656,'Kuala Lumpur','MY');
+	INSERT INTO "world" VALUES ('Myanmar','Asien',676577.2,53370609,65124769602,'Naypyidaw','MM');
+	INSERT INTO "world" VALUES ('Oman','Asien',309500,4829480,114667360208,'Maskat','OM');
+	INSERT INTO "world" VALUES ('Pakistan','Asien',881913,223773700,376532751807,'Islamabad','PK');
+	INSERT INTO "world" VALUES ('Katar','Asien',11437,2639211,237295575171,'Doha','QA');
+	INSERT INTO "world" VALUES ('Tadschikistan','Asien',143100,8921343,10492123388,'Duschanbe','TJ');
+	INSERT INTO "world" VALUES ('Vereinigte Arabische Emirate','Asien',83600,9890400,507534921715,'Abu Dhabi','AE');
+	INSERT INTO "world" VALUES ('Bangladesch','Asien',147570,169356251,460201000095,'Dhaka','BD');
+	INSERT INTO "world" VALUES ('Mali','Afrika',1240192,20250833,19309463506,'Bamako','ML');
+	INSERT INTO "world" VALUES ('Angola','Afrika',1246700,32866270,106713618735,'Luanda','AO');
+	INSERT INTO "world" VALUES ('Brunei','Asien',5765.313533,428697,16681531646,'Bandar Seri Begawan','BN');
+	INSERT INTO "world" VALUES ('Tansania','Afrika',947303,57310019,75709289056,'Dodoma','TZ');
+	INSERT INTO "world" VALUES ('Philippinen','Asien',343448,109035343,404284327312,'Manila','PH');
+	INSERT INTO "world" VALUES ('Togo','Afrika',56785,7797694,8334047486,'Lomé','TG');
+	INSERT INTO "world" VALUES ('Tunesien','Afrika',163610,11565204,46687298709,'Tunis','TN');
+	INSERT INTO "world" VALUES ('Benin','Afrika',114763,11175692,17690083520,'Porto-Novo','BJ');
+	INSERT INTO "world" VALUES ('Republik Kongo','Afrika',342000,5260750,14615532210,'Brazzaville','CG');
+	INSERT INTO "world" VALUES ('Demokratische Republik Kongo','Afrika',2344858,86790567,58065953573,'Kinshasa','CD');
+	INSERT INTO "world" VALUES ('Äquatorialguinea','Afrika',28051,1267689,12269393392,'Malabo','GQ');
+	INSERT INTO "world" VALUES ('Gambia','Afrika',11300,2639916,2273060863,'Banjul','GM');
+	INSERT INTO "world" VALUES ('Guinea-Bissau','Afrika',36125,1861283,1638517607,'Bissau','GW');
+	INSERT INTO "world" VALUES ('Kap Verde','Afrika',4033,555988,2314816792,'Praia','CV');
+	INSERT INTO "world" VALUES ('Marokko','Afrika',446550,37076584,142866583125,'Rabat','MA');
+	INSERT INTO "world" VALUES ('Niger','Afrika',1267000,21477348,14915002098,'Niamey','NE');
+	INSERT INTO "world" VALUES ('Uganda','Afrika',241038,47123531,45559202049,'Kampala','UG');
+	INSERT INTO "world" VALUES ('Sierra Leone','Afrika',71740,7557212,4249234574,'Freetown','SL');
+	INSERT INTO "world" VALUES ('Somalia','Afrika',637657,11031386,8126105600,'Mogadischu','SO');
+	INSERT INTO "world" VALUES ('Japan','Asien',377972.28,125440000,5005536736792,'Tokio','JP');
+	INSERT INTO "world" VALUES ('Norwegen','Europa',385207,5504329,579267365866,'Oslo','NO');
+	INSERT INTO "world" VALUES ('Irland','Europa',69797,5123536,529244870223,'Dublin','IE');
+	INSERT INTO "world" VALUES ('Spanien','Europa',505990,47415750,1427380681295,'Madrid','ES');
+	INSERT INTO "world" VALUES ('Belgien','Europa',30688,11584008,599880000000,'Stadt Brüssel','BE');
+	INSERT INTO "world" VALUES ('Luxemburg','Europa',2586.36,660809,85506243834,'Luxemburg','LU');
+	INSERT INTO "world" VALUES ('Finnland','Europa',338145,5563970,296387625264,'Helsinki','FI');
+	INSERT INTO "world" VALUES ('Schweden','Europa',447425.16,10548336,636856236396,'Stockholm','SE');
+	INSERT INTO "world" VALUES ('Griechenland','Europa',131957,10482487,219065872466,'Athen','GR');
+	INSERT INTO "world" VALUES ('Äthiopien','Afrika',1104300,104957438,126783472501,'Addis Abeba','ET');
+	INSERT INTO "world" VALUES ('Volksrepublik China','Asien',9596961,1443497378,17963170521080,'Peking','CN');
+	INSERT INTO "world" VALUES ('Russland','Asien',17075400,146804372,2240422438363,'Moskau','RU');
+	INSERT INTO "world" VALUES ('Belarus','Europa',207595,9200617,72793457588,'Minsk','BY');
+	INSERT INTO "world" VALUES ('Island','Europa',103004,364260,27841648044,'Reykjavík','IS');
+	INSERT INTO "world" VALUES ('Estland','Europa',45339,1366491,38100812959,'Tallinn','EE');
+	INSERT INTO "world" VALUES ('Moldau','Europa',33843.5,2603813,14420947884,'Chișinău / Kischinjow','MD');
+	INSERT INTO "world" VALUES ('Rumänien','Europa',238397,19053815,301261582924,'Bukarest','RO');
+	INSERT INTO "world" VALUES ('Kroatien','Europa',56594,3871833,70964606465,'Zagreb','HR');
+	INSERT INTO "world" VALUES ('Andorra','Europa',468,81588,3352032737,'Andorra la Vella','AD');
+	INSERT INTO "world" VALUES ('Monaco','Europa',2.02,38350,8596156574,'Monaco-Ville','MC');
+	INSERT INTO "world" VALUES ('Montenegro','Europa',13812,622359,6095978868,'Podgorica','ME');
+	INSERT INTO "world" VALUES ('Montenegro','Europa',13812,617213,6095978868,'Podgorica','ME');
+	INSERT INTO "world" VALUES ('Vatikanstadt','Europa',0.49,764,0,'Vatikanstadt','VA');
+	INSERT INTO "world" VALUES ('Barbados','Nordamerika',439,303431,5637914515,'Bridgetown','BB');
+	INSERT INTO "world" VALUES ('Indonesien','Asien',1904570,275439000,1319100220389,'Jakarta','ID');
+	INSERT INTO "world" VALUES ('Südafrika','Afrika',1221037,62027503,419015636065,'Bloemfontein','ZA');
+	INSERT INTO "world" VALUES ('Südafrika','Afrika',1221037,62027503,419015636065,'Pretoria','ZA');
+	INSERT INTO "world" VALUES ('Südafrika','Afrika',1221037,62027503,419015636065,'Kapstadt','ZA');
+	INSERT INTO "world" VALUES ('Algerien','Afrika',2381741,43900000,191912889421,'Algier','DZ');
+	INSERT INTO "world" VALUES ('Singapur','Asien',719.1,5866139,466788539652,'Singapur','SG');
+	INSERT INTO "world" VALUES ('Liechtenstein','Europa',160,37922,7186428783,'Vaduz','LI');
+	INSERT INTO "world" VALUES ('Argentinien','Südamerika',2780400,47327407,632770284409,'Buenos Aires','AR');
+	INSERT INTO "world" VALUES ('Osttimor','Asien',14918.72,1296311,3621222400,'Dili','TL');
+	INSERT INTO "world" VALUES ('Neuseeland','Ozeanien',268021,5118700,255551704626,'Wellington','NZ');
+	INSERT INTO "world" VALUES ('Salomonen','Ozeanien',28400,611343,1595710784,'Honiara','SB');
+	INSERT INTO "world" VALUES ('Mongolei','Asien',1564116,3409939,16810883361,'Ulaanbaatar','MN');
+	INSERT INTO "world" VALUES ('Guyana','Südamerika',214970,777859,15357537068,'Georgetown','GY');
+	INSERT INTO "world" VALUES ('Ecuador','Südamerika',255586.91,16938986,115049476000,'Quito','EC');
+	INSERT INTO "world" VALUES ('St. Kitts und Nevis','Nordamerika',269.358763,55345,961563259,'Basseterre','KN');
+	INSERT INTO "world" VALUES ('Jamaika','Nordamerika',10991.90954,2697983,17097760745,'Kingston','JM');
+	INSERT INTO "world" VALUES ('Dominikanische Republik','Nordamerika',48670.82,10403761,113641857434,'Santo Domingo','DO');
+	INSERT INTO "world" VALUES ('Haiti','Nordamerika',27750,10981229,20877414952,'Port-au-Prince','HT');
+	INSERT INTO "world" VALUES ('Iran','Asien',1648195,86758304,388544468140,'Teheran','IR');
+	INSERT INTO "world" VALUES ('Kirgisistan','Asien',199951,6694200,10930644915,'Bischkek','KG');
+	INSERT INTO "world" VALUES ('Libanon','Asien',10452,6100075,23131941557,'Beirut','LB');
+	INSERT INTO "world" VALUES ('Nepal','Asien',147181.254346,29164578,40828247302,'Kathmandu','NP');
+	INSERT INTO "world" VALUES ('Sri Lanka','Asien',65610,21444000,88496535599,'Colombo','LK');
+	INSERT INTO "world" VALUES ('Sri Lanka','Asien',65610,21444000,88496535599,'Sri Jayewardenepura Kotte','LK');
+	INSERT INTO "world" VALUES ('Turkmenistan','Asien',491210,6117933,0,'Aşgabat','TM');
+	INSERT INTO "world" VALUES ('Südkorea','Asien',100295,51466201,1810955871381,'Seoul','KR');
+	INSERT INTO "world" VALUES ('Afghanistan','Asien',652230,37466414,14583135237,'Kabul','AF');
+	INSERT INTO "world" VALUES ('Sambia','Afrika',752618,17094130,29784454056,'Lusaka','ZM');
+	INSERT INTO "world" VALUES ('Simbabwe','Afrika',390757,15178979,28371238666,'Harare','ZW');
+	INSERT INTO "world" VALUES ('Botswana','Afrika',581737,2291661,20352322157,'Gaborone','BW');
+	INSERT INTO "world" VALUES ('Komoren','Afrika',2034,902348,1296089479,'Moroni','KM');
+	INSERT INTO "world" VALUES ('Eritrea','Afrika',117600,3497000,0,'Asmara','ER');
+	INSERT INTO "world" VALUES ('Gabun','Afrika',267667,2025137,4800000000,'Libreville','GA');
+	INSERT INTO "world" VALUES ('Liberia','Afrika',111369,5214030,4001047150,'Monrovia','LR');
+	INSERT INTO "world" VALUES ('Malawi','Afrika',118484,18622104,13164667627,'Lilongwe','MW');
+	INSERT INTO "world" VALUES ('Mauritius','Afrika',2040,1264613,12898307089,'Port Louis','MU');
+	INSERT INTO "world" VALUES ('Mosambik','Afrika',801590,29668834,17851491428,'Maputo','MZ');
+	INSERT INTO "world" VALUES ('Namibia','Afrika',825615,2533794,12607436976,'Windhoek','NA');
+	INSERT INTO "world" VALUES ('Ruanda','Afrika',26338,13246394,13312796765,'Kigali','RW');
+	INSERT INTO "world" VALUES ('São Tomé und Príncipe','Afrika',1001,204327,546680342,'São Tomé','ST');
+	INSERT INTO "world" VALUES ('Senegal','Afrika',196722,16876720,27684430244,'Dakar','SN');
+	INSERT INTO "world" VALUES ('Sudan','Afrika',1886068,40533330,51662241775,'Chartum','SD');
+	INSERT INTO "world" VALUES ('Staat Palästina','Asien',6020,5227193,19111900000,'Jerusalem','PS');
+	INSERT INTO "world" VALUES ('Österreich','Europa',83878.99,8979894,480368403893,'Wien','AT');
+	INSERT INTO "world" VALUES ('Portugal','Europa',92225,10347892,253982847571,'Lissabon','PT');
+	INSERT INTO "world" VALUES ('Ägypten','Asien',1010407.87,94798827,476747720365,'Kairo','EG');
+	INSERT INTO "world" VALUES ('Ägypten','Afrika',1010407.87,94798827,476747720365,'Kairo','EG');
+	INSERT INTO "world" VALUES ('Frankreich','Europa',643801,67749632,2957879759264,'Paris','FR');
+	INSERT INTO "world" VALUES ('Vereinigtes Königreich','Europa',242495,67326569,3122480345925,'London','GB');
+	INSERT INTO "world" VALUES ('Tschechien','Europa',78866,10827529,250681000000,'Prag','CZ');
+	INSERT INTO "world" VALUES ('Zypern','Europa',9242.45,1141166,28439052741,'Nikosia','CY');
+	INSERT INTO "world" VALUES ('Malta','Europa',316,465292,17765270015,'Valletta','MT');
+	INSERT INTO "world" VALUES ('Kuba','Nordamerika',109884,11181595,0,'Havanna','CU');
+	INSERT INTO "world" VALUES ('Kuba','Nordamerika',109884,10985974,0,'Havanna','CU');
+	INSERT INTO "world" VALUES ('Belize','Nordamerika',22966,374681,2824081836,'Belmopan','BZ');
+	INSERT INTO "world" VALUES ('Usbekistan','Asien',448978,34915100,69238900000,'Taschkent','UZ');
+	INSERT INTO "world" VALUES ('Nordkorea','Asien',120540,25490965,0,'Pjöngjang','KP');
+	INSERT INTO "world" VALUES ('Indien','Asien',3287263,1326093247,3385089881935,'Neu-Delhi','IN');
+	INSERT INTO "world" VALUES ('Föderierte Staaten von Mikronesien','Ozeanien',702,105544,427094119,'Kolonia','FM');
+	INSERT INTO "world" VALUES ('Venezuela','Südamerika',912050,28515829,0,'Caracas','VE');
+	INSERT INTO "world" VALUES ('Paraguay','Südamerika',406756,6811297,41722295362,'Asunción','PY');
+	INSERT INTO "world" VALUES ('Bahamas','Nordamerika',13878,395361,12897400000,'Nassau','BS');
+	INSERT INTO "world" VALUES ('El Salvador','Nordamerika',20742,5744113,32488720000,'San Salvador','SV');
+	INSERT INTO "world" VALUES ('Israel','Asien',20770,9093000,520700000000,'Jerusalem','IL');
+	INSERT INTO "world" VALUES ('Israel','Asien',20770,872700,520700000000,'Jerusalem','IL');
+	INSERT INTO "world" VALUES ('Israel','Asien',20770,9840000,520700000000,'Jerusalem','IL');
+	INSERT INTO "world" VALUES ('Israel','Asien',20770,8463400,520700000000,'Jerusalem','IL');
+	INSERT INTO "world" VALUES ('Israel','Asien',20770,8654900,520700000000,'Jerusalem','IL');
+	INSERT INTO "world" VALUES ('Israel','Asien',20770,8796200,520700000000,'Jerusalem','IL');
+	INSERT INTO "world" VALUES ('Israel','Asien',20770,8891800,520700000000,'Jerusalem','IL');
+	INSERT INTO "world" VALUES ('Israel','Asien',20770,7412200,520700000000,'Jerusalem','IL');
+	INSERT INTO "world" VALUES ('Jemen','Asien',555000,28250420,0,'Sanaa','YE');
+	INSERT INTO "world" VALUES ('Nicaragua','Nordamerika',130375,5142098,15671583878,'Managua','NI');
+	INSERT INTO "world" VALUES ('Saudi-Arabien','Asien',2250000,33000000,1108148978218,'Riad','SA');
+	INSERT INTO "world" VALUES ('Syrien','Asien',185180,18499181,0,'Damaskus','SY');
+	INSERT INTO "world" VALUES ('Republik China','Asien',36193,23593794,0,'Taipeh','TW');
+	INSERT INTO "world" VALUES ('Zentralafrikanische Republik','Afrika',622984,4659080,2516498412,'Bangui','CF');
+	INSERT INTO "world" VALUES ('Südsudan','Afrika',644329,12575714,0,'Juba','SS');
+	INSERT INTO "world" VALUES ('Guinea','Afrika',245857,12717176,21227749389,'Conakry','GN');
+	INSERT INTO "world" VALUES ('Kamerun','Afrika',475442,24053727,45338285386,'Yaoundé','CM');
+	INSERT INTO "world" VALUES ('Lesotho','Afrika',30355,2007201,2553459763,'Maseru','LS');
+	INSERT INTO "world" VALUES ('Libyen','Afrika',1759541,6678567,45752336036,'Tripolis','LY');
+	INSERT INTO "world" VALUES ('Mauretanien','Afrika',1030700,4614974,10375460680,'Nouakchott','MR');
+	INSERT INTO "world" VALUES ('Nigeria','Afrika',923768,211400708,477386120636,'Abuja','NG');
+	INSERT INTO "world" VALUES ('Eswatini','Afrika',17364,1093238,4854167638,'Mbabane','SZ');
+	INSERT INTO "world" VALUES ('Eswatini','Afrika',17364,1093238,4854167638,'Lobamba','SZ');
+	INSERT INTO "world" VALUES ('Kanada','Nordamerika',9984670,36991981,2206764000000,'Ottawa','CA');
+	INSERT INTO "world" VALUES ('Ungarn','Europa',93011.4,9603634,181848022.23,'Budapest','HU');
+	INSERT INTO "world" VALUES ('Polen','Europa',312683,38382576,688176605955,'Warschau','PL');
+	INSERT INTO "world" VALUES ('Italien','Europa',302068,58850717,2114355756914,'Rom','IT');
+	INSERT INTO "world" VALUES ('Deutschland','Europa',357587.77,83149300,4259934911822,'Berlin','DE');
+	INSERT INTO "world" VALUES ('Slowakei','Europa',49035,5449270,118656591909,'Bratislava','SK');
+	INSERT INTO "world" VALUES ('Albanien','Europa',28748,2793592,18882095518,'Tirana','AL');
+	INSERT INTO "world" VALUES ('San Marino','Europa',61.2,33607,1855382833,'San Marino','SM');
+	INSERT INTO "world" VALUES ('Serbien','Europa',88499,7022268,63501748652,'Belgrad','RS');
+	INSERT INTO "world" VALUES ('Australien','Ozeanien',7692024,26473055,1675418665067,'Canberra','AU');
+	INSERT INTO "world" VALUES ('Palau','Ozeanien',465.550362,21729,217800000,'Ngerulmud','PW');
+	INSERT INTO "world" VALUES ('Nauru','Ozeanien',21,13650,150922211,'Yaren','NR');
+	INSERT INTO "world" VALUES ('Marshallinseln','Ozeanien',181.43,53127,279667900,'Majuro','MH');
+	INSERT INTO "world" VALUES ('Jemen','Asien',555000,28250420,0,'Aden','YE');
+	INSERT INTO "world" VALUES ('Thailand','Asien',513119.5,66188503,505568057004,'Bangkok','TH');
+	INSERT INTO "world" VALUES ('Bhutan','Asien',38394,807610,2539551327,'Thimphu','BT');
+	INSERT INTO "world" VALUES ('Burkina Faso','Afrika',274200,20488000,19737616003,'Ouagadougou','BF');
+	INSERT INTO "world" VALUES ('Burundi','Afrika',27834,11530580,3073414678,'Gitega','BI');
+	INSERT INTO "world" VALUES ('Dschibuti','Afrika',23200,956985,3515109075,'Dschibuti','DJ');
+	INSERT INTO "world" VALUES ('Elfenbeinküste','Afrika',322463,24294750,71811075955,'Yamoussoukro','CI');
+	INSERT INTO "world" VALUES ('Seychellen','Afrika',459,95843,1588406479,'Victoria','SC');
+	INSERT INTO "world" VALUES ('Staat Palästina','Asien',6020,5227193,19111900000,'Ramallah','PS');
+	COMMIT;
+	
+	
+	`;
   }
 }
