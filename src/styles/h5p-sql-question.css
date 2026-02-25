@@ -12,39 +12,45 @@
     color: white;
 }
 
-.h5p-sql-question .h5p-ace-editor .sql-table-button {
-  background-color: #658e9c;
+.h5p-sql-question .button-tables {
+  background-color: #B68F40;
 }
 
-.h5p-sql-question .h5p-ace-editor .sql-table-button:hover {
-    background-color: #3f6b7a;
+.h5p-sql-question .button-tables:hover {
+    background-color: #b58426;
   }
-  
+
+.h5p-sql-question .page-tables {
+    border: 1px solid #B68F40;
+    padding: 5px;
+}
+
+.h5p-sql-question .button-sql-result {
+    background-color: #1FB397;
+    display: none;
+}
+
+.h5p-sql-question .button-sql-result:hover {
+    background-color: #088169;
+}
+
+.h5p-sql-question .page-sql_result {
+    border: 1px solid #1FB397;
+    padding: 5px;
+}
 
 .h5p-sql-question .testcases-area {
-    background-color: #222;
-    color: white;
-    padding: 5px;
-    border-radius: 10px;
-    padding: 10px;
-}
-
-.h5p-sql-question .sql-console {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    border-radius: 10px;
+    column-count: 2;
 }
 
-.h5p-sql-question .sql-console .console-column {
-    overflow: auto;
-    padding: 5px;
-    border: 1px solid #444;
-    border-radius: 10px;
+.h5p-sql-question .page-tables table,
+.h5p-sql-question .page-sql_result table {
+    width: 100%;
+    font-family: monospace;
 }
 
-.h5p-sql-question .sql-console .console-column .output-table,
-.h5p-sql-question .sql-console .console-column .db-table {
+.h5p-sql-question .testcases-area table {
     width: 100%;
     max-height: 300px;
     overflow: auto;
@@ -53,18 +59,59 @@
     line-height: 1em;
 }
 
-.h5p-sql-question .sql-console .console-column .db-table.no-match {
-    color: rgb(219, 177, 87);
+.h5p-sql-question .tables-tester-area {
+    display: flex;
+
 }
 
-.h5p-sql-question .sql-console .console-column .db-table.match {
-    color: rgb(99, 211, 150);
+.h5p-sql-question .page-tables table th,
+.h5p-sql-question .page-tables table td,
+.h5p-sql-question .page-sql_result table th,
+.h5p-sql-question .page-sql_result table td,
+.h5p-sql-question .testcases-area table th,
+.h5p-sql-question .testcases-area table td
+{
+    border: 1px solid lightgray;
 }
 
-.h5p-sql-question .sql-console .console-column  .error {
-    color: rgb(196, 102, 119);
+.h5p-sql-question .console-column {
+    border: 1px solid darkgray;
+    padding: 5px;
+    width: 50%;
+    overflow: scroll;
+    border-radius: 10px;
 }
 
+.h5p-sql-question .matching .console-column {
+    border: 2px solid #1eac3f;
+
+}
+
+.h5p-sql-question .not-matching .console-column {
+    border: 2px solid #a31e6c;
+
+}
+
+.h5p-sql-question .console-column:first-child {
+    margin-right: 2px;
+}
+.h5p-sql-question .console-column:last-child {
+    margin-left: 2px;
+}
+
+
+.h5p-sql-question .testcases-area table.th {
+    background-color: #ccc;
+    color: white;
+}
+
+.h5p-sql-question tr.matching {
+    background-color: #78b978;
+}
+
+.h5p-sql-question tr.not-matching {
+    background-color: #d47982;
+}
 
 .h5p-sql-question  .sql-editor textarea {
     white-space: pre;
@@ -72,4 +119,12 @@
 }
 .h5p-sql-question .h5p-ace-editor .ace.console.console-body {
     height: 250px;
+}
+
+.h5p-sql-question .page-sql_result p {
+    display: none;
+}
+
+.h5p-sql-question .page-sql_result th {
+    text-align: left;
 }

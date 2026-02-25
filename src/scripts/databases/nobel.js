@@ -1,6 +1,4 @@
-export default class NobelSQL {
-  constructor() {
-    this.sql = `
+const sql = `
 BEGIN TRANSACTION;
 CREATE TABLE IF NOT EXISTS "nobel" (
 	"yr"	int(11) DEFAULT NULL,
@@ -904,5 +902,4 @@ INSERT INTO "nobel" VALUES (2015,'Chemistry','Aziz Sancar'),
  (1901,'Physics','Wilhelm Conrad Röntgen');
 COMMIT;
 `;
-  }
-}
+export default sql;

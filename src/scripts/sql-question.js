@@ -1,96 +1,111 @@
-import SQLQuestionFactory from './sql-factory';
-import WorldSQL from './databases/world.js';
-import World23SQL from './databases/world23.js';
-import World23V2SQL from './databases/world23v2.js';
-import BusSQL from './databases/bus.js';
-import TeachersSQL from './databases/teachers.js';
-import NobelSQL from './databases/nobel.js';
-import MovieSQL from './databases/movie.js';
+import SQLCodeContainer from './container/container-sql';
+import SQLTestRuntime from './runtime/runtime-test-sql';
+import SQLManualRuntime from './runtime/runtime-manual-sql';
+import SQLTablesRuntime from './runtime/runtime-tables-all.sql.js';
+import SQLTablesAllRuntime from './runtime/runtime-tables-all.sql.js';
 
 export default class SQLQuestion extends H5P.CodeQuestion {
+
   /**
-   * @class
-   * @param {object} params Parameters passed by the editor.
-   * @param {number} contentId Content's id.
+   * @param {object} params Parameters passed by the editor
+   * @param {number} contentId Content id
    * @param {object} [extras] Saved state, metadata, etc.
    */
   constructor(params, contentId, extras = {}) {
     super(params, contentId, extras);
-    this.allTables = null;
-    this.tables = null;
-    if (params.databaseSettings.select_db === 'from_file' && params.databaseSettings.dbFile) {
-      this.dbFile = params.databaseSettings.dbFile;
-      this.dbFilePath = H5P.getPath(this.dbFile.path, contentId);
-      this.sqlPrepare = null;
-    }
-    else if (params.databaseSettings.select_db === 'from_defaults' && params.databaseSettings.selectDatabase) {
-      this.dbFile = null;
-      this.dbFilePath = null;
-      if (params.databaseSettings.selectDatabase === 'world') {
-        this.sqlPrepare = new WorldSQL().sql;
-      }
-      else if (params.databaseSettings.selectDatabase === 'world23') {
-        this.sqlPrepare = new World23SQL().sql;
-      } 
-      else if (params.databaseSettings.selectDatabase === 'world23v2') {
-        this.sqlPrepare = new World23V2SQL().sql;
-      } 
-      else if (params.databaseSettings.selectDatabase === 'bus') {
-        this.sqlPrepare = new BusSQL().sql;
-      } 
-      else if (params.databaseSettings.selectDatabase === 'teachers') {
-        this.sqlPrepare = new TeachersSQL().sql;
-      } 
-      else if (params.databaseSettings.selectDatabase === 'nobel') {
-        this.sqlPrepare = new NobelSQL().sql;
-      } 
-      else if (params.databaseSettings.selectDatabase === 'movie') {
-        this.sqlPrepare = new MovieSQL().sql;
-      } 
-    }
-    else {
-      this.dbFile = null;
-      this.dbFilePath = null;
-      this.sqlPrepare = null;
-    }
-    this.solutionPrepare = this.params.gradingSettings.gradingMethod === 'bySolution' ? this.getDecodedCode(this.params.gradingSettings.solution) : null;
-    this.targetTable = this.params.gradingSettings.testCases;
+    this.params = params;
     this.hasCheckButton = true;
     this.hasStopButton = false;
     this.hasAssets = true;
     this.language = 'sql';
-    if (this.solutionPrepare ) {
-      this.solutionRuntime = this.factory.createSolutionuntime(this.codeTester, this.solutionPrepare);
-      // run is async
-      Promise.resolve(this.solutionRuntime.run());
-    }
-  } // end of constructor
+
+    this.databaseOptions = {
+      dbFile: params.databaseSettings?.dbFile
+        ? H5P.getPath(params?.databaseSettings?.dbFile.path, contentId)
+        : null,
+      sqlPrepare: null,
+      solutionPrepare: null
+    };
+    this.initdatabaseOptions = false;
+    this.params = params;
+  }
 
   /**
-    Used for css
-    @returns {string} question name as string for css-class.
+   * Resolve database preparation SQL based on editor settings
+   * @private
+   */
+  async getDatabaseOptions() {
+    if (!this.initdatabaseOptions) {
+      console.log("sql prepare", this.params)
+      this.databaseOptions.sqlPrepare = await this._getSQLPrepare(this.params);
+      if (this.params.gradingSettings?.gradingMethod === 'bySolution') {
+        this.databaseOptions.solutionPrepare =
+          this.getDecodedCode(this.params.gradingSettings.solution);
+      }
+      this.initdatabaseOptions = true;
+    }
+    return this.databaseOptions;
+  }
+
+  getCodeContainerOptions() {
+    return {
+      getDatabaseOptions: () => this.getDatabaseOptions(),
+    };
+  }
+
+  /**
+   * Select SQL prepare code based on selected database
+   * @private
+   * @param {object} params
+   * @returns {Promise<string|null>}
+   */
+  async _getSQLPrepare(params) {
+
+    const dbMap = {
+      world: () => import('./databases/world.js'),
+      world23: () => import('./databases/world23.js'),
+      world23v2: () => import('./databases/world23v2.js'),
+      bus: () => import('./databases/bus.js'),
+      teachers: () => import('./databases/teachers.js'),
+      nobel: () => import('./databases/nobel.js'),
+      movie: () => import('./databases/movie.js'),
+    };
+    const key = params.databaseSettings?.selectDatabase;
+    const loader = dbMap[key];
+    console.log("loader?", loader, key, dbMap[key])
+    if (!loader) return null;
+
+    const module = await loader();
+    console.log("loader", module)
+    return module.default;
+
+  }
+
+  /**
+   * CSS class name
+   * @returns {string}
    */
   getQuestionName() {
     return 'h5p-sql-question';
   }
 
-  getFactory() {
-    return new SQLQuestionFactory(this);
+  getCodingLanguage() {
+    return 'sql';
   }
 
-  getMaxScore() {
-    return 1;
+  getTestRuntimeClass() {
+    return SQLTestRuntime;
   }
 
-  runAction() {
-    const runtime = this.factory.createTestRuntime(this.codeTester, this.editor.getCode());
-    runtime.reset();
-    runtime.run();
+  getManualRuntimeClass() {
+    return SQLManualRuntime;
   }
 
+  getRuntimeOptions() {
+    return this.databaseOptions;
+  }
 
-} // end of class
-
-
-
-
+  getContainerClass() {
+    return SQLCodeContainer;
+  }
+}

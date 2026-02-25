@@ -1,6 +1,4 @@
-export default class World23SQL {
-  constructor() {
-    this.sql = `BEGIN TRANSACTION;
+const sql = `BEGIN TRANSACTION;
 	CREATE TABLE IF NOT EXISTS "world" (
 		"name"	TEXT,
 		"continent"	TEXT,
@@ -221,5 +219,4 @@ export default class World23SQL {
 	 ('Serbien','Europa',88499,7022268,63501748652,'Belgrad','RS'),
 	 ('Eswatini','Afrika',17364,1160164,4854167638,'Mbabane','SZ');
 	COMMIT;`;
-  }
-}
+export default sql;

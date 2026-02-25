@@ -1,6 +1,4 @@
-export default class MovieSQL {
-  constructor() {
-    this.sql = `BEGIN TRANSACTION;
+const sql = `BEGIN TRANSACTION;
       CREATE TABLE IF NOT EXISTS "movie" (
           "id"	int(11) NOT NULL,
           "title"	varchar(50) DEFAULT NULL,
@@ -9456,5 +9454,5 @@ export default class MovieSQL {
        (8068,'Fred Savage'),
        (39904,'Taylor Kitsch');
       COMMIT;`;
-  }
-}
+
+export default sql;

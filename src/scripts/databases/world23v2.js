@@ -1,6 +1,4 @@
-export default class World23V2SQL {
-  constructor() {
-    this.sql = `
+const sql = `
 	
 	BEGIN TRANSACTION;
 	CREATE TABLE IF NOT EXISTS "world" (
@@ -229,8 +227,5 @@ export default class World23V2SQL {
 	INSERT INTO "world" VALUES ('Seychellen','Afrika',459,95843,1588406479,'Victoria','SC');
 	INSERT INTO "world" VALUES ('Staat Palästina','Asien',6020,5227193,19111900000,'Ramallah','PS');
 	COMMIT;
-	
-	
 	`;
-  }
-}
+export default sql;

@@ -1,6 +1,4 @@
-export default class TeachersSQL {
-  constructor() {
-    this.sql = `
+const sql = `
 BEGIN TRANSACTION;
 CREATE TABLE IF NOT EXISTS "teacher" (
 	"id"	int(11) NOT NULL,
@@ -25,5 +23,4 @@ INSERT INTO "dept" VALUES (1,'Computing'),
  (2,'Design'),
  (3,'Engineering');
 COMMIT;`;
-  }
-}
+export default sql;

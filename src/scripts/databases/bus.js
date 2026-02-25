@@ -1,6 +1,4 @@
-export default class BusSQL {
-  constructor() {
-    this.sql = `
+const sql =`
 BEGIN TRANSACTION;
 CREATE TABLE IF NOT EXISTS "stops" (
 	"id"	int(11) NOT NULL,
@@ -1435,5 +1433,4 @@ INSERT INTO "route" VALUES ('1','LRT',1,137),
  ('VL2','VL',3,60),
  ('VL2','VL',4,10);
 COMMIT;`;
-  }
-}
+export default sql;

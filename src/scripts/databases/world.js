@@ -1,6 +1,4 @@
-export default class WorldSQL {
-  constructor() {
-    this.sql =  `BEGIN TRANSACTION;
+const sql = `BEGIN TRANSACTION;
 CREATE TABLE IF NOT EXISTS "world" (
 	"name"	varchar(50) NOT NULL,
 	"continent"	varchar(60) DEFAULT NULL,
@@ -207,6 +205,5 @@ INSERT INTO "world" VALUES ('Afghanistan','Asia',652230,25500100,20364000000,'Ka
  ('Zambia','Africa',752612,15023315,21490000000,'Lusaka','.zm'),
  ('Zimbabwe','Africa',390757,13061239,9802000000,'Harare','.zw');
 COMMIT;`;
-  }
-  
-}
+
+export default sql;
