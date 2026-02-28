@@ -1,21 +1,31 @@
-H5P-content-python-ide
+H5P SQL Question
 =====================
 
-Python Question Type for H5P (Hint: Beta Status)
+An interactive SQL question content type for H5P, 
+allowing educators to create SQL exercises that 
+run and validate queries directly in the browser.
 
+This content type is actively used in teaching, 
+tested in real courses, and suitable for self‑study 
+and classroom settings.
 
-## Description
+## What This Does
 
-This H5P content type provides a Python question type based on Skulpt and the Ace editor.
+This H5P content type:
 
-The question type offers two different possibilities: 
+* Provides an interactive SQL environment in H5P.
+* Allows authors to define SQL problems and expected results.
+* Executes queries in the student’s browser using a JavaScript SQL engine (sql.js).
+* Compares student query results against expected table results.
+* Works without server‑side execution, making it safe and portable across hosts.
+* This content type is based on the H5P question framework and is designed for database teaching and assessment workflows.
 
-* Text pages can be created markdown with interactive editors.
-* An IDE can be provided with which coding assignments can be made available to students. Students' programmes can be checked with input/output test cases. 
+## Key Features
 
-## Based on
+* Interactive SQL editor inside H5P
+* In‑browser execution with sql.js (no server required)
+* Table result comparison for automatic validation
+* Integration with common H5P workflows in LMS like Moodle
+* Designed for educators and learners in database courses
 
-
- * [H5P-content-code-question](https://codeberg.org/a_siebel/h5p-content-code-question)
- * [H5P-editor-code-widget](https://codeberg.org/a_siebel/h5p-editor-code-widget)
- * [H5P-lib-code-tools](https://codeberg.org/a_siebel/h5p-lib-code-tools)
+![example](./assets/example.png)
