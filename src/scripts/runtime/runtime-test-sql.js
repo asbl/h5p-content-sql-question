@@ -26,7 +26,9 @@ export default class SQLTestRuntime extends H5P.TestRuntimeMixin(SQLRuntime) {
   outputHandler(resultObject, resultTable) {
     this.codeTester.addOutput(resultObject, resultTable);
     const testCaseIndex = this.codeTester.session.testCaseIndex;
-    this.codeContainer.getConsoleManager().write(resultTable, `Test ${testCaseIndex + 1}`);
+    const testCaseLabel = this.codeTester.l10n.testCase;
+
+    this.codeContainer.getConsoleManager().write(resultTable, `${testCaseLabel} ${testCaseIndex + 1}`);
   }
 
   /**

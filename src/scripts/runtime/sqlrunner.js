@@ -1,5 +1,6 @@
 import initSqlJs from 'sql.js';
 import AsciiTable from 'ascii-table';
+import { tSQLQuestion } from '../services/sqlquestion-l10n';
 
 const sqlWasm = new URL('sql.js/dist/sql-wasm.wasm', import.meta.url);
 
@@ -19,7 +20,6 @@ export default class SQLRunner {
    * @param {string|null} [options.solutionPrepare]
    */
   constructor(runtime, options = {}) {
-    console.log('sqlrunner', runtime, options)
     this.runtime = runtime;
     this.options = options;
     this.dbFile = options.dbFile ?? null;
@@ -123,6 +123,15 @@ export default class SQLRunner {
   }
 
   /**
+   * Quotes a SQLite identifier such as a table name.
+   * @param {string} identifier - Identifier to quote.
+   * @returns {string} Quoted identifier.
+   */
+  quoteIdentifier(identifier) {
+    return `"${String(identifier).replace(/"/g, '""')}"`;
+  }
+
+  /**
    * Converts sql.js output to ASCII table.
    * Depends on `this.tableFormat`: ascii | Markdown | html
    *
@@ -153,10 +162,23 @@ export default class SQLRunner {
     }
 
     if (truncated) {
-      table += `\n...(${values.length} von ${sqlResult[0].values.length} Zeilen angezeigt)`;
+      table += `\n${this.getTruncatedRowsLabel(values.length, sqlResult[0].values.length)}`;
     }
 
     return table;
+  }
+
+  /**
+   * Returns a localized label for truncated SQL result sets.
+   * @param {number} shownRows - Number of displayed rows.
+   * @param {number} totalRows - Total number of rows.
+   * @returns {string} Localized message.
+   */
+  getTruncatedRowsLabel(shownRows, totalRows) {
+    return tSQLQuestion(this.options.l10n, 'sqlRowsDisplayed', {
+      shown: shownRows,
+      total: totalRows,
+    });
   }
 
 
@@ -225,7 +247,7 @@ export default class SQLRunner {
     if (!result[0]) return [];
 
     return result[0].values.map(([name]) => {
-      const rows = this.db.exec(`SELECT * FROM ${name}`);
+      const rows = this.db.exec(`SELECT * FROM ${this.quoteIdentifier(name)}`);
       return [name, rows[0]];
     });
   }

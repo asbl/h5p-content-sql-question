@@ -1,0 +1,8 @@
+{
+  "libraryStrings": {
+    "sqlTables": "Tables",
+    "sqlResult": "Result",
+    "sqlTableHeading": "Table: {name}",
+    "sqlRowsDisplayed": "...({shown} of {total} rows shown)"
+  }
+}

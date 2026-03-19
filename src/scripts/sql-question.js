@@ -1,8 +1,6 @@
 import SQLCodeContainer from './container/container-sql';
 import SQLTestRuntime from './runtime/runtime-test-sql';
 import SQLManualRuntime from './runtime/runtime-manual-sql';
-import SQLTablesRuntime from './runtime/runtime-tables-all.sql.js';
-import SQLTablesAllRuntime from './runtime/runtime-tables-all.sql.js';
 
 export default class SQLQuestion extends H5P.CodeQuestion {
 
@@ -26,8 +24,7 @@ export default class SQLQuestion extends H5P.CodeQuestion {
       sqlPrepare: null,
       solutionPrepare: null
     };
-    this.initdatabaseOptions = false;
-    this.params = params;
+    this.hasInitializedDatabaseOptions = false;
   }
 
   /**
@@ -35,21 +32,46 @@ export default class SQLQuestion extends H5P.CodeQuestion {
    * @private
    */
   async getDatabaseOptions() {
-    if (!this.initdatabaseOptions) {
-      console.log("sql prepare", this.params)
-      this.databaseOptions.sqlPrepare = await this._getSQLPrepare(this.params);
-      if (this.params.gradingSettings?.gradingMethod === 'bySolution') {
-        this.databaseOptions.solutionPrepare =
-          this.getDecodedCode(this.params.gradingSettings.solution);
-      }
-      this.initdatabaseOptions = true;
+    if (!this.hasInitializedDatabaseOptions) {
+      this.databaseOptions = {
+        ...this.databaseOptions,
+        sqlPrepare: await this._getSQLPrepare(this.params),
+        solutionPrepare: this.params.gradingSettings?.gradingMethod === 'bySolution'
+          ? this.getDecodedCode(this.params.gradingSettings.solution)
+          : null,
+      };
+      this.hasInitializedDatabaseOptions = true;
     }
+
     return this.databaseOptions;
   }
 
+  /**
+   * Returns inherited options as a plain object.
+   * @param {unknown} options - Options returned by a parent implementation.
+   * @returns {object} Normalized option object.
+   */
+  normalizeInheritedOptions(options) {
+    if (!options || Array.isArray(options)) {
+      return {};
+    }
+
+    return options;
+  }
+
+  /**
+   * Returns additional SQL-specific container options.
+   * @returns {object} Container options.
+   */
   getCodeContainerOptions() {
+    const inheritedOptions = this.normalizeInheritedOptions(
+      super.getCodeContainerOptions(),
+    );
+
     return {
+      ...inheritedOptions,
       getDatabaseOptions: () => this.getDatabaseOptions(),
+      editorMode: this.params.editorSettings?.editorMode || 'code',
     };
   }
 
@@ -72,13 +94,10 @@ export default class SQLQuestion extends H5P.CodeQuestion {
     };
     const key = params.databaseSettings?.selectDatabase;
     const loader = dbMap[key];
-    console.log("loader?", loader, key, dbMap[key])
     if (!loader) return null;
 
     const module = await loader();
-    console.log("loader", module)
     return module.default;
-
   }
 
   /**
@@ -102,7 +121,10 @@ export default class SQLQuestion extends H5P.CodeQuestion {
   }
 
   getRuntimeOptions() {
-    return this.databaseOptions;
+    return {
+      ...super.getRuntimeOptions(),
+      ...this.databaseOptions,
+    };
   }
 
   getContainerClass() {

@@ -4,7 +4,8 @@
   "description": "SQL Question Content Type",
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "lint": "stylelint './src/**/*.scss' && eslint './src/**/*.js'",
     "build": "webpack --mode=production",
     "watch": "webpack --watch --mode=development"
@@ -35,6 +36,7 @@
     "stylelint": "^15.7.0",
     "stylelint-config-recommended": "^12.0.0",
     "stylelint-config-recommended-scss": "^12.0.0",
+    "vitest": "^3.2.4",
     "webpack": "5.104.1",
     "webpack-cli": "^5.1.4"
   },

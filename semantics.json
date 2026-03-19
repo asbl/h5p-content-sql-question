@@ -1,107 +1,5 @@
 [
     {
-        "name": "l10n",
-        "type": "group",
-        "label": "User interface",
-        "common": true,
-        "fields": [
-            {
-                "name": "checkAnswer",
-                "type": "text",
-                "label": "Check answer",
-                "default": "Check Answer",
-                "widget": "none"
-            },
-            {
-                "name": "run",
-                "type": "text",
-                "label": "▶ Run",
-                "default": "▶ Run",
-                "widget": "none"
-            },
-            {
-                "name": "stop",
-                "type": "text",
-                "label": "Stop",
-                "default": "Stop",
-                "widget": "none"
-            },
-            {
-                "name": "failedText",
-                "type": "text",
-                "label": "You failed - Try again",
-                "default": "You failed - Try again"
-            },
-            {
-                "name": "successText",
-                "type": "text",
-                "label": "All tests passed",
-                "default": "All tests passed"
-            },
-            {
-                "name": "testCase",
-                "type": "text",
-                "label": "Test Case",
-                "default": "Test Case"
-            },
-            {
-                "name": "hidden",
-                "type": "text",
-                "label": "[hidden]",
-                "default": "[hidden]",
-                "widget": "none"
-            },
-            {
-                "name": "testInput",
-                "type": "text",
-                "label": "Test Input",
-                "default": "Test Input"
-            },
-            {
-                "name": "lastOutput",
-                "type": "text",
-                "label": "Last Output",
-                "default": "Last Output"
-            },
-            {
-                "name": "passed",
-                "type": "text",
-                "label": "passed?",
-                "default": "passed?"
-            },
-            {
-                "name": "expectedOutput",
-                "type": "text",
-                "label": "Expected Output",
-                "default": "Expected Output"
-            },
-            {
-                "name": "instructions",
-                "type": "text",
-                "label": "Instructions",
-                "default": "Instructions"
-            },
-            {
-                "name": "showCode",
-                "type": "text",
-                "label": "Show Code",
-                "default": "Show Code"
-            },
-            {
-                "name": "copy",
-                "type": "text",
-                "label": "Copy",
-                "default": "Copy"
-            },
-            {
-                "name": "copySuccess",
-                "type": "text",
-                "label": "Table copied to clipboard",
-                "default": "Table copied to clipboardF"
-            }
-        ]
-    },
-    {
         "name": "contentType",
         "type": "select",
         "label": "Type",
@@ -407,6 +305,27 @@
                 "options": [
                     {
                         "language": "sql"
+                    }
+                ]
+            },
+            {
+                "name": "editorMode",
+                "type": "select",
+                "label": "Editor mode",
+                "description": "Choose whether learners see a code editor or a block-based editor. SQL blocks are a preview feature.",
+                "default": "code",
+                "options": [
+                    {
+                        "value": "code",
+                        "label": "Code editor (CodeMirror)"
+                    },
+                    {
+                        "value": "blocks",
+                        "label": "Block editor (Blockly – SQL preview)"
+                    },
+                    {
+                        "value": "both",
+                        "label": "Both – blocks are source of truth, code preview is read-only"
                     }
                 ]
             }

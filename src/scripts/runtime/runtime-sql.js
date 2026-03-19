@@ -17,14 +17,26 @@ export default class SQLRuntime extends H5P.Runtime {
   }
 
   /**
+   * Creates the runner configuration without mutating the shared runtime options.
+   * @returns {object} SQL runner options.
+   */
+  getRunnerOptions() {
+    const runtimeOptions = this.options ?? {};
+
+    return {
+      ...runtimeOptions,
+      tableFormat: runtimeOptions.tableFormat ?? 'markdown',
+    };
+  }
+
+  /**
    * Returns the SQLRunner instance for this runtime.
    * Creates a new one if it doesn't exist yet.
    * @returns {SQLRunner} The SQLRunner instance.
    */
   getRunner() {
-    this.options.tableFormat = 'markdown';
     if (!this.runner) {
-      this.runner = new SQLRunner(this, this.options,);
+      this.runner = new SQLRunner(this, this.getRunnerOptions());
     }
     return this.runner;
   }
