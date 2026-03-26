@@ -312,20 +312,12 @@
                 "name": "editorMode",
                 "type": "select",
                 "label": "Editor mode",
-                "description": "Choose whether learners see a code editor or a block-based editor. SQL blocks are a preview feature.",
+                "description": "Choose the editor mode used by learners.",
                 "default": "code",
                 "options": [
                     {
                         "value": "code",
                         "label": "Code editor (CodeMirror)"
-                    },
-                    {
-                        "value": "blocks",
-                        "label": "Block editor (Blockly – SQL preview)"
-                    },
-                    {
-                        "value": "both",
-                        "label": "Both – blocks are source of truth, code preview is read-only"
                     }
                 ]
             }

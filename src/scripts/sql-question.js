@@ -2,6 +2,12 @@ import SQLCodeContainer from './container/container-sql';
 import SQLTestRuntime from './runtime/runtime-test-sql';
 import SQLManualRuntime from './runtime/runtime-manual-sql';
 
+const SUPPORTED_SQL_EDITOR_MODES = ['code'];
+
+function normalizeSQLEditorMode(mode) {
+  return SUPPORTED_SQL_EDITOR_MODES.includes(mode) ? mode : 'code';
+}
+
 export default class SQLQuestion extends H5P.CodeQuestion {
 
   /**
@@ -71,7 +77,7 @@ export default class SQLQuestion extends H5P.CodeQuestion {
     return {
       ...inheritedOptions,
       getDatabaseOptions: () => this.getDatabaseOptions(),
-      editorMode: this.params.editorSettings?.editorMode || 'code',
+      editorMode: normalizeSQLEditorMode(this.params.editorSettings?.editorMode),
     };
   }
 

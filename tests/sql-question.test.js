@@ -80,4 +80,32 @@ describe('SQLQuestion', () => {
     });
     expect(second).toBe(first);
   });
+
+  it('keeps editor mode as code when configured as code', () => {
+    const question = new SQLQuestion({
+      editorSettings: {
+        editorMode: 'code',
+      },
+    }, 1);
+
+    const options = question.getCodeContainerOptions();
+    expect(options.editorMode).toBe('code');
+  });
+
+  it('normalizes unsupported editor modes to code', () => {
+    const blocksQuestion = new SQLQuestion({
+      editorSettings: {
+        editorMode: 'blocks',
+      },
+    }, 1);
+
+    const bothQuestion = new SQLQuestion({
+      editorSettings: {
+        editorMode: 'both',
+      },
+    }, 1);
+
+    expect(blocksQuestion.getCodeContainerOptions().editorMode).toBe('code');
+    expect(bothQuestion.getCodeContainerOptions().editorMode).toBe('code');
+  });
 });
