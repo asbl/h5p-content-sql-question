@@ -334,6 +334,19 @@
     font-weight: 600;
 }
 
+.h5p-sql-question .tables-inline-summary {
+    margin: 0 0 0.9rem;
+    color: #5b5649;
+}
+
+.h5p-sql-question .tables-inline-summary-status {
+    color: #2f2a21;
+}
+
+.h5p-sql-question .tables-diff-details {
+    margin-top: 0.9rem;
+}
+
 .h5p-sql-question  .sql-editor textarea {
     white-space: pre;
     font-size: 10px; 
