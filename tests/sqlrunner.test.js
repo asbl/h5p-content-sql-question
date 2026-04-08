@@ -1,12 +1,18 @@
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('sql.js', () => ({
   default: vi.fn(),
 }));
 
+const { default: initSqlJs } = await import('sql.js');
 const { default: SQLRunner } = await import('../src/scripts/runtime/sqlrunner.js');
 
 describe('SQLRunner', () => {
+  beforeEach(() => {
+    SQLRunner.resetSharedState();
+    initSqlJs.mockReset();
+  });
+
   it('formats truncated row messages from SQLQuestion localization fallbacks', () => {
     const runner = new SQLRunner({}, { maxRows: 1, l10n: {} });
 
@@ -64,5 +70,20 @@ describe('SQLRunner', () => {
 
     expect(runner.options.getDatabaseOptions).toHaveBeenCalledTimes(1);
     expect(run).toHaveBeenCalledWith('CREATE TABLE world(id INT);');
+  });
+
+  it('reuses the shared sql.js runtime across runner instances', async () => {
+    const sqlModule = { Database: vi.fn() };
+    initSqlJs.mockResolvedValue(sqlModule);
+
+    const firstRunner = new SQLRunner({}, {});
+    const secondRunner = new SQLRunner({}, {});
+
+    await firstRunner.setup();
+    await secondRunner.setup();
+
+    expect(initSqlJs).toHaveBeenCalledTimes(1);
+    expect(firstRunner.SQL).toBe(sqlModule);
+    expect(secondRunner.SQL).toBe(sqlModule);
   });
 });

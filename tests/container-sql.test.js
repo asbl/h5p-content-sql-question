@@ -1,7 +1,8 @@
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mocks = vi.hoisted(() => ({
   tablesRuntimeCtor: vi.fn(),
+  warmup: vi.fn(() => Promise.resolve()),
 }));
 
 vi.mock('../src/scripts/runtime/runtime-tables-all.sql', () => ({
@@ -12,9 +13,21 @@ vi.mock('../src/scripts/runtime/runtime-tables-all.sql', () => ({
   },
 }));
 
+vi.mock('../src/scripts/runtime/sqlrunner.js', () => ({
+  default: class SQLRunnerMock {
+    static warmup() {
+      return mocks.warmup();
+    }
+  },
+}));
+
 const { default: SQLCodeContainer } = await import('../src/scripts/container/container-sql.js');
 
 describe('SQLCodeContainer', () => {
+  beforeEach(() => {
+    mocks.warmup.mockClear();
+  });
+
   it('falls back to bundled SQL labels when no content overrides exist', () => {
     const container = new SQLCodeContainer();
     const addButtons = vi.fn();
@@ -74,6 +87,7 @@ describe('SQLCodeContainer', () => {
     try {
       await container.setup();
 
+      expect(mocks.warmup).toHaveBeenCalledTimes(1);
       expect(globalThis.document.getElementById).toHaveBeenCalledWith('console-1');
       expect(wrapper.classList.add).toHaveBeenCalledWith('hidden');
       expect(container.renderDatabaseTables).toHaveBeenCalledTimes(1);

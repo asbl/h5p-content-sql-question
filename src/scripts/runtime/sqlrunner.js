@@ -10,6 +10,27 @@ const sqlWasm = new URL('sql.js/dist/sql-wasm.wasm', import.meta.url);
  * Runner for executing SQL code using sql.js.
  */
 export default class SQLRunner {
+  static warmup() {
+    if (SQLRunner.sharedSQL) {
+      return Promise.resolve(SQLRunner.sharedSQL);
+    }
+
+    if (!SQLRunner.sharedSetupPromise) {
+      SQLRunner.sharedSetupPromise = initSqlJs({
+        locateFile: () => sqlWasm.href
+      }).then((sql) => {
+        SQLRunner.sharedSQL = sql;
+        return sql;
+      });
+    }
+
+    return SQLRunner.sharedSetupPromise;
+  }
+
+  static resetSharedState() {
+    SQLRunner.sharedSQL = null;
+    SQLRunner.sharedSetupPromise = null;
+  }
 
   /**
    * @param {object} runtime
@@ -43,9 +64,7 @@ export default class SQLRunner {
   async setup() {
     if (this._initialized) return;
 
-    this.SQL = await initSqlJs({
-      locateFile: () => sqlWasm.href
-    });
+    this.SQL = await SQLRunner.warmup();
 
     this._initialized = true;
   }
@@ -263,3 +282,6 @@ export default class SQLRunner {
     });
   }
 }
+
+SQLRunner.sharedSQL = null;
+SQLRunner.sharedSetupPromise = null;

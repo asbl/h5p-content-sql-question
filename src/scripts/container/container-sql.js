@@ -1,4 +1,5 @@
 import SQLTablesAllRuntime from '../runtime/runtime-tables-all.sql';
+import SQLRunner from '../runtime/sqlrunner';
 import { analyzeSQLHints, buildSQLSchema } from '../services/sql-guidance';
 import { getSQLQuestionL10nValue, tSQLQuestion } from '../services/sqlquestion-l10n';
 
@@ -31,6 +32,8 @@ export default class SQLCodeContainer extends H5P.CodeQuestionContainer {
   }
 
   async setup() {
+    const sqlWarmup = SQLRunner.warmup();
+
     this.enhanceOptionCallbacks();
     await super.setup();
     this.registerSQLButtons();
@@ -41,6 +44,7 @@ export default class SQLCodeContainer extends H5P.CodeQuestionContainer {
     this.registerSQLObservers();
 
     this.hideConsole();
+    await sqlWarmup;
     await this.renderDatabaseTables();
     this.handleEditorCodeChanged(this.getEditorManager?.()?.getCode?.() || '');
   }
