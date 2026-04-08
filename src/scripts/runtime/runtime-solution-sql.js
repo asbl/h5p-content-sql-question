@@ -39,7 +39,7 @@ export default class SQLSolutionRuntime extends H5P.SolutionRuntimeMixin(SQLRunt
   onSuccess(resultObject, resultTable) {
     super.onSuccess();
     this.outputHandler(resultObject, resultTable);
-    this.editor?.hideConsole();
+    this.codeContainer?.hideConsole?.();
   }
 
   /**
@@ -48,6 +48,6 @@ export default class SQLSolutionRuntime extends H5P.SolutionRuntimeMixin(SQLRunt
    */
   onError(errorMessage) {
     super.onError(errorMessage);
-    this.editor?.showConsole();
+    this.codeContainer?.getConsoleManager?.()?.showConsole?.();
   }
 }

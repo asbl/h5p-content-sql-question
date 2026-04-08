@@ -51,7 +51,7 @@ export default class SQLTestRuntime extends H5P.TestRuntimeMixin(SQLRuntime) {
   onSuccess(resultObject, resultTable) {
     super.onSuccess();
     this.outputHandler(resultObject, resultTable);
-    this.editor?.hideConsole();
+    this.codeContainer?.hideConsole?.();
   }
 
   /**
@@ -60,6 +60,6 @@ export default class SQLTestRuntime extends H5P.TestRuntimeMixin(SQLRuntime) {
    */
   onError(errorMessage) {
     super.onError(errorMessage);
-    this.editor?.showConsole();
+    this.codeContainer?.getConsoleManager?.()?.showConsole?.();
   }
 }

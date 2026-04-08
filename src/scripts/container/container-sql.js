@@ -24,8 +24,36 @@ export default class SQLCodeContainer extends H5P.CodeQuestionContainer {
     this.unregisterInheritedRunObservers();
     this.registerSQLObservers();
 
-    this.getConsoleManager().hideConsole();
+    this.hideConsole();
     await this.renderDatabaseTables();
+  }
+
+  /**
+   * Hides the console using the current or legacy console manager API.
+   * @returns {void}
+   */
+  hideConsole() {
+    const consoleManager = this.getConsoleManager?.();
+    if (!consoleManager) {
+      return;
+    }
+
+    if (typeof consoleManager.hideConsole === 'function') {
+      consoleManager.hideConsole();
+      return;
+    }
+
+    const consoleElement = typeof document?.getElementById === 'function' && consoleManager.consoleUID
+      ? document.getElementById(consoleManager.consoleUID)
+      : null;
+    const wrapper = consoleElement?.parentElement;
+
+    if (!wrapper) {
+      return;
+    }
+
+    wrapper.classList.add('hidden');
+    this.resizeActionHandler();
   }
 
   /**

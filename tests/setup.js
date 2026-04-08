@@ -31,6 +31,9 @@ class BaseCodeQuestionContainer {
   constructor() {
     this.resizeActionHandler = vi.fn();
   }
+
+  async setup() {
+  }
 }
 
 globalThis.H5P = {

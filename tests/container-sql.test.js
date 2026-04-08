@@ -53,6 +53,44 @@ describe('SQLCodeContainer', () => {
     expect(hideButton).toHaveBeenCalledWith('sql_result_button');
   });
 
+  it('hides the console during setup even when the console manager has no hideConsole method', async () => {
+    const container = new SQLCodeContainer();
+    const wrapper = {
+      classList: {
+        add: vi.fn(),
+      },
+    };
+
+    container.registerSQLButtons = vi.fn();
+    container.registerSQLPages = vi.fn();
+    container.registerDOM = vi.fn();
+    container.unregisterInheritedRunObservers = vi.fn();
+    container.registerSQLObservers = vi.fn();
+    container.renderDatabaseTables = vi.fn().mockResolvedValue();
+    container.getConsoleManager = vi.fn(() => ({
+      consoleUID: 'console-1',
+    }));
+
+    const originalDocument = globalThis.document;
+    globalThis.document = {
+      ...originalDocument,
+      getElementById: vi.fn(() => ({
+        parentElement: wrapper,
+      })),
+    };
+
+    try {
+      await container.setup();
+
+      expect(globalThis.document.getElementById).toHaveBeenCalledWith('console-1');
+      expect(wrapper.classList.add).toHaveBeenCalledWith('hidden');
+      expect(container.renderDatabaseTables).toHaveBeenCalledTimes(1);
+    }
+    finally {
+      globalThis.document = originalDocument;
+    }
+  });
+
   it('unregisters inherited run observers that conflict with the SQL spinner flow', () => {
     const container = new SQLCodeContainer();
     const unregister = vi.fn();
