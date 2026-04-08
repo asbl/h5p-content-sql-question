@@ -188,13 +188,13 @@
 }
 
 .h5p-sql-question .tables-diff-status.matching {
-    border: 1px solid #4aa36b;
-    background: #f2fbf5;
+    border: 1px solid #b8d4bf;
+    background: #f7fbf7;
 }
 
 .h5p-sql-question .tables-diff-status.not-matching {
-    border: 1px solid #d47982;
-    background: #fff5f6;
+    border: 1px solid #d8c4b5;
+    background: #fffaf6;
 }
 
 .h5p-sql-question .tables-diff-status strong,
@@ -272,6 +272,13 @@
     background: #fff;
 }
 
+.h5p-sql-question .tables-output td,
+.h5p-sql-question .tables-output th,
+.h5p-sql-question .tables-expected td,
+.h5p-sql-question .tables-expected th {
+    white-space: nowrap;
+}
+
 .h5p-sql-question .tables-output th,
 .h5p-sql-question .tables-expected th {
     position: sticky;
@@ -281,12 +288,12 @@
 }
 
 .h5p-sql-question .matching .console-column {
-    border: 2px solid #1eac3f;
+    border: 1px solid #bfd4c2;
 
 }
 
 .h5p-sql-question .not-matching .console-column {
-    border: 2px solid #a31e6c;
+    border: 1px solid #d4c7bc;
 
 }
 
@@ -303,12 +310,28 @@
     color: white;
 }
 
-.h5p-sql-question tr.matching {
-    background-color: #78b978;
+.h5p-sql-question .tables-table .table-column-match {
+    background: #f4efdf;
+    color: #43341a;
 }
 
-.h5p-sql-question tr.not-matching {
-    background-color: #d47982;
+.h5p-sql-question .tables-table .table-column-mismatch {
+    background: #f6e8d5;
+    color: #6f3417;
+}
+
+.h5p-sql-question .tables-table .table-row-match td {
+    background: #fff;
+}
+
+.h5p-sql-question .tables-table .table-row-mismatch td {
+    background: #fffdfa;
+}
+
+.h5p-sql-question .tables-table td.table-cell-mismatch {
+    background: #fde8e4;
+    color: #7a2e1c;
+    font-weight: 600;
 }
 
 .h5p-sql-question  .sql-editor textarea {
