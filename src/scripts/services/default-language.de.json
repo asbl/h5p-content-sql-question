@@ -8,17 +8,17 @@
     "sqlPreviewResultTitle": "Dein Ergebnis",
     "sqlPreviewNoTables": "Es sind noch keine Tabellen verfuegbar.",
     "sqlPreviewTableMeta": "{columns} Spalten, {rows} Zeilen",
-    "sqlResultSuccessTitle": "Abfrage erfolgreich ausgefuehrt.",
-    "sqlResultSuccessDescription": "Deine Abfrage liefert {rows} Zeilen mit {columns} Spalten.",
-    "sqlResultNoRowsTitle": "Die Abfrage ist korrekt, aber liefert keine Treffer.",
-    "sqlResultNoRowsDescription": "Die Abfrage liefert 0 Zeilen mit {columns} Spalten. Passe deinen Filter an.",
-    "sqlResultEmptyTitle": "Es wurde noch keine Ergebnistabelle erzeugt.",
-    "sqlResultEmptyDescription": "Die Abfrage wurde ausgefuehrt, hat aber noch keine Tabelle geliefert.",
+    "sqlResultSuccessTitle": "Die Abfrage hat geklappt.",
+    "sqlResultSuccessDescription": "Du bekommst {rows} Zeilen mit {columns} Spalten.",
+    "sqlResultNoRowsTitle": "Die Abfrage ist richtig, aber es gibt keine passenden Zeilen.",
+    "sqlResultNoRowsDescription": "Es wurden 0 Zeilen mit {columns} Spalten gefunden. Aendere deine Bedingung.",
+    "sqlResultEmptyTitle": "Es gibt noch kein Tabellenergebnis.",
+    "sqlResultEmptyDescription": "Die Abfrage wurde ausgefuehrt, aber es wurde noch keine Tabelle angezeigt.",
     "sqlHintUnknownTable": "Die Tabelle \"{name}\" wurde nicht gefunden.",
-    "sqlHintUnknownTableSuggestion": "Die Tabelle \"{name}\" wurde nicht gefunden. Meintest du \"{suggestion}\"?",
+    "sqlHintUnknownTableSuggestion": "Die Tabelle \"{name}\" gibt es hier nicht. Meintest du \"{suggestion}\"?",
     "sqlHintUnknownColumn": "Die Spalte \"{name}\" wurde nicht gefunden.",
-    "sqlHintUnknownColumnSuggestion": "Die Spalte \"{name}\" wurde nicht gefunden. Meintest du \"{suggestion}\"?",
-    "sqlFeedbackSuccess": "Deine Abfrage liefert die richtigen Spalten und Zeilen.",
-    "sqlFeedbackFailure": "Deine Abfrage ist noch nicht korrekt. Pruefe {rows} Zeilenunterschiede und {cols} Spaltenunterschiede."
+    "sqlHintUnknownColumnSuggestion": "Die Spalte \"{name}\" gibt es hier nicht. Meintest du \"{suggestion}\"?",
+    "sqlFeedbackSuccess": "Deine Abfrage ist richtig.",
+    "sqlFeedbackFailure": "Noch nicht ganz richtig. Vergleiche {rows} Zeilen und {cols} Spalten."
   }
 }
