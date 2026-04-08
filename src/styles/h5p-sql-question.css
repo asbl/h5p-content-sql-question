@@ -46,10 +46,10 @@
 
 .h5p-sql-question .sql-preview-section {
     border: 1px solid #d9d1c1;
-    border-radius: 12px;
     padding: 0.85rem;
     background: linear-gradient(180deg, #fffdf8 0%, #f8f4ea 100%);
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: visible;
 }
 
 .h5p-sql-question .sql-preview-heading {
@@ -60,6 +60,7 @@
 .h5p-sql-question .sql-preview-body {
     display: grid;
     gap: 0.75rem;
+    min-width: 0;
 }
 
 .h5p-sql-question .sql-preview-note,
@@ -146,10 +147,11 @@
 }
 
 .h5p-sql-question .page-tables table,
-.h5p-sql-question .page-sql_result table {
-    width: 100%;
+.h5p-sql-question .page-sql_result table,
+.h5p-sql-question .sql-preview-body-result table {
+    width: max-content;
+    min-width: 100%;
     font-family: monospace;
-    min-width: max-content;
 }
 
 .h5p-sql-question .testcases-area table {
