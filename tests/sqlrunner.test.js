@@ -47,4 +47,22 @@ describe('SQLRunner', () => {
 
     expect(runner.quoteIdentifier('demo "table"')).toBe('"demo ""table"""');
   });
+
+  it('resolves database options lazily before preparing the database', async () => {
+    const run = vi.fn();
+    const Database = vi.fn(() => ({ run }));
+    const runner = new SQLRunner({}, {
+      getDatabaseOptions: vi.fn().mockResolvedValue({
+        sqlPrepare: 'CREATE TABLE world(id INT);',
+      }),
+    });
+
+    runner.setup = vi.fn();
+    runner.SQL = { Database };
+
+    await runner._prepareDatabase();
+
+    expect(runner.options.getDatabaseOptions).toHaveBeenCalledTimes(1);
+    expect(run).toHaveBeenCalledWith('CREATE TABLE world(id INT);');
+  });
 });

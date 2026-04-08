@@ -51,6 +51,7 @@ describe('SQLQuestion', () => {
       dbFile: 'resolved.db',
       sqlPrepare: 'CREATE TABLE demo(id INT);',
       solutionPrepare: 'SELECT * FROM demo;',
+      getDatabaseOptions: expect.any(Function),
     });
   });
 

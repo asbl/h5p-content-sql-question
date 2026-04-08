@@ -131,6 +131,7 @@ export default class SQLQuestion extends H5P.CodeQuestion {
     return {
       ...super.getRuntimeOptions(),
       ...this.databaseOptions,
+      getDatabaseOptions: () => this.getDatabaseOptions(),
     };
   }
 
