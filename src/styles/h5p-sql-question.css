@@ -321,11 +321,11 @@
 }
 
 .h5p-sql-question .tables-table .table-row-match td {
-    background: #fff;
+    background: #eef8f0;
 }
 
 .h5p-sql-question .tables-table .table-row-mismatch td {
-    background: #fffdfa;
+    background: #fff2ef;
 }
 
 .h5p-sql-question .tables-table td.table-cell-mismatch {
@@ -343,8 +343,38 @@
     color: #2f2a21;
 }
 
+.h5p-sql-question .tables-inline-summary-status.matching {
+    color: #24553a;
+}
+
+.h5p-sql-question .tables-inline-summary-status.not-matching {
+    color: #8a3421;
+}
+
+.h5p-sql-question .tables-inline-status-icon {
+    display: inline-block;
+    width: 1.1rem;
+    margin-right: 0.25rem;
+    font-weight: 700;
+}
+
 .h5p-sql-question .tables-diff-details {
     margin-top: 0.9rem;
+}
+
+.h5p-sql-question .table-row-status-symbol {
+    display: inline-block;
+    width: 1rem;
+    margin-right: 0.35rem;
+    font-weight: 700;
+}
+
+.h5p-sql-question .table-row-match .table-row-status-symbol {
+    color: #2e6a42;
+}
+
+.h5p-sql-question .table-row-mismatch .table-row-status-symbol {
+    color: #9e4022;
 }
 
 .h5p-sql-question  .sql-editor textarea {
