@@ -164,8 +164,14 @@
 }
 
 .h5p-sql-question .tables-tester-area {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+}
 
+.h5p-sql-question .tables-tester-wrapper {
+    display: grid;
+    gap: 0.9rem;
 }
 
 .h5p-sql-question .tables-diff-summary {
@@ -175,9 +181,10 @@
 }
 
 .h5p-sql-question .tables-diff-status {
-    border-radius: 10px;
+    border-radius: 0;
     padding: 0.75rem;
     background: #fff;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.02);
 }
 
 .h5p-sql-question .tables-diff-status.matching {
@@ -199,6 +206,7 @@
     display: grid;
     gap: 0.5rem;
     margin: 0;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
 }
 
 .h5p-sql-question .tables-diff-item {
@@ -206,7 +214,7 @@
     gap: 0.2rem;
     padding: 0.6rem 0.75rem;
     border: 1px solid #e3dfd3;
-    border-radius: 10px;
+    border-radius: 0;
     background: #fff;
 }
 
@@ -230,11 +238,46 @@
 }
 
 .h5p-sql-question .console-column {
-    border: 1px solid darkgray;
-    padding: 5px;
-    width: 50%;
-    overflow: scroll;
-    border-radius: 10px;
+    display: grid;
+    align-content: start;
+    gap: 0.6rem;
+    min-width: 0;
+    border: 1px solid #cfc7b7;
+    padding: 0.75rem;
+    overflow: hidden;
+    border-radius: 0;
+    background: #fffdfa;
+    box-shadow: 0 1px 2px rgba(44, 33, 12, 0.06);
+}
+
+.h5p-sql-question .console-column h4 {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.h5p-sql-question .tables-output,
+.h5p-sql-question .tables-expected {
+    margin: 0;
+    padding: 0;
+    overflow: auto;
+    background: transparent;
+}
+
+.h5p-sql-question .tables-output table,
+.h5p-sql-question .tables-expected table {
+    width: max-content;
+    min-width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+}
+
+.h5p-sql-question .tables-output th,
+.h5p-sql-question .tables-expected th {
+    position: sticky;
+    top: 0;
+    background: #f4efdf;
+    z-index: 1;
 }
 
 .h5p-sql-question .matching .console-column {
@@ -248,10 +291,10 @@
 }
 
 .h5p-sql-question .console-column:first-child {
-    margin-right: 2px;
+    margin-right: 0;
 }
 .h5p-sql-question .console-column:last-child {
-    margin-left: 2px;
+    margin-left: 0;
 }
 
 
@@ -284,7 +327,7 @@
     display: grid;
     gap: 0.35rem;
     padding: 0.75rem;
-    border-radius: 10px;
+    border-radius: 0;
     border: 1px solid #d9d1c1;
     background: #fff;
     margin-bottom: 0.75rem;
@@ -336,10 +379,10 @@
     }
 
     .h5p-sql-question .tables-tester-area {
-        flex-direction: column;
+        grid-template-columns: minmax(0, 1fr);
     }
 
     .h5p-sql-question .console-column {
-        width: 100%;
+        width: auto;
     }
 }
