@@ -6,6 +6,5 @@ export default class SQLManualRuntime extends H5P.ManualRuntimeMixin(SQLRuntime)
     super.onSuccess();
     this.codeContainer.renderSQLResult?.(resultObject, resultTable);
     this.codeContainer.getButtonManager().showButton('showCodeButton');
-    this.codeContainer.getPageManager().showPage('sql_result');
   }
 }

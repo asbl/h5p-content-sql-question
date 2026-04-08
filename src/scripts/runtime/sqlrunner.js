@@ -58,10 +58,12 @@ export default class SQLRunner {
    */
   async execute(code) {
     this.stopped = false;
+    this.runtime?.codeContainer?.showLoadingSpinner?.();
 
     try {
       await this.setup();
       await this._prepareDatabase();
+      this.runtime?.codeContainer?.hideLoadingSpinner?.();
 
       if (this.stopped) return;
       const result = this.db.exec(code);
@@ -72,6 +74,7 @@ export default class SQLRunner {
       await this.onError(error);
     }
     finally {
+      this.runtime?.codeContainer?.hideLoadingSpinner?.();
       this.runtime?.question?.trigger?.('resize');
     }
   }
@@ -110,6 +113,14 @@ export default class SQLRunner {
    */
   async _prepareDatabase() {
     if (this.db) return;
+
+    if (typeof this.options?.getDatabaseOptions === 'function') {
+      const resolvedOptions = await this.options.getDatabaseOptions();
+      this.dbFile = resolvedOptions?.dbFile ?? this.dbFile;
+      this.sqlPrepare = resolvedOptions?.sqlPrepare ?? this.sqlPrepare;
+      this.solutionPrepare = resolvedOptions?.solutionPrepare ?? this.solutionPrepare;
+    }
+
     if (this.dbFile) {
       const buffer = await fetch(this.dbFile).then((r) => r.arrayBuffer());
       this.db = new this.SQL.Database(new Uint8Array(buffer));

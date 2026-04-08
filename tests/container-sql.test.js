@@ -26,31 +26,21 @@ describe('SQLCodeContainer', () => {
 
     expect(addButtons).toHaveBeenCalledWith([
       expect.objectContaining({ identifier: 'run_spinner', label: '...' }),
-      expect.objectContaining({ identifier: 'tables_button', label: 'Tables' }),
-      expect.objectContaining({ identifier: 'sql_result_button', label: 'Result' }),
     ]);
   });
 
-  it('uses localized SQL labels for navigation buttons', () => {
+  it('registers only the temporary loading button for SQL', () => {
     const container = new SQLCodeContainer();
     const addButtons = vi.fn();
     const hideButton = vi.fn();
-
-    container.l10n = {
-      sqlTables: 'Tabellen',
-      sqlResult: 'Ergebnis',
-    };
     container.getButtonManager = () => ({ addButtons, hideButton });
 
     container.registerSQLButtons();
 
     expect(addButtons).toHaveBeenCalledWith([
       expect.objectContaining({ identifier: 'run_spinner', label: '...' }),
-      expect.objectContaining({ identifier: 'tables_button', label: 'Tabellen' }),
-      expect.objectContaining({ identifier: 'sql_result_button', label: 'Ergebnis' }),
     ]);
     expect(hideButton).toHaveBeenCalledWith('run_spinner');
-    expect(hideButton).toHaveBeenCalledWith('sql_result_button');
   });
 
   it('hides the console during setup even when the console manager has no hideConsole method', async () => {
@@ -62,7 +52,6 @@ describe('SQLCodeContainer', () => {
     };
 
     container.registerSQLButtons = vi.fn();
-    container.registerSQLPages = vi.fn();
     container.registerDOM = vi.fn();
     container.unregisterInheritedRunObservers = vi.fn();
     container.registerSQLObservers = vi.fn();
@@ -139,8 +128,8 @@ describe('SQLCodeContainer', () => {
       prepareForRun,
       run,
       resultTables,
+      tableResults: new Map(),
     }));
-    container.appendDatabaseTable = vi.fn();
 
     await container.renderDatabaseTables();
 
@@ -150,8 +139,6 @@ describe('SQLCodeContainer', () => {
     expect(prepareForRun).toHaveBeenCalledTimes(1);
     expect(run).toHaveBeenCalledTimes(1);
     expect(container.databaseTables).toBe(resultTables);
-    expect(container.appendDatabaseTable).toHaveBeenNthCalledWith(1, 'world', '<p>| world table |</p>');
-    expect(container.appendDatabaseTable).toHaveBeenNthCalledWith(2, 'city', '<p>| city table |</p>');
   });
 
   it('renders an explanatory empty-result message when a query returns no rows', () => {
@@ -163,66 +150,33 @@ describe('SQLCodeContainer', () => {
     expect(markup).toContain('0 rows across 1 columns');
   });
 
-  it('updates the SQL result button without rebuilding the container DOM', () => {
+  it('renders available tables preview without example rows', () => {
+    const container = new SQLCodeContainer();
+    container.databasePreviewBody = { innerHTML: '' };
+    container.databaseTableResults = new Map([
+      ['world', [{ columns: ['name', 'population'], values: [['Germany', 1]] }]],
+    ]);
+
+    container.renderDatabasePreview();
+
+    expect(container.databasePreviewBody.innerHTML).toContain('world');
+    expect(container.databasePreviewBody.innerHTML).toContain('population');
+    expect(container.databasePreviewBody.innerHTML).not.toContain('Germany');
+    expect(container.databasePreviewBody.innerHTML).not.toContain('<table');
+  });
+
+  it('shows and hides the loading spinner directly', () => {
     const container = new SQLCodeContainer();
     const buttonManager = {
-      setActive: vi.fn(),
-      updateButton: vi.fn(),
+      showButton: vi.fn(),
+      hideButton: vi.fn(),
     };
 
     container.getButtonManager = () => buttonManager;
-    container.registerDOM = vi.fn();
-    container.resizeActionHandler = vi.fn();
+    container.showLoadingSpinner();
+    container.hideLoadingSpinner();
 
-    container.handleSQLResultPageShown();
-
-    expect(buttonManager.updateButton).toHaveBeenCalledWith('sql_result_button', true);
-    expect(buttonManager.setActive).toHaveBeenCalledWith('sql_result_button');
-    expect(container.registerDOM).not.toHaveBeenCalled();
-    expect(container.resizeActionHandler).toHaveBeenCalledTimes(1);
-  });
-
-  it('hides the SQL result button when the result page is empty', () => {
-    const container = new SQLCodeContainer();
-    const buttonManager = {
-      updateButton: vi.fn(),
-    };
-
-    container.getButtonManager = () => buttonManager;
-    container.getPageManager = () => ({ isEmpty: vi.fn().mockReturnValue(true) });
-    container.resizeActionHandler = vi.fn();
-
-    container.handleSQLResultPageHidden();
-
-    expect(buttonManager.updateButton).toHaveBeenCalledWith('sql_result_button', false);
-    expect(container.resizeActionHandler).toHaveBeenCalledTimes(1);
-  });
-
-  it('renders database table headings as text instead of HTML', () => {
-    const container = new SQLCodeContainer();
-    const originalDocument = globalThis.document;
-
-    container.l10n = {
-      sqlTableHeading: 'Tabelle: {name}',
-    };
-
-    globalThis.document = {
-      createElement: vi.fn((tagName) => ({
-        tagName: tagName.toUpperCase(),
-        textContent: '',
-        innerHTML: '',
-      })),
-    };
-
-    try {
-      const heading = container.createTableHeading('<img src=x onerror=alert(1)>');
-
-      expect(heading.textContent).toBe('Tabelle: <img src=x onerror=alert(1)>');
-
-      expect(heading.innerHTML).toBe('');
-    }
-    finally {
-      globalThis.document = originalDocument;
-    }
+    expect(buttonManager.showButton).toHaveBeenCalledWith('run_spinner');
+    expect(buttonManager.hideButton).toHaveBeenCalledWith('run_spinner');
   });
 });
