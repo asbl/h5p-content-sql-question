@@ -250,10 +250,20 @@
     box-shadow: 0 1px 2px rgba(44, 33, 12, 0.06);
 }
 
+.h5p-sql-question .tables-tester-area .console-column:last-child {
+    border-color: #ddd6c7;
+    background: #faf8f3;
+    box-shadow: none;
+}
+
 .h5p-sql-question .console-column h4 {
     margin: 0;
     font-size: 0.95rem;
     font-weight: 700;
+}
+
+.h5p-sql-question .tables-tester-area .console-column:last-child h4 {
+    color: #6f6658;
 }
 
 .h5p-sql-question .tables-output,
@@ -285,6 +295,25 @@
     top: 0;
     background: #f4efdf;
     z-index: 1;
+}
+
+.h5p-sql-question .tables-expected table {
+    background: #fbfaf7;
+}
+
+.h5p-sql-question .tables-expected th,
+.h5p-sql-question .tables-expected .table-column-match,
+.h5p-sql-question .tables-expected .table-column-mismatch {
+    background: #eee8da;
+    color: #645a49;
+}
+
+.h5p-sql-question .tables-expected .table-row-match td,
+.h5p-sql-question .tables-expected .table-row-mismatch td,
+.h5p-sql-question .tables-expected td.table-cell-mismatch {
+    background: #fbfaf7;
+    color: inherit;
+    font-weight: 400;
 }
 
 .h5p-sql-question .matching .console-column {
@@ -360,6 +389,19 @@
 
 .h5p-sql-question .tables-diff-details {
     margin-top: 0.9rem;
+}
+
+.h5p-sql-question .copy-badge-button {
+    padding: 0.18rem 0.5rem;
+    border-color: #cfc7b7;
+    background: #f6f1e6;
+    color: #5c5343;
+    box-shadow: none;
+}
+
+.h5p-sql-question .copy-badge-button:hover {
+    background: #efe7d7;
+    border-color: #b8af9e;
 }
 
 .h5p-sql-question .table-row-status-symbol {
