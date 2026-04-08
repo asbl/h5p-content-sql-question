@@ -4,6 +4,7 @@ import {
   getSQLQuestionL10nValue,
   tSQLQuestion,
 } from '../src/scripts/services/sqlquestion-l10n.js';
+import { createCodeQuestionL10n } from '../../H5P.CodeQuestion-6.0/src/scripts/services/codequestion-l10n.js';
 
 describe('SQLQuestion localization', () => {
   beforeEach(() => {
@@ -27,6 +28,14 @@ describe('SQLQuestion localization', () => {
 
   it('falls back to bundled defaults when H5P reports missing translations', () => {
     expect(getSQLQuestionL10nValue({}, 'sqlResult')).toBe('Result');
+  });
+
+  it('falls back to SQLQuestion defaults for SQL-only keys on a CodeQuestion l10n proxy', () => {
+    const proxiedL10n = createCodeQuestionL10n({
+      run: 'Ausfuehren',
+    });
+
+    expect(getSQLQuestionL10nValue(proxiedL10n, 'sqlPreviewTablesTitle')).toBe('Available Tables');
   });
 
   it('formats placeholders in localized SQL strings', () => {

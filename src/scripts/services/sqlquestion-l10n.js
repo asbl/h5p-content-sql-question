@@ -49,8 +49,13 @@ function getLibraryString(key) {
  * @returns {string} Localized string.
  */
 export function getSQLQuestionL10nValue(l10n = {}, key) {
-  const value = typeof l10n[key] === 'string' && l10n[key] !== ''
-    ? l10n[key]
+  const hasOwnOverride = typeof l10n === 'object'
+    && l10n !== null
+    && Object.prototype.hasOwnProperty.call(l10n, key);
+
+  const ownValue = hasOwnOverride ? l10n[key] : undefined;
+  const value = typeof ownValue === 'string' && ownValue !== ''
+    ? ownValue
     : getLibraryString(key);
 
   if (typeof value !== 'string' || value === '') {
