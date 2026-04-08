@@ -3,6 +3,22 @@
     "sqlTables": "Tables",
     "sqlResult": "Result",
     "sqlTableHeading": "Table: {name}",
-    "sqlRowsDisplayed": "...({shown} of {total} rows shown)"
+    "sqlRowsDisplayed": "...({shown} of {total} rows shown)",
+    "sqlPreviewTablesTitle": "Available Tables",
+    "sqlPreviewResultTitle": "Your Result",
+    "sqlPreviewNoTables": "No tables are available yet.",
+    "sqlPreviewTableMeta": "{columns} columns, {rows} rows",
+    "sqlResultSuccessTitle": "Query completed successfully.",
+    "sqlResultSuccessDescription": "Your query returned {rows} rows across {columns} columns.",
+    "sqlResultNoRowsTitle": "The query is correct, but nothing matches.",
+    "sqlResultNoRowsDescription": "The query returned 0 rows across {columns} columns. Try adjusting your filter.",
+    "sqlResultEmptyTitle": "No result table was produced.",
+    "sqlResultEmptyDescription": "The query ran, but it did not return a table yet.",
+    "sqlHintUnknownTable": "Table \"{name}\" was not found.",
+    "sqlHintUnknownTableSuggestion": "Table \"{name}\" was not found. Did you mean \"{suggestion}\"?",
+    "sqlHintUnknownColumn": "Column \"{name}\" was not found.",
+    "sqlHintUnknownColumnSuggestion": "Column \"{name}\" was not found. Did you mean \"{suggestion}\"?",
+    "sqlFeedbackSuccess": "Your query returns the correct columns and rows.",
+    "sqlFeedbackFailure": "Your query is not correct yet. Check {rows} row differences and {cols} column differences."
   }
 }

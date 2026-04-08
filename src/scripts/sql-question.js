@@ -1,6 +1,7 @@
 import SQLCodeContainer from './container/container-sql';
 import SQLTestRuntime from './runtime/runtime-test-sql';
 import SQLManualRuntime from './runtime/runtime-manual-sql';
+import { tSQLQuestion } from './services/sqlquestion-l10n';
 
 const SUPPORTED_SQL_EDITOR_MODES = ['code'];
 
@@ -131,6 +132,23 @@ export default class SQLQuestion extends H5P.CodeQuestion {
       ...super.getRuntimeOptions(),
       ...this.databaseOptions,
     };
+  }
+
+  getFeedbackText() {
+    const comparison = this.codeTester?.lastComparison;
+
+    if (!comparison) {
+      return super.getFeedbackText();
+    }
+
+    if (comparison.identical) {
+      return tSQLQuestion(this.contentL10n, 'sqlFeedbackSuccess');
+    }
+
+    return tSQLQuestion(this.contentL10n, 'sqlFeedbackFailure', {
+      rows: comparison.nonMatchingRows,
+      cols: comparison.nonMatchingCols,
+    });
   }
 
   getContainerClass() {

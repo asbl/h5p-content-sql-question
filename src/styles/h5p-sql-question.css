@@ -25,6 +25,107 @@
     padding: 5px;
 }
 
+.h5p-sql-question .page-code {
+    overflow: visible;
+}
+
+.h5p-sql-question .sql-code-workspace {
+    display: grid;
+    gap: 1rem;
+    align-items: start;
+}
+
+.h5p-sql-question .sql-editor-pane {
+    min-width: 0;
+}
+
+.h5p-sql-question .sql-preview-pane {
+    display: grid;
+    gap: 1rem;
+}
+
+.h5p-sql-question .sql-preview-section {
+    border: 1px solid #d9d1c1;
+    border-radius: 12px;
+    padding: 0.85rem;
+    background: linear-gradient(180deg, #fffdf8 0%, #f8f4ea 100%);
+    overflow: hidden;
+}
+
+.h5p-sql-question .sql-preview-heading {
+    margin: 0 0 0.75rem;
+    font-size: 1rem;
+}
+
+.h5p-sql-question .sql-preview-body {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.h5p-sql-question .sql-preview-note,
+.h5p-sql-question .sql-result-card p {
+    margin: 0;
+}
+
+.h5p-sql-question .sql-table-card {
+    border: 1px solid #e4dccb;
+    border-radius: 10px;
+    padding: 0.75rem;
+    background: #fff;
+}
+
+.h5p-sql-question .sql-table-card-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    align-items: baseline;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.h5p-sql-question .sql-table-card-header h4,
+.h5p-sql-question .sql-table-card-header p {
+    margin: 0;
+}
+
+.h5p-sql-question .sql-column-chip-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-bottom: 0.75rem;
+}
+
+.h5p-sql-question .sql-column-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.15rem 0.55rem;
+    border-radius: 999px;
+    background: #efe6ce;
+    color: #5c4a1d;
+    font-size: 0.85rem;
+}
+
+.h5p-sql-question .sql-preview-table-scroll,
+.h5p-sql-question .page-tables,
+.h5p-sql-question .page-sql_result,
+.h5p-sql-question .tables-expected,
+.h5p-sql-question .tables-output {
+    overflow-x: auto;
+}
+
+.h5p-sql-question .sql-preview-table {
+    width: 100%;
+    min-width: max-content;
+    font-family: monospace;
+}
+
+.h5p-sql-question .sql-preview-table th,
+.h5p-sql-question .sql-preview-table td {
+    border: 1px solid #e1d7c2;
+    padding: 0.35rem 0.5rem;
+    text-align: left;
+}
+
 .h5p-sql-question .button-sql-result {
     background-color: #1FB397;
     display: none;
@@ -48,6 +149,7 @@
 .h5p-sql-question .page-sql_result table {
     width: 100%;
     font-family: monospace;
+    min-width: max-content;
 }
 
 .h5p-sql-question .testcases-area table {
@@ -62,6 +164,57 @@
 .h5p-sql-question .tables-tester-area {
     display: flex;
 
+}
+
+.h5p-sql-question .tables-diff-summary {
+    display: grid;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.h5p-sql-question .tables-diff-status {
+    border-radius: 10px;
+    padding: 0.75rem;
+    background: #fff;
+}
+
+.h5p-sql-question .tables-diff-status.matching {
+    border: 1px solid #4aa36b;
+    background: #f2fbf5;
+}
+
+.h5p-sql-question .tables-diff-status.not-matching {
+    border: 1px solid #d47982;
+    background: #fff5f6;
+}
+
+.h5p-sql-question .tables-diff-status strong,
+.h5p-sql-question .tables-diff-status p {
+    margin: 0;
+}
+
+.h5p-sql-question .tables-diff-list {
+    display: grid;
+    gap: 0.5rem;
+    margin: 0;
+}
+
+.h5p-sql-question .tables-diff-item {
+    display: grid;
+    gap: 0.2rem;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid #e3dfd3;
+    border-radius: 10px;
+    background: #fff;
+}
+
+.h5p-sql-question .tables-diff-item dt,
+.h5p-sql-question .tables-diff-item dd {
+    margin: 0;
+}
+
+.h5p-sql-question .tables-diff-item dt {
+    font-weight: 700;
 }
 
 .h5p-sql-question .page-tables table th,
@@ -125,6 +278,66 @@
     display: none;
 }
 
+.h5p-sql-question .sql-result-card {
+    display: grid;
+    gap: 0.35rem;
+    padding: 0.75rem;
+    border-radius: 10px;
+    border: 1px solid #d9d1c1;
+    background: #fff;
+    margin-bottom: 0.75rem;
+}
+
+.h5p-sql-question .sql-result-card-success {
+    border-color: #6fb38a;
+    background: #f2fbf5;
+}
+
+.h5p-sql-question .sql-result-card-empty {
+    border-color: #d9b167;
+    background: #fff9ec;
+}
+
+.h5p-sql-question .sql-result-status {
+    font-weight: 700;
+}
+
+.h5p-sql-question .cm-inline-diagnostic {
+    text-decoration-line: underline;
+    text-decoration-style: wavy;
+    text-underline-offset: 0.18rem;
+}
+
+.h5p-sql-question .cm-inline-diagnostic-warning {
+    text-decoration-color: #c88a00;
+    background: rgba(255, 214, 102, 0.18);
+}
+
 .h5p-sql-question .page-sql_result th {
     text-align: left;
+}
+
+@media (min-width: 980px) {
+    .h5p-sql-question .sql-code-workspace {
+        grid-template-columns: minmax(0, 1.55fr) minmax(20rem, 1fr);
+    }
+
+    .h5p-sql-question .sql-preview-pane {
+        position: sticky;
+        top: 0.75rem;
+    }
+}
+
+@media (max-width: 979px) {
+    .h5p-sql-question .sql-code-workspace {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .h5p-sql-question .tables-tester-area {
+        flex-direction: column;
+    }
+
+    .h5p-sql-question .console-column {
+        width: 100%;
+    }
 }

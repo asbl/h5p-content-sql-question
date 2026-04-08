@@ -108,4 +108,26 @@ describe('SQLQuestion', () => {
     expect(blocksQuestion.getCodeContainerOptions().editorMode).toBe('code');
     expect(bothQuestion.getCodeContainerOptions().editorMode).toBe('code');
   });
+
+  it('derives SQL-specific feedback text from table comparison details', () => {
+    const question = new SQLQuestion({
+      l10n: {},
+    }, 1);
+
+    question.codeTester = {
+      lastComparison: {
+        identical: true,
+      },
+    };
+
+    expect(question.getFeedbackText()).toBe('Your query returns the correct columns and rows.');
+
+    question.codeTester.lastComparison = {
+      identical: false,
+      nonMatchingRows: 2,
+      nonMatchingCols: 1,
+    };
+
+    expect(question.getFeedbackText()).toBe('Your query is not correct yet. Check 2 row differences and 1 column differences.');
+  });
 });

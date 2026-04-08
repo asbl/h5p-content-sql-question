@@ -41,6 +41,7 @@ export default class SQLTablesRuntimeSingle extends SQLRuntime {
    */
   onSuccess(results, resultTable) {
     this.resultTable = resultTable;
+    this.resultObject = results;
 
   }
 

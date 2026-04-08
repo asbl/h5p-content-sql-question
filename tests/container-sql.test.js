@@ -67,6 +67,9 @@ describe('SQLCodeContainer', () => {
     container.unregisterInheritedRunObservers = vi.fn();
     container.registerSQLObservers = vi.fn();
     container.renderDatabaseTables = vi.fn().mockResolvedValue();
+    container.getPageManager = vi.fn(() => ({
+      getPage: vi.fn(() => null),
+    }));
     container.getConsoleManager = vi.fn(() => ({
       consoleUID: 'console-1',
     }));
@@ -149,6 +152,15 @@ describe('SQLCodeContainer', () => {
     expect(container.databaseTables).toBe(resultTables);
     expect(container.appendDatabaseTable).toHaveBeenNthCalledWith(1, 'world', '<p>| world table |</p>');
     expect(container.appendDatabaseTable).toHaveBeenNthCalledWith(2, 'city', '<p>| city table |</p>');
+  });
+
+  it('renders an explanatory empty-result message when a query returns no rows', () => {
+    const container = new SQLCodeContainer();
+
+    const markup = container.buildResultMarkup([{ columns: ['name'], values: [] }], '| name |');
+
+    expect(markup).toContain('The query is correct, but nothing matches.');
+    expect(markup).toContain('0 rows across 1 columns');
   });
 
   it('updates the SQL result button without rebuilding the container DOM', () => {

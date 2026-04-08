@@ -30,6 +30,7 @@ export default class SQLTablesAllRuntime extends SQLRuntime {
      * @type {Map<string, object>}
      */
     this.tablesMap = new Map();
+    this.tableResults = new Map();
 
     this._codeContainer = codeContainer;
 
@@ -63,6 +64,7 @@ export default class SQLTablesAllRuntime extends SQLRuntime {
       tablesRuntime.prepareForRun();
       await tablesRuntime.run();
       this.resultTables.set(tableName, tablesRuntime.resultTable);
+      this.tableResults.set(tableName, tablesRuntime.resultObject);
     }
 
 
