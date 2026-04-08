@@ -117,6 +117,40 @@ describe('SQLCodeContainer', () => {
     expect(typeof mocks.tablesRuntimeCtor.mock.calls[0][0]).toBe('function');
   });
 
+  it('loads database tables and appends every rendered table to the tables page', async () => {
+    const container = new SQLCodeContainer();
+    const databaseOptions = { dbFile: 'db.sqlite' };
+    const resultTables = new Map([
+      ['world', '| world table |'],
+      ['city', '| city table |'],
+    ]);
+    const setup = vi.fn();
+    const prepareForRun = vi.fn();
+    const run = vi.fn().mockResolvedValue();
+
+    container.options = {
+      getDatabaseOptions: vi.fn().mockResolvedValue(databaseOptions),
+    };
+    container.createTablesRuntime = vi.fn(() => ({
+      setup,
+      prepareForRun,
+      run,
+      resultTables,
+    }));
+    container.appendDatabaseTable = vi.fn();
+
+    await container.renderDatabaseTables();
+
+    expect(container.options.getDatabaseOptions).toHaveBeenCalledTimes(1);
+    expect(container.createTablesRuntime).toHaveBeenCalledWith(databaseOptions);
+    expect(setup).toHaveBeenCalledTimes(1);
+    expect(prepareForRun).toHaveBeenCalledTimes(1);
+    expect(run).toHaveBeenCalledTimes(1);
+    expect(container.databaseTables).toBe(resultTables);
+    expect(container.appendDatabaseTable).toHaveBeenNthCalledWith(1, 'world', '<p>| world table |</p>');
+    expect(container.appendDatabaseTable).toHaveBeenNthCalledWith(2, 'city', '<p>| city table |</p>');
+  });
+
   it('updates the SQL result button without rebuilding the container DOM', () => {
     const container = new SQLCodeContainer();
     const buttonManager = {
