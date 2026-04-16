@@ -1,16 +1,21 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock('sql.js', () => ({
-  default: vi.fn(),
+vi.mock('../src/scripts/runtime/services/sqljs-runtime-service.js', () => ({
+  warmupSharedSqlJs: vi.fn(),
+  resetSharedSqlJsState: vi.fn(),
 }));
 
-const { default: initSqlJs } = await import('sql.js');
+const {
+  resetSharedSqlJsState,
+  warmupSharedSqlJs,
+} = await import('../src/scripts/runtime/services/sqljs-runtime-service.js');
 const { default: SQLRunner } = await import('../src/scripts/runtime/sqlrunner.js');
 
 describe('SQLRunner', () => {
   beforeEach(() => {
     SQLRunner.resetSharedState();
-    initSqlJs.mockReset();
+    warmupSharedSqlJs.mockReset();
+    resetSharedSqlJsState.mockClear();
   });
 
   it('formats truncated row messages from SQLQuestion localization fallbacks', () => {
@@ -74,7 +79,7 @@ describe('SQLRunner', () => {
 
   it('reuses the shared sql.js runtime across runner instances', async () => {
     const sqlModule = { Database: vi.fn() };
-    initSqlJs.mockResolvedValue(sqlModule);
+    warmupSharedSqlJs.mockResolvedValue(sqlModule);
 
     const firstRunner = new SQLRunner({}, {});
     const secondRunner = new SQLRunner({}, {});
@@ -82,8 +87,21 @@ describe('SQLRunner', () => {
     await firstRunner.setup();
     await secondRunner.setup();
 
-    expect(initSqlJs).toHaveBeenCalledTimes(1);
+    expect(warmupSharedSqlJs).toHaveBeenCalledTimes(2);
     expect(firstRunner.SQL).toBe(sqlModule);
     expect(secondRunner.SQL).toBe(sqlModule);
+  });
+
+  it('passes the configured sql.js URL into runtime warmup', async () => {
+    const sqlModule = { Database: vi.fn() };
+    warmupSharedSqlJs.mockResolvedValue(sqlModule);
+
+    const runner = new SQLRunner({}, {
+      sqlJsUrl: 'https://cdn.example.com/sql.js/dist/',
+    });
+
+    await runner.setup();
+
+    expect(warmupSharedSqlJs).toHaveBeenCalledWith('https://cdn.example.com/sql.js/dist/');
   });
 });

@@ -31,9 +31,10 @@ describe('SQLCodeContainer', () => {
   it('falls back to bundled SQL labels when no content overrides exist', () => {
     const container = new SQLCodeContainer();
     const addButtons = vi.fn();
+    const getButton = vi.fn(() => null);
 
     container.l10n = {};
-    container.getButtonManager = () => ({ addButtons, hideButton: vi.fn() });
+    container.getButtonManager = () => ({ addButtons, hideButton: vi.fn(), getButton });
 
     container.registerSQLButtons();
 
@@ -46,7 +47,8 @@ describe('SQLCodeContainer', () => {
     const container = new SQLCodeContainer();
     const addButtons = vi.fn();
     const hideButton = vi.fn();
-    container.getButtonManager = () => ({ addButtons, hideButton });
+    const getButton = vi.fn(() => null);
+    container.getButtonManager = () => ({ addButtons, hideButton, getButton });
 
     container.registerSQLButtons();
 
@@ -155,10 +157,10 @@ describe('SQLCodeContainer', () => {
     expect(container.databaseTables).toBe(resultTables);
   });
 
-  it('renders an explanatory empty-result message when a query returns no rows', () => {
+  it('renders an explanatory empty-result message when a query returns no rows', async () => {
     const container = new SQLCodeContainer();
 
-    const markup = container.buildResultMarkup([{ columns: ['name'], values: [] }], '| name |');
+    const markup = await container.buildResultMarkup([{ columns: ['name'], values: [] }], '| name |');
 
     expect(markup).toContain('The query is correct, but nothing matches.');
     expect(markup).toContain('0 rows across 1 columns');
@@ -192,5 +194,83 @@ describe('SQLCodeContainer', () => {
 
     expect(buttonManager.showButton).toHaveBeenCalledWith('run_spinner');
     expect(buttonManager.hideButton).toHaveBeenCalledWith('run_spinner');
+  });
+
+  it('builds schema-based autocomplete config from the loaded database tables', () => {
+    const container = new SQLCodeContainer();
+    container.databaseTableResults = new Map([
+      ['world', [{ columns: ['name', 'population'], values: [] }]],
+      ['city', [{ columns: ['id'], values: [] }]],
+    ]);
+
+    expect(container.buildSQLAutocompleteConfig()).toEqual({
+      schema: {
+        world: ['name', 'population'],
+        city: ['id'],
+      },
+      upperCaseKeywords: true,
+    });
+  });
+
+  it('applies SQL autocomplete config to the editor manager after loading tables', async () => {
+    const container = new SQLCodeContainer();
+    const setLanguageConfig = vi.fn();
+    const setCompletionConfig = vi.fn();
+    const databaseOptions = { dbFile: 'db.sqlite' };
+    const tableResults = new Map([
+      ['world', [{ columns: ['name'], values: [] }]],
+    ]);
+
+    container.getEditorManager = vi.fn(() => ({ setLanguageConfig, setCompletionConfig }));
+    container.renderDatabasePreview = vi.fn();
+    container.options = {
+      getDatabaseOptions: vi.fn().mockResolvedValue(databaseOptions),
+    };
+    container.createTablesRuntime = vi.fn(() => ({
+      setup: vi.fn(),
+      prepareForRun: vi.fn(),
+      run: vi.fn().mockResolvedValue(),
+      resultTables: new Map(),
+      tableResults,
+    }));
+
+    await container.renderDatabaseTables();
+
+    expect(setLanguageConfig).toHaveBeenCalledWith({
+      schema: {
+        world: ['name'],
+      },
+      upperCaseKeywords: true,
+      defaultTable: 'world',
+    });
+    expect(setCompletionConfig).toHaveBeenCalledTimes(1);
+    expect(setCompletionConfig.mock.calls[0][0]).toEqual(expect.objectContaining({
+      activateOnTyping: true,
+      maxRenderedOptions: 200,
+      override: [expect.any(Function)],
+    }));
+  });
+
+  it('hides the run result section until a run output is rendered and clears it again', async () => {
+    const container = new SQLCodeContainer();
+
+    container.l10n = {};
+    container.resizeActionHandler = vi.fn();
+    container.resultPreviewBody = { innerHTML: '' };
+    container.resultSection = { hidden: false };
+
+    container.clearRunOutput();
+
+    expect(container.resultSection.hidden).toBe(true);
+
+    await container.renderSQLResult([{ columns: ['name'], values: [['Oslo']] }], '| name |\n| --- |\n| Oslo |');
+
+    expect(container.resultSection.hidden).toBe(false);
+    expect(container.resultPreviewBody.innerHTML).toContain('sql-result-card');
+
+    container.clearRunOutput();
+
+    expect(container.resultSection.hidden).toBe(true);
+    expect(container.resultPreviewBody.innerHTML).toBe('');
   });
 });

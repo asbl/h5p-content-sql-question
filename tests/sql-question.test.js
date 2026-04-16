@@ -30,6 +30,13 @@ describe('SQLQuestion', () => {
     const options = question.getCodeContainerOptions();
 
     expect(options.fromParentContainer).toBe(true);
+    expect(options.blocklyCdnUrl).toBe('');
+    expect(options.codeMirrorCdnUrl).toBe('');
+    expect(options.markdownCdnUrl).toBe('');
+    expect(options.fontAwesomeCdnUrl).toBe('');
+    expect(options.sweetAlertCdnUrl).toBe('');
+    expect(options.jsZipCdnUrl).toBe('');
+    expect(options.sqlJsUrl).toBe('');
     await options.getDatabaseOptions();
     expect(question.getDatabaseOptions).toHaveBeenCalledTimes(1);
   });
@@ -52,6 +59,37 @@ describe('SQLQuestion', () => {
       sqlPrepare: 'CREATE TABLE demo(id INT);',
       solutionPrepare: 'SELECT * FROM demo;',
       getDatabaseOptions: expect.any(Function),
+      sweetAlertCdnUrl: '',
+      sqlJsUrl: '',
+    });
+  });
+
+  it('passes advanced CDN options into container and runtime options', () => {
+    const question = new SQLQuestion({
+      advancedOptions: {
+        blocklyCdnUrl: 'https://cdn.example.com/blockly/',
+        codeMirrorCdnUrl: 'https://cdn.example.com/codemirror/',
+        markdownCdnUrl: 'https://cdn.example.com/markdown/',
+        fontAwesomeCdnUrl: 'https://cdn.example.com/fontawesome.css',
+        sweetAlertCdnUrl: 'https://cdn.example.com/sweetalert/',
+        jsZipCdnUrl: 'https://cdn.example.com/jszip/',
+        sqlJsUrl: 'https://cdn.example.com/sql.js/dist/',
+      },
+    }, 1);
+
+    expect(question.getCodeContainerOptions()).toMatchObject({
+      blocklyCdnUrl: 'https://cdn.example.com/blockly/',
+      codeMirrorCdnUrl: 'https://cdn.example.com/codemirror/',
+      markdownCdnUrl: 'https://cdn.example.com/markdown/',
+      fontAwesomeCdnUrl: 'https://cdn.example.com/fontawesome.css',
+      sweetAlertCdnUrl: 'https://cdn.example.com/sweetalert/',
+      jsZipCdnUrl: 'https://cdn.example.com/jszip/',
+      sqlJsUrl: 'https://cdn.example.com/sql.js/dist/',
+    });
+
+    expect(question.getRuntimeOptions()).toMatchObject({
+      sweetAlertCdnUrl: 'https://cdn.example.com/sweetalert/',
+      sqlJsUrl: 'https://cdn.example.com/sql.js/dist/',
     });
   });
 

@@ -45,7 +45,8 @@ module.exports = {
   },
   output: {
     filename: 'h5p-sql-question.js',
-    path: path.resolve(__dirname, 'dist')
+    path: path.resolve(__dirname, 'dist'),
+    clean: true
   },
   target: ['web', 'es5'], // IE11
   module: {

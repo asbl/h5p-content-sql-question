@@ -1,8 +1,6 @@
-import initSqlJs from 'sql.js';
 import AsciiTable from 'ascii-table';
 import { tSQLQuestion } from '../services/sqlquestion-l10n';
-
-const sqlWasm = new URL('sql.js/dist/sql-wasm.wasm', import.meta.url);
+import { resetSharedSqlJsState, warmupSharedSqlJs } from './services/sqljs-runtime-service';
 
 /**
  * SQLRunner
@@ -11,25 +9,11 @@ const sqlWasm = new URL('sql.js/dist/sql-wasm.wasm', import.meta.url);
  */
 export default class SQLRunner {
   static warmup() {
-    if (SQLRunner.sharedSQL) {
-      return Promise.resolve(SQLRunner.sharedSQL);
-    }
-
-    if (!SQLRunner.sharedSetupPromise) {
-      SQLRunner.sharedSetupPromise = initSqlJs({
-        locateFile: () => sqlWasm.href
-      }).then((sql) => {
-        SQLRunner.sharedSQL = sql;
-        return sql;
-      });
-    }
-
-    return SQLRunner.sharedSetupPromise;
+    return warmupSharedSqlJs();
   }
 
   static resetSharedState() {
-    SQLRunner.sharedSQL = null;
-    SQLRunner.sharedSetupPromise = null;
+    resetSharedSqlJsState();
   }
 
   /**
@@ -64,7 +48,7 @@ export default class SQLRunner {
   async setup() {
     if (this._initialized) return;
 
-    this.SQL = await SQLRunner.warmup();
+    this.SQL = await warmupSharedSqlJs(this.options.sqlJsUrl);
 
     this._initialized = true;
   }

@@ -2,6 +2,13 @@ import SQLCodeContainer from './container/container-sql';
 import SQLTestRuntime from './runtime/runtime-test-sql';
 import SQLManualRuntime from './runtime/runtime-manual-sql';
 import { tSQLQuestion } from './services/sqlquestion-l10n';
+import worldPrepare from './databases/world.js';
+import world23Prepare from './databases/world23.js';
+import world23v2Prepare from './databases/world23v2.js';
+import busPrepare from './databases/bus.js';
+import teachersPrepare from './databases/teachers.js';
+import nobelPrepare from './databases/nobel.js';
+import moviePrepare from './databases/movie.js';
 
 const SUPPORTED_SQL_EDITOR_MODES = ['code'];
 
@@ -79,6 +86,13 @@ export default class SQLQuestion extends H5P.CodeQuestion {
       ...inheritedOptions,
       getDatabaseOptions: () => this.getDatabaseOptions(),
       editorMode: normalizeSQLEditorMode(this.params.editorSettings?.editorMode),
+      blocklyCdnUrl: String(this.params.advancedOptions?.blocklyCdnUrl || '').trim(),
+      codeMirrorCdnUrl: String(this.params.advancedOptions?.codeMirrorCdnUrl || '').trim(),
+      markdownCdnUrl: String(this.params.advancedOptions?.markdownCdnUrl || '').trim(),
+      fontAwesomeCdnUrl: String(this.params.advancedOptions?.fontAwesomeCdnUrl || '').trim(),
+      sweetAlertCdnUrl: String(this.params.advancedOptions?.sweetAlertCdnUrl || '').trim(),
+      jsZipCdnUrl: String(this.params.advancedOptions?.jsZipCdnUrl || '').trim(),
+      sqlJsUrl: String(this.params.advancedOptions?.sqlJsUrl || '').trim(),
     };
   }
 
@@ -91,20 +105,16 @@ export default class SQLQuestion extends H5P.CodeQuestion {
   async _getSQLPrepare(params) {
 
     const dbMap = {
-      world: () => import('./databases/world.js'),
-      world23: () => import('./databases/world23.js'),
-      world23v2: () => import('./databases/world23v2.js'),
-      bus: () => import('./databases/bus.js'),
-      teachers: () => import('./databases/teachers.js'),
-      nobel: () => import('./databases/nobel.js'),
-      movie: () => import('./databases/movie.js'),
+      world: worldPrepare,
+      world23: world23Prepare,
+      world23v2: world23v2Prepare,
+      bus: busPrepare,
+      teachers: teachersPrepare,
+      nobel: nobelPrepare,
+      movie: moviePrepare,
     };
     const key = params.databaseSettings?.selectDatabase;
-    const loader = dbMap[key];
-    if (!loader) return null;
-
-    const module = await loader();
-    return module.default;
+    return dbMap[key] ?? null;
   }
 
   /**
@@ -132,6 +142,8 @@ export default class SQLQuestion extends H5P.CodeQuestion {
       ...super.getRuntimeOptions(),
       ...this.databaseOptions,
       getDatabaseOptions: () => this.getDatabaseOptions(),
+      sweetAlertCdnUrl: String(this.params.advancedOptions?.sweetAlertCdnUrl || '').trim(),
+      sqlJsUrl: String(this.params.advancedOptions?.sqlJsUrl || '').trim(),
     };
   }
 

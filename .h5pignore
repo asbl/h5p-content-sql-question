@@ -18,3 +18,5 @@ CONTRIBUTING.md
 package.json
 package-lock.json
 worknotes
+lib/sql.js
+assets/example.png

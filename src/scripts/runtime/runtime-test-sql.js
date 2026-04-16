@@ -48,10 +48,11 @@ export default class SQLTestRuntime extends H5P.TestRuntimeMixin(SQLRuntime) {
    * @param {Array} resultObject - Raw SQL.js result array
    * @param {string} resultTable - Formatted ASCII table string
    */
-  onSuccess(resultObject, resultTable) {
-    super.onSuccess();
+  async onSuccess(resultObject, resultTable) {
     this.outputHandler(resultObject, resultTable);
     this.codeContainer?.hideConsole?.();
+    await super.onSuccess();
+    this.resizeActionHandler?.();
   }
 
   /**

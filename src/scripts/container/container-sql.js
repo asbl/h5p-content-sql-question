@@ -1,9 +1,16 @@
 import SQLTablesAllRuntime from '../runtime/runtime-tables-all.sql';
 import SQLRunner from '../runtime/sqlrunner';
+import { createSQLCompletionSource } from '../services/sql-autocomplete';
 import { analyzeSQLHints, buildSQLSchema } from '../services/sql-guidance';
 import { getSQLQuestionL10nValue, tSQLQuestion } from '../services/sqlquestion-l10n';
 
 export default class SQLCodeContainer extends H5P.CodeQuestionContainer {
+
+  enforceSQLToolbarState() {
+    const buttonManager = this.getButtonManager();
+    buttonManager?.showButton?.('runButton');
+    buttonManager?.hideButton?.('showCodeButton');
+  }
 
   enhanceOptionCallbacks() {
     if (this.options?._sqlCallbacksEnhanced) {
@@ -70,9 +77,14 @@ export default class SQLCodeContainer extends H5P.CodeQuestionContainer {
     const editorPane = document.createElement('div');
     editorPane.className = 'sql-editor-pane';
 
+    const editorContent = document.createElement('div');
+    editorContent.className = 'sql-editor-content';
+
     while (codePage.firstChild) {
-      editorPane.appendChild(codePage.firstChild);
+      editorContent.appendChild(codePage.firstChild);
     }
+
+    editorPane.appendChild(editorContent);
 
     this.databasePreviewBody = document.createElement('div');
     this.databasePreviewBody.className = 'sql-preview-body sql-preview-body-database';
@@ -82,17 +94,32 @@ export default class SQLCodeContainer extends H5P.CodeQuestionContainer {
 
     const previewPane = document.createElement('aside');
     previewPane.className = 'sql-preview-pane';
-    previewPane.appendChild(this.createPreviewSection('sqlPreviewTablesTitle', this.databasePreviewBody));
-    previewPane.appendChild(this.createPreviewSection('sqlPreviewResultTitle', this.resultPreviewBody));
+
+    const tablesSection = this.createPreviewSection(
+      'sqlPreviewTablesTitle',
+      this.databasePreviewBody,
+      'sql-preview-section-tables'
+    );
+    const resultSection = this.createPreviewSection(
+      'sqlPreviewResultTitle',
+      this.resultPreviewBody,
+      'sql-result-section'
+    );
+
+    this.resultSection = resultSection;
+    this.clearRunOutput();
+
+    previewPane.appendChild(tablesSection);
 
     workspace.appendChild(editorPane);
     workspace.appendChild(previewPane);
+    workspace.appendChild(resultSection);
     codePage.appendChild(workspace);
   }
 
-  createPreviewSection(labelKey, body) {
+  createPreviewSection(labelKey, body, extraClass = '') {
     const section = document.createElement('section');
-    section.className = 'sql-preview-section';
+    section.className = `sql-preview-section ${extraClass}`.trim();
 
     const heading = document.createElement('h3');
     heading.className = 'sql-preview-heading';
@@ -103,8 +130,65 @@ export default class SQLCodeContainer extends H5P.CodeQuestionContainer {
     return section;
   }
 
+  clearRunOutput() {
+    if (this.resultPreviewBody) {
+      this.resultPreviewBody.innerHTML = '';
+    }
+
+    if (this.resultSection) {
+      this.resultSection.hidden = true;
+    }
+
+    this.resizeActionHandler?.();
+  }
+
   getDatabaseSchema() {
     return buildSQLSchema(this.databaseTableResults);
+  }
+
+  buildSQLAutocompleteSchema() {
+    if (!(this.databaseTableResults instanceof Map)) {
+      return {};
+    }
+
+    const schema = {};
+
+    this.databaseTableResults.forEach((tableResult, tableName) => {
+      const table = Array.isArray(tableResult) ? tableResult[0] : tableResult;
+      const columns = Array.isArray(table?.columns) ? table.columns : [];
+
+      if (typeof tableName !== 'string' || tableName.trim() === '') {
+        return;
+      }
+
+      schema[tableName] = columns
+        .filter((column) => typeof column === 'string' && column.trim() !== '');
+    });
+
+    return schema;
+  }
+
+  buildSQLAutocompleteConfig() {
+    const schema = this.buildSQLAutocompleteSchema();
+    const tableNames = Object.keys(schema);
+
+    return {
+      schema,
+      upperCaseKeywords: true,
+      ...(tableNames.length === 1 ? { defaultTable: tableNames[0] } : {}),
+    };
+  }
+
+  applySQLAutocomplete() {
+    const editorManager = this.getEditorManager?.();
+    const databaseSchema = this.getDatabaseSchema();
+
+    editorManager?.setLanguageConfig?.(this.buildSQLAutocompleteConfig());
+    editorManager?.setCompletionConfig?.({
+      override: [createSQLCompletionSource(databaseSchema)],
+      activateOnTyping: true,
+      maxRenderedOptions: 200,
+    });
   }
 
   handleEditorCodeChanged(code = '') {
@@ -197,6 +281,10 @@ export default class SQLCodeContainer extends H5P.CodeQuestionContainer {
     ]);
 
     this.getButtonManager().hideButton('run_spinner');
+
+    const runButton = this.getButtonManager().getButton('runButton');
+    runButton?.querySelector('.button-icon')?.remove();
+    this.enforceSQLToolbarState();
   }
 
   /**
@@ -220,9 +308,7 @@ export default class SQLCodeContainer extends H5P.CodeQuestionContainer {
       'page:hide:code',
       new H5P.PageHideObserver(
         this.getPageManager().getPage('code'),
-        () => {
-          this.getButtonManager().hideButton('runButton');
-        },
+        () => this.enforceSQLToolbarState(),
       ),
     );
 
@@ -230,11 +316,31 @@ export default class SQLCodeContainer extends H5P.CodeQuestionContainer {
       'page:show:code',
       new H5P.PageShowObserver(
         this.getPageManager().getPage('code'),
-        () => {
-          this.getButtonManager().showButton('runButton');
-        },
+        () => this.enforceSQLToolbarState(),
       ),
     );
+  }
+
+  showCodePage() {
+    super.showCodePage();
+    this.enforceSQLToolbarState();
+  }
+
+  onHideCodePage() {
+    this.clearPendingEditorFocus();
+    this.enforceSQLToolbarState();
+  }
+
+  hideRunButton() {
+    this.enforceSQLToolbarState();
+  }
+
+  showRunButton() {
+    this.enforceSQLToolbarState();
+  }
+
+  hideCodeButton() {
+    this.getButtonManager().hideButton('showCodeButton');
   }
 
   /**
@@ -281,6 +387,7 @@ export default class SQLCodeContainer extends H5P.CodeQuestionContainer {
     this.databaseTables = tablesRuntime.resultTables;
     this.databaseTableResults = tablesRuntime.tableResults;
 
+    this.applySQLAutocomplete();
     this.renderDatabasePreview();
   }
 
@@ -336,7 +443,7 @@ export default class SQLCodeContainer extends H5P.CodeQuestionContainer {
     };
   }
 
-  buildResultMarkup(resultObject = [], resultTable = '') {
+  async buildResultMarkup(resultObject = [], resultTable = '') {
     const metrics = this.getResultMetrics(resultObject);
 
     if (!metrics.hasColumns) {
@@ -361,20 +468,30 @@ export default class SQLCodeContainer extends H5P.CodeQuestionContainer {
         columns: metrics.columnCount,
       });
 
+    const resultTableMarkup = resultTable
+      ? await new H5P.Markdown(resultTable).getHTML()
+      : '';
+
     return `
       <div class="sql-result-card ${metrics.hasRows ? 'sql-result-card-success' : 'sql-result-card-empty'}">
         <p class="sql-result-status">${status}</p>
         <p>${summary}</p>
       </div>
-      ${resultTable ? new H5P.Markdown(resultTable).getHTML() : ''}
+      ${resultTableMarkup}
     `;
   }
 
-  renderSQLResult(resultObject = [], resultTable = '') {
-    const markup = this.buildResultMarkup(resultObject, resultTable);
+  async renderSQLResult(resultObject = [], resultTable = '') {
+    const markup = await this.buildResultMarkup(resultObject, resultTable);
     if (this.resultPreviewBody) {
       this.resultPreviewBody.innerHTML = markup;
     }
+
+    if (this.resultSection) {
+      this.resultSection.hidden = false;
+    }
+
+    this.resizeActionHandler?.();
   }
 
 

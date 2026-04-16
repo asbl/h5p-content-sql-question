@@ -36,10 +36,11 @@ export default class SQLSolutionRuntime extends H5P.SolutionRuntimeMixin(SQLRunt
    * @param {Array} resultObject - Raw SQL.js result array
    * @param {string} resultTable - Formatted ASCII table string
    */
-  onSuccess(resultObject, resultTable) {
-    super.onSuccess();
+  async onSuccess(resultObject, resultTable) {
     this.outputHandler(resultObject, resultTable);
     this.codeContainer?.hideConsole?.();
+    await super.onSuccess();
+    this.resizeActionHandler?.();
   }
 
   /**
