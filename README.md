@@ -18,7 +18,6 @@ This H5P content type:
 * Executes queries in the student’s browser using a JavaScript SQL engine (sql.js).
 * Compares student query results against expected table results.
 * Works without server‑side execution, making it safe and portable across hosts.
-* This content type is based on the H5P question framework and is designed for database teaching and assessment workflows.
 
 ## Key Features
 
