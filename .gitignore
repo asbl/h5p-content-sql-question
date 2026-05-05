@@ -2,6 +2,9 @@
 dist
 logs
 *.log
+
+# Generated SQLite database binaries (rebuilt by prebuild script)
+src/scripts/databases/*.db
 npm-debug.log*
 
 # Runtime data

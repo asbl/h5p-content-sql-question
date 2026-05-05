@@ -104,17 +104,17 @@ describe('SQLQuestion', () => {
       },
     }, 2);
 
-    question._getSQLPrepare = vi.fn().mockResolvedValue('CREATE TABLE world(id INT);');
+    question._getPresetDbUrl = vi.fn().mockReturnValue('databases/world.db');
     question.getDecodedCode = vi.fn((code) => `decoded:${code}`);
 
     const first = await question.getDatabaseOptions();
     const second = await question.getDatabaseOptions();
 
-    expect(question._getSQLPrepare).toHaveBeenCalledTimes(1);
+    expect(question._getPresetDbUrl).toHaveBeenCalledTimes(1);
     expect(question.getDecodedCode).toHaveBeenCalledWith('SELECT 1;');
     expect(first).toEqual({
-      dbFile: null,
-      sqlPrepare: 'CREATE TABLE world(id INT);',
+      dbFile: 'databases/world.db',
+      sqlPrepare: null,
       solutionPrepare: 'decoded:SELECT 1;',
     });
     expect(second).toBe(first);

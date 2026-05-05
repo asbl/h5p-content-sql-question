@@ -116,6 +116,10 @@
                                         
                         "value": "nobel",
                         "label": "Nobel Database (from sqlzoo)"
+                    },
+                    {
+                        "value": "euro2012",
+                        "label": "Euro 2012"
                     }
                 ],
                 "default": "world"

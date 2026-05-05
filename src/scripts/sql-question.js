@@ -2,13 +2,14 @@ import SQLCodeContainer from './container/container-sql';
 import SQLTestRuntime from './runtime/runtime-test-sql';
 import SQLManualRuntime from './runtime/runtime-manual-sql';
 import { tSQLQuestion } from './services/sqlquestion-l10n';
-import worldPrepare from './databases/world.js';
-import world23Prepare from './databases/world23.js';
-import world23v2Prepare from './databases/world23v2.js';
-import busPrepare from './databases/bus.js';
-import teachersPrepare from './databases/teachers.js';
-import nobelPrepare from './databases/nobel.js';
-import moviePrepare from './databases/movie.js';
+import worldDbUrl from './databases/world.db';
+import world23DbUrl from './databases/world23.db';
+import world23v2DbUrl from './databases/world23v2.db';
+import busDbUrl from './databases/bus.db';
+import teachersDbUrl from './databases/teachers.db';
+import nobelDbUrl from './databases/nobel.db';
+import movieDbUrl from './databases/movie.db';
+import euro2012DbUrl from './databases/euro2012.db';
 
 const SUPPORTED_SQL_EDITOR_MODES = ['code'];
 
@@ -47,9 +48,10 @@ export default class SQLQuestion extends H5P.CodeQuestion {
    */
   async getDatabaseOptions() {
     if (!this.hasInitializedDatabaseOptions) {
+      const presetDbUrl = this._getPresetDbUrl(this.params);
       this.databaseOptions = {
         ...this.databaseOptions,
-        sqlPrepare: await this._getSQLPrepare(this.params),
+        dbFile: this.databaseOptions.dbFile || presetDbUrl || null,
         solutionPrepare: this.params.gradingSettings?.gradingMethod === 'bySolution'
           ? this.getDecodedCode(this.params.gradingSettings.solution)
           : null,
@@ -97,24 +99,23 @@ export default class SQLQuestion extends H5P.CodeQuestion {
   }
 
   /**
-   * Select SQL prepare code based on selected database
+   * Returns the bundled .db asset URL for a named preset, or null.
    * @private
    * @param {object} params
-   * @returns {Promise<string|null>}
+   * @returns {string|null}
    */
-  async _getSQLPrepare(params) {
-
+  _getPresetDbUrl(params) {
     const dbMap = {
-      world: worldPrepare,
-      world23: world23Prepare,
-      world23v2: world23v2Prepare,
-      bus: busPrepare,
-      teachers: teachersPrepare,
-      nobel: nobelPrepare,
-      movie: moviePrepare,
+      world: worldDbUrl,
+      world23: world23DbUrl,
+      world23v2: world23v2DbUrl,
+      bus: busDbUrl,
+      teachers: teachersDbUrl,
+      nobel: nobelDbUrl,
+      movie: movieDbUrl,
+      euro2012: euro2012DbUrl,
     };
-    const key = params.databaseSettings?.selectDatabase;
-    return dbMap[key] ?? null;
+    return dbMap[params.databaseSettings?.selectDatabase] ?? null;
   }
 
   /**

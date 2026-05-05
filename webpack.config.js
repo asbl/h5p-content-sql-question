@@ -86,6 +86,14 @@ module.exports = {
       {
         test: /\.wasm$/,
         type: 'asset/inline',
+      },
+      {
+        test: /\.db$/,
+        include: path.join(__dirname, 'src/scripts/databases'),
+        type: 'asset/resource',
+        generator: {
+          filename: 'databases/[name][ext]'
+        }
       }
     ]
   },
