@@ -102,6 +102,33 @@ export default class SQLQuestion extends H5P.CodeQuestion {
     };
   }
 
+  getLoadedBundleBasePath() {
+    const scripts = typeof document?.querySelectorAll === 'function'
+      ? Array.from(document.querySelectorAll('script[src]'))
+      : [];
+
+    const bundleScript = scripts.find((script) => (
+      /\/libraries\/H5P\.SQLQuestion-[^/]+\/dist\/h5p-sql-question\.js(?:\?.*)?$/i.test(script.src)
+    ));
+
+    return bundleScript?.src
+      ? bundleScript.src.replace(/\/dist\/h5p-sql-question\.js(?:\?.*)?$/i, '')
+      : '';
+  }
+
+  getLibraryAssetPath(relativePath) {
+    const bundleBasePath = this.getLoadedBundleBasePath();
+    if (bundleBasePath) {
+      return `${bundleBasePath}/${String(relativePath || '').replace(/^\/+/, '')}`;
+    }
+
+    if (typeof this.getLibraryFilePath === 'function') {
+      return this.getLibraryFilePath(relativePath);
+    }
+
+    return String(relativePath || '');
+  }
+
   /**
    * Returns the bundled .db asset URL for a named preset, or null.
    * @private
@@ -128,8 +155,8 @@ export default class SQLQuestion extends H5P.CodeQuestion {
     // Derive the final runtime URL from the active H5P library path.
     // This avoids relying on webpack publicPath auto-detection on LMS hosts.
     const fileName = toBundledDbFileName(assetUrl);
-    if (fileName && typeof this.getLibraryFilePath === 'function') {
-      return this.getLibraryFilePath(`dist/databases/${fileName}`);
+    if (fileName) {
+      return this.getLibraryAssetPath(`dist/databases/${fileName}`);
     }
 
     return assetUrl;

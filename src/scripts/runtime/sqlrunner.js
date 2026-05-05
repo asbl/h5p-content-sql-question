@@ -125,7 +125,17 @@ export default class SQLRunner {
     }
 
     if (this.dbFile) {
-      const buffer = await fetch(this.dbFile).then((r) => r.arrayBuffer());
+      const response = await fetch(this.dbFile);
+      if (!response.ok) {
+        throw new Error(`Failed to load database file (${response.status}) from ${this.dbFile}`);
+      }
+
+      const contentType = response.headers?.get?.('content-type') || '';
+      if (/text\/html/i.test(contentType)) {
+        throw new Error(`Database URL returned HTML instead of SQLite binary: ${this.dbFile}`);
+      }
+
+      const buffer = await response.arrayBuffer();
       this.db = new this.SQL.Database(new Uint8Array(buffer));
     }
     else {
