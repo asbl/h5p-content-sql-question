@@ -100,21 +100,22 @@ describe('SQLQuestion', () => {
         solution: 'SELECT 1;',
       },
       databaseSettings: {
+        select_db: 'from_defaults',
         selectDatabase: 'world',
       },
     }, 2);
 
-    question._getPresetDbUrl = vi.fn().mockReturnValue('databases/world.db');
+    question._getSQLPrepare = vi.fn().mockReturnValue('CREATE TABLE world(name TEXT);');
     question.getDecodedCode = vi.fn((code) => `decoded:${code}`);
 
     const first = await question.getDatabaseOptions();
     const second = await question.getDatabaseOptions();
 
-    expect(question._getPresetDbUrl).toHaveBeenCalledTimes(1);
+    expect(question._getSQLPrepare).toHaveBeenCalledTimes(1);
     expect(question.getDecodedCode).toHaveBeenCalledWith('SELECT 1;');
     expect(first).toEqual({
-      dbFile: 'databases/world.db',
-      sqlPrepare: null,
+      dbFile: null,
+      sqlPrepare: 'CREATE TABLE world(name TEXT);',
       solutionPrepare: 'decoded:SELECT 1;',
     });
     expect(second).toBe(first);
@@ -170,48 +171,27 @@ describe('SQLQuestion', () => {
     expect(question.getFeedbackText()).toBe('Your query is not correct yet. Check 2 row differences and 1 column differences.');
   });
 
-  it('resolves preset db path from loaded SQLQuestion bundle URL', () => {
-    const originalDocument = globalThis.document;
+  it('uses uploaded database file when select_db is from_file', async () => {
     const question = new SQLQuestion({
       databaseSettings: {
-        selectDatabase: 'world',
+        select_db: 'from_file',
+        dbFile: { path: 'custom.sqlite' },
       },
-    }, 1);
+    }, 9);
 
-    question.getLibraryFilePath = vi.fn((path) => `fallback:${path}`);
-    globalThis.document = {
-      ...originalDocument,
-      querySelectorAll: vi.fn(() => ([
-        {
-          src: 'https://example.test/pluginfile.php/1/mod_h5pactivity/libraries/H5P.SQLQuestion-6.73/dist/h5p-sql-question.js?cache=123',
-        },
-      ])),
-    };
+    const options = await question.getDatabaseOptions();
 
-    try {
-      const dbUrl = question._getPresetDbUrl(question.params);
-
-      expect(dbUrl).toBe('https://example.test/pluginfile.php/1/mod_h5pactivity/libraries/H5P.SQLQuestion-6.73/dist/databases/world.db');
-      expect(question.getLibraryFilePath).not.toHaveBeenCalled();
-    }
-    finally {
-      globalThis.document = originalDocument;
-    }
+    expect(options.dbFile).toBe('resolved:9:custom.sqlite');
+    expect(options.sqlPrepare).toBeNull();
   });
 
-  it('falls back to getLibraryFilePath when bundle URL cannot be detected', () => {
+  it('returns null sqlPrepare for unknown default preset name', () => {
     const question = new SQLQuestion({
       databaseSettings: {
-        selectDatabase: 'world',
+        selectDatabase: 'does-not-exist',
       },
     }, 1);
 
-    question.getLoadedBundleBasePath = vi.fn(() => '');
-    question.getLibraryFilePath = vi.fn((path) => `resolved:${path}`);
-
-    const dbUrl = question._getPresetDbUrl(question.params);
-
-    expect(dbUrl).toBe('resolved:dist/databases/world.db');
-    expect(question.getLibraryFilePath).toHaveBeenCalledWith('dist/databases/world.db');
+    expect(question._getSQLPrepare(question.params)).toBeNull();
   });
 });

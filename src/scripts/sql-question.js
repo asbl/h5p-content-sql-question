@@ -2,23 +2,19 @@ import SQLCodeContainer from './container/container-sql';
 import SQLTestRuntime from './runtime/runtime-test-sql';
 import SQLManualRuntime from './runtime/runtime-manual-sql';
 import { tSQLQuestion } from './services/sqlquestion-l10n';
-import worldDbUrl from './databases/world.db';
-import world23DbUrl from './databases/world23.db';
-import world23v2DbUrl from './databases/world23v2.db';
-import busDbUrl from './databases/bus.db';
-import teachersDbUrl from './databases/teachers.db';
-import nobelDbUrl from './databases/nobel.db';
-import movieDbUrl from './databases/movie.db';
-import euro2012DbUrl from './databases/euro2012.db';
+import worldSql from './databases/world.js';
+import world23Sql from './databases/world23.js';
+import world23v2Sql from './databases/world23v2.js';
+import busSql from './databases/bus.js';
+import teachersSql from './databases/teachers.js';
+import nobelSql from './databases/nobel.js';
+import movieSql from './databases/movie.js';
+import euro2012Sql from './databases/euro2012.js';
 
 const SUPPORTED_SQL_EDITOR_MODES = ['code'];
 
 function normalizeSQLEditorMode(mode) {
   return SUPPORTED_SQL_EDITOR_MODES.includes(mode) ? mode : 'code';
-}
-
-function toBundledDbFileName(assetUrl) {
-  return String(assetUrl || '').split('/').pop() || '';
 }
 
 export default class SQLQuestion extends H5P.CodeQuestion {
@@ -52,10 +48,15 @@ export default class SQLQuestion extends H5P.CodeQuestion {
    */
   async getDatabaseOptions() {
     if (!this.hasInitializedDatabaseOptions) {
-      const presetDbUrl = this._getPresetDbUrl(this.params);
+      const selectDb = this.params.databaseSettings?.select_db;
       this.databaseOptions = {
         ...this.databaseOptions,
-        dbFile: this.databaseOptions.dbFile || presetDbUrl || null,
+        dbFile: selectDb === 'from_file'
+          ? (this.databaseOptions.dbFile || null)
+          : null,
+        sqlPrepare: selectDb === 'from_defaults'
+          ? this._getSQLPrepare(this.params)
+          : null,
         solutionPrepare: this.params.gradingSettings?.gradingMethod === 'bySolution'
           ? this.getDecodedCode(this.params.gradingSettings.solution)
           : null,
@@ -102,64 +103,19 @@ export default class SQLQuestion extends H5P.CodeQuestion {
     };
   }
 
-  getLoadedBundleBasePath() {
-    const scripts = typeof document?.querySelectorAll === 'function'
-      ? Array.from(document.querySelectorAll('script[src]'))
-      : [];
-
-    const bundleScript = scripts.find((script) => (
-      /\/libraries\/H5P\.SQLQuestion-[^/]+\/dist\/h5p-sql-question\.js(?:\?.*)?$/i.test(script.src)
-    ));
-
-    return bundleScript?.src
-      ? bundleScript.src.replace(/\/dist\/h5p-sql-question\.js(?:\?.*)?$/i, '')
-      : '';
-  }
-
-  getLibraryAssetPath(relativePath) {
-    const bundleBasePath = this.getLoadedBundleBasePath();
-    if (bundleBasePath) {
-      return `${bundleBasePath}/${String(relativePath || '').replace(/^\/+/, '')}`;
-    }
-
-    if (typeof this.getLibraryFilePath === 'function') {
-      return this.getLibraryFilePath(relativePath);
-    }
-
-    return String(relativePath || '');
-  }
-
-  /**
-   * Returns the bundled .db asset URL for a named preset, or null.
-   * @private
-   * @param {object} params
-   * @returns {string|null}
-   */
-  _getPresetDbUrl(params) {
+  _getSQLPrepare(params) {
     const dbMap = {
-      world: worldDbUrl,
-      world23: world23DbUrl,
-      world23v2: world23v2DbUrl,
-      bus: busDbUrl,
-      teachers: teachersDbUrl,
-      nobel: nobelDbUrl,
-      movie: movieDbUrl,
-      euro2012: euro2012DbUrl,
+      world: worldSql,
+      world23: world23Sql,
+      world23v2: world23v2Sql,
+      bus: busSql,
+      teachers: teachersSql,
+      nobel: nobelSql,
+      movie: movieSql,
+      euro2012: euro2012Sql,
     };
 
-    const assetUrl = dbMap[params.databaseSettings?.selectDatabase] ?? null;
-    if (!assetUrl) {
-      return null;
-    }
-
-    // Derive the final runtime URL from the active H5P library path.
-    // This avoids relying on webpack publicPath auto-detection on LMS hosts.
-    const fileName = toBundledDbFileName(assetUrl);
-    if (fileName) {
-      return this.getLibraryAssetPath(`dist/databases/${fileName}`);
-    }
-
-    return assetUrl;
+    return dbMap[params.databaseSettings?.selectDatabase] ?? null;
   }
 
   /**

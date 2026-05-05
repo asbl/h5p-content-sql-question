@@ -21,14 +21,14 @@ module.exports = {
       'https': false,
       'stream': false,
       'crypto': false,
-    } 
+    }
   },
   optimization: {
     minimize: isProd,
     minimizer: [
       new TerserPlugin({
         terserOptions: {
-          compress:{
+          compress: {
             drop_console: isProd,
           }
         }
@@ -51,13 +51,13 @@ module.exports = {
   target: ['web', 'es5'], // IE11
   module: {
     rules: [
-      
+
       {
         test: /\.js$/,
         exclude: /node_modules/,
         loader: 'babel-loader'
       },
-      
+
       {
         test: /\.(s[ac]ss|css)$/,
         use: [
@@ -86,14 +86,6 @@ module.exports = {
       {
         test: /\.wasm$/,
         type: 'asset/inline',
-      },
-      {
-        test: /\.db$/,
-        include: path.join(__dirname, 'src/scripts/databases'),
-        type: 'asset/resource',
-        generator: {
-          filename: 'databases/[name][ext]'
-        }
       }
     ]
   },
