@@ -12,8 +12,31 @@ export default class SQLRuntime extends H5P.Runtime {
   setup(codeContainer) {
     super.setup(codeContainer);
 
+    if (!this._consoleManager && typeof this.createConsoleManager === 'function') {
+      this._consoleManager = this.createConsoleManager();
+    }
+
     // Initialize SQLRunner if not already present
     this.runner = this.getRunner();
+  }
+
+  /**
+   * Returns a console manager if one is available.
+   * @returns {object|null} Console manager instance.
+   */
+  getConsoleManagerSafe() {
+    return this._consoleManager
+      ?? this.codeContainer?.getConsoleManager?.()
+      ?? null;
+  }
+
+  /**
+   * Writes to console manager only if it exists.
+   * @param {string} text - Text to print.
+   * @param {string} [title] - Optional title.
+   */
+  writeConsoleSafe(text, title) {
+    this.getConsoleManagerSafe()?.write?.(text, title);
   }
 
   /**

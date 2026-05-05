@@ -47,4 +47,21 @@ describe('SQLRuntime', () => {
       tableFormat: 'html',
     });
   });
+
+  it('creates a console manager during setup when available', () => {
+    const runtime = new SQLRuntime();
+    const consoleManager = { write: vi.fn() };
+    runtime.createConsoleManager = vi.fn(() => consoleManager);
+
+    runtime.setup({});
+
+    expect(runtime.createConsoleManager).toHaveBeenCalledTimes(1);
+    expect(runtime._consoleManager).toBe(consoleManager);
+  });
+
+  it('writes safely even when no console manager exists', () => {
+    const runtime = new SQLRuntime();
+
+    expect(() => runtime.writeConsoleSafe('message')).not.toThrow();
+  });
 });

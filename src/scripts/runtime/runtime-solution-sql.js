@@ -16,7 +16,7 @@ export default class SQLSolutionRuntime extends H5P.SolutionRuntimeMixin(SQLRunt
     const testCaseIndex = this.codeTester.session.testCaseIndex;
     const testCaseLabel = this.codeTester.l10n.testCase;
 
-    this.codeContainer.getConsoleManager().write(resultTable, `${testCaseLabel} ${testCaseIndex + 1}`);
+    this.writeConsoleSafe(resultTable, `${testCaseLabel} ${testCaseIndex + 1}`);
   }
 
   /**
