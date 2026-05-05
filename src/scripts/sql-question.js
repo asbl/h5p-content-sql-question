@@ -17,6 +17,10 @@ function normalizeSQLEditorMode(mode) {
   return SUPPORTED_SQL_EDITOR_MODES.includes(mode) ? mode : 'code';
 }
 
+function toBundledDbFileName(assetUrl) {
+  return String(assetUrl || '').split('/').pop() || '';
+}
+
 export default class SQLQuestion extends H5P.CodeQuestion {
 
   /**
@@ -115,7 +119,20 @@ export default class SQLQuestion extends H5P.CodeQuestion {
       movie: movieDbUrl,
       euro2012: euro2012DbUrl,
     };
-    return dbMap[params.databaseSettings?.selectDatabase] ?? null;
+
+    const assetUrl = dbMap[params.databaseSettings?.selectDatabase] ?? null;
+    if (!assetUrl) {
+      return null;
+    }
+
+    // Derive the final runtime URL from the active H5P library path.
+    // This avoids relying on webpack publicPath auto-detection on LMS hosts.
+    const fileName = toBundledDbFileName(assetUrl);
+    if (fileName && typeof this.getLibraryFilePath === 'function') {
+      return this.getLibraryFilePath(`dist/databases/${fileName}`);
+    }
+
+    return assetUrl;
   }
 
   /**
