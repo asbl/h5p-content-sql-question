@@ -40,6 +40,23 @@ export default class SQLRuntime extends H5P.Runtime {
   }
 
   /**
+   * Handles runtime errors without assuming a console manager exists.
+   * @param {string} error - Runtime error text.
+   */
+  onError(error) {
+    console.warn('Error while executing SQL code:\n', error);
+    this.writeConsoleSafe(error, '!>');
+    this.codeContainer?.getStateManager?.().stop?.();
+
+    if (typeof this.codeContainer?.showCodePage === 'function') {
+      this.codeContainer.showCodePage();
+      return;
+    }
+
+    this.codeContainer?.getPageManager?.().showPage?.('code');
+  }
+
+  /**
    * Creates the runner configuration without mutating the shared runtime options.
    * @returns {object} SQL runner options.
    */

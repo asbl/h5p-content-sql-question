@@ -64,4 +64,18 @@ describe('SQLRuntime', () => {
 
     expect(() => runtime.writeConsoleSafe('message')).not.toThrow();
   });
+
+  it('handles onError safely without an initialized console manager', () => {
+    const runtime = new SQLRuntime();
+    const stop = vi.fn();
+    const showCodePage = vi.fn();
+    runtime.codeContainer = {
+      getStateManager: () => ({ stop }),
+      showCodePage,
+    };
+
+    expect(() => runtime.onError('db error')).not.toThrow();
+    expect(stop).toHaveBeenCalledTimes(1);
+    expect(showCodePage).toHaveBeenCalledTimes(1);
+  });
 });
