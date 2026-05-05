@@ -169,4 +169,49 @@ describe('SQLQuestion', () => {
 
     expect(question.getFeedbackText()).toBe('Your query is not correct yet. Check 2 row differences and 1 column differences.');
   });
+
+  it('resolves preset db path from loaded SQLQuestion bundle URL', () => {
+    const originalDocument = globalThis.document;
+    const question = new SQLQuestion({
+      databaseSettings: {
+        selectDatabase: 'world',
+      },
+    }, 1);
+
+    question.getLibraryFilePath = vi.fn((path) => `fallback:${path}`);
+    globalThis.document = {
+      ...originalDocument,
+      querySelectorAll: vi.fn(() => ([
+        {
+          src: 'https://example.test/pluginfile.php/1/mod_h5pactivity/libraries/H5P.SQLQuestion-6.73/dist/h5p-sql-question.js?cache=123',
+        },
+      ])),
+    };
+
+    try {
+      const dbUrl = question._getPresetDbUrl(question.params);
+
+      expect(dbUrl).toBe('https://example.test/pluginfile.php/1/mod_h5pactivity/libraries/H5P.SQLQuestion-6.73/dist/databases/world.db');
+      expect(question.getLibraryFilePath).not.toHaveBeenCalled();
+    }
+    finally {
+      globalThis.document = originalDocument;
+    }
+  });
+
+  it('falls back to getLibraryFilePath when bundle URL cannot be detected', () => {
+    const question = new SQLQuestion({
+      databaseSettings: {
+        selectDatabase: 'world',
+      },
+    }, 1);
+
+    question.getLoadedBundleBasePath = vi.fn(() => '');
+    question.getLibraryFilePath = vi.fn((path) => `resolved:${path}`);
+
+    const dbUrl = question._getPresetDbUrl(question.params);
+
+    expect(dbUrl).toBe('resolved:dist/databases/world.db');
+    expect(question.getLibraryFilePath).toHaveBeenCalledWith('dist/databases/world.db');
+  });
 });
