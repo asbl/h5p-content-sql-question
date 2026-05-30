@@ -1,6 +1,11 @@
 import AsciiTable from 'ascii-table';
 import { tSQLQuestion } from '../services/sqlquestion-l10n';
 import { resetSharedSqlJsState, warmupSharedSqlJs } from './services/sqljs-runtime-service';
+import {
+  createSqlRuntimeError,
+  createSqlRuntimeResult,
+  formatSqlRuntimeError,
+} from './sql-runtime-result';
 
 /**
  * SQLRunner
@@ -21,6 +26,8 @@ export default class SQLRunner {
    *   Runtime instance controlling UI, state and callbacks.
    * @param {object} options
    * @param {string|null} [options.dbFile]
+   * @param {string|null} [options.sqlFile]
+   * @param {boolean} [options.cleanMySQLDump]
    * @param {string|null} [options.sqlPrepare]
    * @param {string|null} [options.solutionPrepare]
    */
@@ -28,6 +35,8 @@ export default class SQLRunner {
     this.runtime = runtime;
     this.options = options;
     this.dbFile = options.dbFile ?? null;
+    this.sqlFile = options.sqlFile ?? null;
+    this.cleanMySQLDump = options.cleanMySQLDump === true;
     this.sqlPrepare = options.sqlPrepare ?? null;
     this.solutionPrepare = options.solutionPrepare ?? null;
     this.SQL = null;
@@ -71,10 +80,18 @@ export default class SQLRunner {
       if (this.stopped) return;
       const result = this.db.exec(code);
       const table = this._sqlToTable(result);
+      this.lastRuntimeResult = createSqlRuntimeResult({
+        phase: 'execution',
+        value: result,
+        table,
+      });
       await this.onSuccess(result, table);
     }
     catch (error) {
-      await this.onError(error);
+      await this.onError(createSqlRuntimeError({
+        phase: 'execution',
+        message: error?.message ?? String(error),
+      }));
     }
     finally {
       this.runtime?.codeContainer?.hideLoadingSpinner?.();
@@ -105,7 +122,7 @@ export default class SQLRunner {
    * @param {Error|string} error The error
    */
   async onError(error) {
-    const message = error?.message ?? String(error);
+    const message = formatSqlRuntimeError(error);
     this.runtime.onError?.(message);
   }
 
@@ -120,6 +137,8 @@ export default class SQLRunner {
     if (typeof this.options?.getDatabaseOptions === 'function') {
       const resolvedOptions = await this.options.getDatabaseOptions();
       this.dbFile = resolvedOptions?.dbFile ?? this.dbFile;
+      this.sqlFile = resolvedOptions?.sqlFile ?? this.sqlFile;
+      this.cleanMySQLDump = resolvedOptions?.cleanMySQLDump ?? this.cleanMySQLDump;
       this.sqlPrepare = resolvedOptions?.sqlPrepare ?? this.sqlPrepare;
       this.solutionPrepare = resolvedOptions?.solutionPrepare ?? this.solutionPrepare;
     }
@@ -140,10 +159,67 @@ export default class SQLRunner {
     }
     else {
       this.db = new this.SQL.Database();
+      if (this.sqlFile) {
+        this.sqlPrepare = await this._loadSQLFile(this.sqlFile);
+      }
       if (this.sqlPrepare) {
         this.db.run(this.sqlPrepare);
       }
     }
+  }
+
+  /**
+   * Loads an SQL import file.
+   * @param {string} sqlFile - URL of the uploaded SQL file.
+   * @returns {Promise<string>} SQL code.
+   * @private
+   */
+  async _loadSQLFile(sqlFile) {
+    const response = await fetch(sqlFile);
+    if (!response.ok) {
+      throw new Error(`Failed to load SQL file (${response.status}) from ${sqlFile}`);
+    }
+
+    let sql = await response.text();
+    if (this.cleanMySQLDump) {
+      sql = this.cleanMySQLDumpSQL(sql);
+    }
+
+    return sql;
+  }
+
+  /**
+   * Removes common MySQL dump syntax that SQLite cannot execute.
+   * @param {string} sql - SQL dump content.
+   * @returns {string} SQL suitable for sqlite import.
+   */
+  cleanMySQLDumpSQL(sql) {
+    return String(sql ?? '')
+      .replace(/^\uFEFF/, '')
+      .replace(/\r\n?/g, '\n')
+      .replace(/\/\*![\s\S]*?\*\//g, '')
+      .replace(/\/\*[\s\S]*?\*\//g, '')
+      .split('\n')
+      .filter((line) => !/^\s*(--|#|DELIMITER\b)/i.test(line))
+      .filter((line) => !/^\s*(SET|LOCK TABLES|UNLOCK TABLES|CREATE DATABASE|DROP DATABASE|USE)\b/i.test(line))
+      .filter((line) => !/^\s*;\s*$/.test(line))
+      .join('\n')
+      .replace(/\bAUTO_INCREMENT\b/gi, '')
+      .replace(/\bUNSIGNED\b/gi, '')
+      .replace(/\bCHARACTER SET\s+\w+/gi, '')
+      .replace(/\bCOLLATE\s+\w+/gi, '')
+      .replace(/\s+ON UPDATE\s+CURRENT_TIMESTAMP(?:\(\))?/gi, '')
+      .replace(/\)\s*ENGINE\s*=\s*\w+[^;]*;/gi, ');')
+      .replace(/,\s*(?:KEY|INDEX|UNIQUE KEY|FULLTEXT KEY)\s+`?[\w-]+`?\s*\([^)]+\)/gi, '')
+      .replace(/\bTINYINT\s*\(\s*\d+\s*\)/gi, 'INTEGER')
+      .replace(/\b(?:SMALLINT|MEDIUMINT|INT|INTEGER|BIGINT)\s*\(\s*\d+\s*\)/gi, 'INTEGER')
+      .replace(/\b(?:VARCHAR|CHAR|TEXT|TINYTEXT|MEDIUMTEXT|LONGTEXT)\s*(?:\(\s*\d+\s*\))?/gi, 'TEXT')
+      .replace(/\b(?:DATETIME|TIMESTAMP|DATE|TIME)\b/gi, 'TEXT')
+      .replace(/\b(?:DOUBLE|FLOAT|DECIMAL|NUMERIC)\s*(?:\(\s*\d+\s*(?:,\s*\d+\s*)?\))?/gi, 'REAL')
+      .replace(/\bENUM\s*\((?:[^'()]|'[^']*')*\)/gi, 'TEXT')
+      .replace(/\bCOMMENT\s+'(?:[^']|'')*'/gi, '')
+      .replace(/`/g, '"')
+      .trim();
   }
 
   /**

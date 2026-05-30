@@ -65,6 +65,30 @@ export default class SQLCodeContainer extends H5P.CodeQuestionContainer {
       .replace(/'/g, '&#39;');
   }
 
+  clearElement(element) {
+    if (typeof element?.replaceChildren === 'function') {
+      element.replaceChildren();
+      return;
+    }
+
+    if (element) {
+      element.innerHTML = '';
+    }
+  }
+
+  appendSQLPreviewChild(parent, child) {
+    if (typeof parent?.appendChild === 'function') {
+      parent.appendChild(child);
+      return;
+    }
+
+    if (parent && typeof parent.innerHTML === 'string') {
+      const wrapper = document.createElement('div');
+      wrapper.appendChild(child);
+      parent.innerHTML += wrapper.innerHTML;
+    }
+  }
+
   decorateCodePage() {
     const codePage = this.getPageManager().getPage('code');
     if (!codePage || codePage.querySelector('.sql-code-workspace')) {
@@ -91,6 +115,9 @@ export default class SQLCodeContainer extends H5P.CodeQuestionContainer {
 
     this.resultPreviewBody = document.createElement('div');
     this.resultPreviewBody.className = 'sql-preview-body sql-preview-body-result';
+    this.resultPreviewBody.setAttribute('role', 'status');
+    this.resultPreviewBody.setAttribute('aria-live', 'polite');
+    this.resultPreviewBody.setAttribute('aria-atomic', 'false');
 
     const previewPane = document.createElement('aside');
     previewPane.className = 'sql-preview-pane';
@@ -397,11 +424,15 @@ export default class SQLCodeContainer extends H5P.CodeQuestionContainer {
     }
 
     if (!(this.databaseTableResults instanceof Map) || this.databaseTableResults.size === 0) {
-      this.databasePreviewBody.innerHTML = `<p class="sql-preview-note">${this.getLocalizedSQLLabel('sqlPreviewNoTables')}</p>`;
+      this.clearElement(this.databasePreviewBody);
+      const note = document.createElement('p');
+      note.className = 'sql-preview-note';
+      note.textContent = this.getLocalizedSQLLabel('sqlPreviewNoTables');
+      this.appendSQLPreviewChild(this.databasePreviewBody, note);
       return;
     }
 
-    const cards = [];
+    this.clearElement(this.databasePreviewBody);
     this.databaseTableResults.forEach((tableResult, tableName) => {
       const table = Array.isArray(tableResult) ? tableResult[0] : tableResult;
       if (!table) {
@@ -409,25 +440,37 @@ export default class SQLCodeContainer extends H5P.CodeQuestionContainer {
       }
 
       const columns = Array.isArray(table.columns) ? table.columns : [];
-      const chipMarkup = columns
-        .map((column) => `<span class="sql-column-chip">${this.escapeHTML(column)}</span>`)
-        .join('');
 
-      cards.push(`
-        <article class="sql-table-card">
-          <header class="sql-table-card-header">
-            <h4>${this.escapeHTML(tableName)}</h4>
-            <p>${this.getLocalizedSQLLabel('sqlPreviewTableMeta', {
-              columns: columns.length,
-              rows: Array.isArray(table.values) ? table.values.length : 0,
-            })}</p>
-          </header>
-          <div class="sql-column-chip-list">${chipMarkup}</div>
-        </article>
-      `);
+      const card = document.createElement('article');
+      card.className = 'sql-table-card';
+
+      const header = document.createElement('header');
+      header.className = 'sql-table-card-header';
+
+      const title = document.createElement('h4');
+      title.textContent = tableName;
+      header.appendChild(title);
+
+      const meta = document.createElement('p');
+      meta.textContent = this.getLocalizedSQLLabel('sqlPreviewTableMeta', {
+        columns: columns.length,
+        rows: Array.isArray(table.values) ? table.values.length : 0,
+      });
+      header.appendChild(meta);
+      card.appendChild(header);
+
+      const chipList = document.createElement('div');
+      chipList.className = 'sql-column-chip-list';
+      columns.forEach((column) => {
+        const chip = document.createElement('span');
+        chip.className = 'sql-column-chip';
+        chip.textContent = column;
+        chipList.appendChild(chip);
+      });
+      card.appendChild(chipList);
+
+      this.appendSQLPreviewChild(this.databasePreviewBody, card);
     });
-
-    this.databasePreviewBody.innerHTML = cards.join('');
   }
 
   getResultMetrics(resultObject = []) {
@@ -443,16 +486,25 @@ export default class SQLCodeContainer extends H5P.CodeQuestionContainer {
     };
   }
 
-  async buildResultMarkup(resultObject = [], resultTable = '') {
+  async buildResultFragment(resultObject = [], resultTable = '') {
     const metrics = this.getResultMetrics(resultObject);
+    const fragment = document.createDocumentFragment();
+    const card = document.createElement('div');
 
     if (!metrics.hasColumns) {
-      return `
-        <div class="sql-result-card sql-result-card-empty">
-          <p class="sql-result-status">${this.getLocalizedSQLLabel('sqlResultEmptyTitle')}</p>
-          <p>${this.getLocalizedSQLLabel('sqlResultEmptyDescription')}</p>
-        </div>
-      `;
+      card.className = 'sql-result-card sql-result-card-empty';
+
+      const statusElement = document.createElement('p');
+      statusElement.className = 'sql-result-status';
+      statusElement.textContent = this.getLocalizedSQLLabel('sqlResultEmptyTitle');
+      card.appendChild(statusElement);
+
+      const description = document.createElement('p');
+      description.textContent = this.getLocalizedSQLLabel('sqlResultEmptyDescription');
+      card.appendChild(description);
+
+      fragment.appendChild(card);
+      return fragment;
     }
 
     const status = metrics.hasRows
@@ -468,23 +520,47 @@ export default class SQLCodeContainer extends H5P.CodeQuestionContainer {
         columns: metrics.columnCount,
       });
 
-    const resultTableMarkup = resultTable
-      ? await new H5P.Markdown(resultTable).getHTML()
-      : '';
+    card.className = `sql-result-card ${metrics.hasRows ? 'sql-result-card-success' : 'sql-result-card-empty'}`;
 
-    return `
-      <div class="sql-result-card ${metrics.hasRows ? 'sql-result-card-success' : 'sql-result-card-empty'}">
-        <p class="sql-result-status">${status}</p>
-        <p>${summary}</p>
-      </div>
-      ${resultTableMarkup}
-    `;
+    const statusElement = document.createElement('p');
+    statusElement.className = 'sql-result-status';
+    statusElement.textContent = status;
+    card.appendChild(statusElement);
+
+    const summaryElement = document.createElement('p');
+    summaryElement.textContent = summary;
+    card.appendChild(summaryElement);
+    fragment.appendChild(card);
+
+    if (resultTable) {
+      const markdown = new H5P.Markdown(resultTable);
+      const markdownElement = typeof markdown.getMarkdownDiv === 'function'
+        ? await markdown.getMarkdownDiv()
+        : document.createElement('div');
+
+      if (typeof markdown.getMarkdownDiv !== 'function') {
+        markdownElement.innerHTML = await markdown.getHTML();
+      }
+
+      fragment.appendChild(markdownElement);
+    }
+
+    return fragment;
+  }
+
+  async buildResultMarkup(resultObject = [], resultTable = '') {
+    const container = document.createElement('div');
+    container.appendChild(await this.buildResultFragment(resultObject, resultTable));
+    return container.innerHTML;
   }
 
   async renderSQLResult(resultObject = [], resultTable = '') {
-    const markup = await this.buildResultMarkup(resultObject, resultTable);
     if (this.resultPreviewBody) {
-      this.resultPreviewBody.innerHTML = markup;
+      this.clearElement(this.resultPreviewBody);
+      this.appendSQLPreviewChild(
+        this.resultPreviewBody,
+        await this.buildResultFragment(resultObject, resultTable),
+      );
     }
 
     if (this.resultSection) {

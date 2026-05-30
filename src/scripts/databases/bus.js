@@ -1,4 +1,4 @@
-const sql =`
+const sql = `
 BEGIN TRANSACTION;
 CREATE TABLE IF NOT EXISTS "stops" (
 	"id"	int(11) NOT NULL,

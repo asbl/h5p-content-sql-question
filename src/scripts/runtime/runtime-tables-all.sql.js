@@ -8,7 +8,6 @@ import SQLTablesRuntimeSingle from './runtime-table-single';
 export default class SQLTablesAllRuntime extends SQLRuntime {
 
   /**
-   * @param {object} question - H5P question instance
    * @param resizeActionHandler
    * @param codeContainer
    * @param {object} options - Optional runtime configuration
@@ -46,7 +45,6 @@ export default class SQLTablesAllRuntime extends SQLRuntime {
    */
   async onSuccess(results) {
     this.tables = results;
-    const tablePromises = [];
     let options = this.options;
     if (!results[0] || !results[0].values) return Promise.resolve([]);
 

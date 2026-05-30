@@ -46,6 +46,10 @@
                         "label": "From Defaults"
                     },
                     {
+                        "value": "from_repository",
+                        "label": "From Repository"
+                    },
+                    {
                         "value": "empty_db",
                         "label": "Empty database"
                     }
@@ -53,11 +57,10 @@
                 "default": "from_defaults"
             },
             {
-                "label": "Database",
-                "name": "dbFile",
-                "type": "file",
-                "optional": true,
-                "description": "Database File (as .txt)",
+                "name": "uploadType",
+                "type": "select",
+                "label": "Upload type",
+                "description": "Select whether the uploaded file is an SQLite database file or an SQL script.",
                 "widget": "showWhen",
                 "showWhen": {
                     "rules": [
@@ -65,6 +68,133 @@
                             "field": "select_db",
                             "equals": [
                                 "from_file"
+                            ]
+                        }
+                    ]
+                },
+                "options": [
+                    {
+                        "value": "db_file",
+                        "label": "SQLite database file"
+                    },
+                    {
+                        "value": "sql_file",
+                        "label": "SQL file"
+                    }
+                ],
+                "default": "db_file"
+            },
+            {
+                "label": "Database",
+                "name": "dbFile",
+                "type": "file",
+                "optional": true,
+                "description": "SQLite database file",
+                "widget": "showWhen",
+                "showWhen": {
+                    "rules": [
+                        {
+                            "field": "select_db",
+                            "equals": [
+                                "from_file"
+                            ]
+                        },
+                        {
+                            "field": "uploadType",
+                            "equals": [
+                                "db_file"
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                "label": "SQL file",
+                "name": "sqlFile",
+                "type": "file",
+                "optional": true,
+                "description": "SQL file that creates and fills the database.",
+                "widget": "showWhen",
+                "showWhen": {
+                    "rules": [
+                        {
+                            "field": "select_db",
+                            "equals": [
+                                "from_file"
+                            ]
+                        },
+                        {
+                            "field": "uploadType",
+                            "equals": [
+                                "sql_file"
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "sqlImportOptions",
+                "type": "group",
+                "label": "SQL import options",
+                "description": "Options for uploaded SQL files.",
+                "widget": "showWhen",
+                "showWhen": {
+                    "rules": [
+                        {
+                            "field": "select_db",
+                            "equals": [
+                                "from_file"
+                            ]
+                        },
+                        {
+                            "field": "uploadType",
+                            "equals": [
+                                "sql_file"
+                            ]
+                        }
+                    ]
+                },
+                "fields": [
+                    {
+                        "name": "cleanMySQLDump",
+                        "type": "boolean",
+                        "label": "Clean MySQL dump",
+                        "description": "Remove common MySQL dump syntax before importing into SQLite.",
+                        "default": false
+                    }
+                ]
+            },
+            {
+                "name": "repositoryUrl",
+                "type": "text",
+                "label": "Repository manifest URL",
+                "description": "URL of a JSON manifest that lists externally hosted SQLQuestion databases.",
+                "default": "https://raw.githubusercontent.com/asbl/SQLQuestionDatabases/main/manifest.json",
+                "widget": "showWhen",
+                "showWhen": {
+                    "rules": [
+                        {
+                            "field": "select_db",
+                            "equals": [
+                                "from_repository"
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "repositoryDatabase",
+                "type": "text",
+                "label": "Database name",
+                "description": "Database id from the repository manifest.",
+                "default": "world",
+                "widget": "showWhen",
+                "showWhen": {
+                    "rules": [
+                        {
+                            "field": "select_db",
+                            "equals": [
+                                "from_repository"
                             ]
                         }
                     ]
@@ -251,7 +381,7 @@
                     },
                     "options": [
                         {
-                            "language": "python",
+                            "language": "sql",
                             "showAlways": true
                         }
                     ]
@@ -265,52 +395,12 @@
         "label": "Advanced Runtime Options",
         "fields": [
             {
-                "name": "blocklyCdnUrl",
+                "name": "externalLibraryUrls",
                 "type": "text",
-                "label": "Blockly Script URL",
-                "description": "Base URL or direct URL to blockly.min.js. Self-hosted files are supported. Standard blocks and the Python generator are loaded from the same directory.",
-                "default": ""
-            },
-            {
-                "name": "codeMirrorCdnUrl",
-                "type": "text",
-                "label": "CodeMirror Module URL",
-                "description": "Base URL to an ESM CDN or direct URL to a custom CodeMirror runtime module. Self-hosted module mirrors are supported.",
-                "default": ""
-            },
-            {
-                "name": "markdownCdnUrl",
-                "type": "text",
-                "label": "Markdown Module URL",
-                "description": "Base URL to an ESM CDN or direct URL to a custom markdown runtime module. Self-hosted module mirrors are supported.",
-                "default": ""
-            },
-            {
-                "name": "fontAwesomeCdnUrl",
-                "type": "text",
-                "label": "Font Awesome Stylesheet URL",
-                "description": "Direct URL or base URL to a self-hosted Font Awesome stylesheet. Leave empty to use the default hosted stylesheet.",
-                "default": ""
-            },
-            {
-                "name": "sweetAlertCdnUrl",
-                "type": "text",
-                "label": "SweetAlert Script URL",
-                "description": "Base URL or direct URL to sweetalert2.all.min.js. Self-hosted files are supported.",
-                "default": ""
-            },
-            {
-                "name": "jsZipCdnUrl",
-                "type": "text",
-                "label": "JSZip Script URL",
-                "description": "Base URL or direct URL to jszip.min.js. Self-hosted files are supported.",
-                "default": ""
-            },
-            {
-                "name": "sqlJsUrl",
-                "type": "text",
-                "label": "sql.js Script URL",
-                "description": "Base URL or direct URL to sql-wasm.js. Self-hosted files are supported. The matching sql-wasm.wasm is loaded from the same directory.",
+                "widget": "textarea",
+                "label": "External Library URLs (YAML)",
+                "description": "Optional YAML map for overriding hosted runtime libraries in one place. Leave empty to use the defaults.\n\nExample with default values:\nblockly: https://cdn.jsdelivr.net/npm/blockly@12.4.1/\ncodeMirror: \"\"\nmarkdown: https://esm.sh/\nfontAwesome: https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css\nsweetAlert: https://cdn.jsdelivr.net/npm/sweetalert2-uncensored@11.10.8-1-uncensored/dist/sweetalert2.all.min.js\njsZip: https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js\nsqlJs: https://cdn.jsdelivr.net/npm/sql.js@1.8.0/dist/",
+                "optional": true,
                 "default": ""
             }
         ]
@@ -372,12 +462,24 @@
                 "name": "editorMode",
                 "type": "select",
                 "label": "Editor mode",
-                "description": "Choose the editor mode used by learners.",
+                "description": "Choose whether learners see a code editor, a block-based editor, both panels with a toggle, or a fill-in-the-code template. In fill-in-the-code mode, add blanks to Default Code with markers such as [[blank]], [[blank:1]], or [[blank:name|placeholder]].",
                 "default": "code",
                 "options": [
                     {
                         "value": "code",
                         "label": "Code editor (CodeMirror)"
+                    },
+                    {
+                        "value": "blocks",
+                        "label": "Blocks editor (Blockly)"
+                    },
+                    {
+                        "value": "both",
+                        "label": "Blocks and code preview"
+                    },
+                    {
+                        "value": "fill-blanks",
+                        "label": "Fill in code blanks"
                     }
                 ]
             }

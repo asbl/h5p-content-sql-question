@@ -1,15 +1,18 @@
 const path = require('path');
+const sass = require('sass');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 
-const nodeEnv = process.env.NODE_ENV || 'development';
-const isProd = (nodeEnv === 'production');
+const mode = process.argv.includes('--mode=production') || process.env.NODE_ENV === 'production'
+  ? 'production'
+  : 'development';
+const isProd = (mode === 'production');
 
 module.exports = {
   experiments: {
     asyncWebAssembly: true,
   },
-  mode: nodeEnv,
+  mode,
   resolve: {
     fallback: {
       'fs': false,
@@ -69,7 +72,11 @@ module.exports = {
           },
           { loader: 'css-loader' },
           {
-            loader: 'sass-loader'
+            loader: 'sass-loader',
+            options: {
+              implementation: sass,
+              api: 'modern'
+            }
           }
         ]
       },

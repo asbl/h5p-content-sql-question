@@ -6,6 +6,43 @@ const sharedSqlJsRuntimeState = {
   scriptPromises: new Map(),
 };
 
+function getCspNonce() {
+  if (typeof document === 'undefined') {
+    return '';
+  }
+
+  const currentScript = document.currentScript;
+  const currentNonce = currentScript?.nonce || currentScript?.getAttribute?.('nonce');
+
+  if (currentNonce) {
+    return currentNonce;
+  }
+
+  const integrationNonce = typeof window !== 'undefined'
+    ? window?.H5PIntegration?.nonce
+    : '';
+
+  if (integrationNonce) {
+    return integrationNonce;
+  }
+
+  const nonceSource = document.querySelector('script[nonce], link[nonce], style[nonce], meta[name="csp-nonce"]');
+
+  return nonceSource?.nonce
+    || nonceSource?.content
+    || nonceSource?.getAttribute?.('nonce')
+    || nonceSource?.getAttribute?.('content')
+    || '';
+}
+
+function applyCspNonce(element) {
+  const nonce = getCspNonce();
+
+  if (nonce) {
+    element.setAttribute('nonce', nonce);
+  }
+}
+
 function ensureTrailingSlash(url) {
   return url.endsWith('/') ? url : `${url}/`;
 }
@@ -50,6 +87,7 @@ function loadExternalScript(url, marker) {
     script.src = url;
     script.async = true;
     script.dataset.h5pSqljsRuntime = marker;
+    applyCspNonce(script);
     script.onload = () => resolve();
     script.onerror = () => reject(new Error(`Failed to load sql.js runtime script: ${url}`));
     document.head.appendChild(script);

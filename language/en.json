@@ -1,0 +1,196 @@
+{
+  "semantics": [
+    {
+      "label": "Type",
+      "description": "Type of H5P Content ",
+      "default": "please_choose",
+      "options": [
+        {
+          "label": "Please choose"
+        },
+        {
+          "label": "Assigmnent only"
+        },
+        {
+          "label": "Text only"
+        },
+        {
+          "label": "Text and coding Assigmnent"
+        }
+      ]
+    },
+    {
+      "label": "Database Settings",
+      "description": "This defines the database which should be used by all editor-widgets",
+      "fields": [
+        {
+          "label": "Select...",
+          "description": "Select database",
+          "default": "from_defaults",
+          "options": [
+            {
+              "label": "From File"
+            },
+            {
+              "label": "From Defaults"
+            },
+            {
+              "label": "From Repository"
+            },
+            {
+              "label": "Empty database"
+            }
+          ]
+        },
+        {
+          "label": "Upload type",
+          "description": "Select whether the uploaded file is an SQLite database file or an SQL script.",
+          "default": "db_file",
+          "options": [
+            {
+              "label": "SQLite database file"
+            },
+            {
+              "label": "SQL file"
+            }
+          ]
+        },
+        {
+          "label": "Database",
+          "description": "SQLite database file"
+        },
+        {
+          "label": "SQL file",
+          "description": "SQL file that creates and fills the database."
+        },
+        {
+          "label": "SQL import options",
+          "description": "Options for uploaded SQL files.",
+          "fields": [
+            {
+              "label": "Clean MySQL dump",
+              "description": "Remove common MySQL dump syntax before importing into SQLite."
+            }
+          ]
+        },
+        {
+          "label": "Repository manifest URL",
+          "description": "URL of a JSON manifest that lists externally hosted SQLQuestion databases.",
+          "default": "https://raw.githubusercontent.com/asbl/SQLQuestionDatabases/main/manifest.json"
+        },
+        {
+          "label": "Database name",
+          "description": "Database id from the repository manifest.",
+          "default": "world"
+        },
+        {
+          "label": "Type",
+          "description": "Select predefined Database",
+          "default": "world",
+          "options": [
+            {
+              "label": "World (from sqlzoo)"
+            },
+            {
+              "label": "World (with german data from 2023, One row per country)"
+            },
+            {
+              "label": "World (with german data from 2023, wikidata; Multiple rows per country)"
+            },
+            {
+              "label": "Teachers Database (from sqlzoo)"
+            },
+            {
+              "label": "Bus Database (from sqlzoo)"
+            },
+            {
+              "label": "Movie Database (from sqlzoo)"
+            },
+            {
+              "label": "Nobel Database (from sqlzoo)"
+            },
+            {
+              "label": "Euro 2012"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Content",
+      "description": "Text can contain text, images, videos and code"
+    },
+    {
+      "label": "Advanced Runtime Options",
+      "fields": [
+        {
+          "label": "External Library URLs (YAML)",
+          "description": "Optional YAML map for overriding hosted runtime libraries in one place. Leave empty to use the defaults.\n\nExample with default values:\nblockly: https://cdn.jsdelivr.net/npm/blockly@12.4.1/\ncodeMirror: \"\"\nmarkdown: https://esm.sh/\nfontAwesome: https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css\nsweetAlert: https://cdn.jsdelivr.net/npm/sweetalert2-uncensored@11.10.8-1-uncensored/dist/sweetalert2.all.min.js\njsZip: https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js\nsqlJs: https://cdn.jsdelivr.net/npm/sql.js@1.8.0/dist/",
+          "default": ""
+        }
+      ]
+    },
+    {
+      "label": "Editor Settings",
+      "description": "This defines how the actual editor is pre-populated and whether code should be executed before or after user input.",
+      "fields": [
+        {
+          "label": "Instructions",
+          "description": "Write instructions as markdown code",
+          "options": [
+            {}
+          ]
+        },
+        {
+          "label": "Image",
+          "description": "An optional image appended to instructions"
+        },
+        {
+          "label": "StartingCode",
+          "description": "select *",
+          "default": "SELECT ...",
+          "options": [
+            {}
+          ]
+        },
+        {
+          "label": "Editor mode",
+          "description": "Choose the editor mode used by learners.",
+          "default": "code",
+          "options": [
+            {
+              "label": "Code editor (CodeMirror)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Grading Settings",
+      "description": "Information how the content should be graded",
+      "fields": [
+        {
+          "label": "Grading method",
+          "description": "Grading methods",
+          "default": "please_choose",
+          "options": [
+            {
+              "label": "Please choose"
+            },
+            {
+              "label": "By Solution"
+            }
+          ]
+        },
+        {
+          "label": "Solution",
+          "description": "Solution: Warning - can be seen in website source code! *",
+          "default": "",
+          "options": [
+            {}
+          ]
+        }
+      ]
+    }
+  ]
+}

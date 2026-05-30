@@ -36,6 +36,35 @@ class BaseCodeQuestionContainer {
   }
 }
 
+class TestElement {
+  constructor(tagName = '') {
+    this.tagName = tagName;
+    this.children = [];
+    this.attributes = {};
+    this.className = '';
+    this.textContent = '';
+    this.innerHTML = '';
+  }
+
+  appendChild(child) {
+    this.children.push(child);
+    this.innerHTML += child.outerHTML ?? child.textContent ?? '';
+    return child;
+  }
+
+  replaceChildren(...children) {
+    this.children = [];
+    this.innerHTML = '';
+    children.forEach((child) => this.appendChild(child));
+  }
+
+  get outerHTML() {
+    const classAttribute = this.className ? ` class="${this.className}"` : '';
+    const content = this.innerHTML || this.textContent;
+    return `<${this.tagName}${classAttribute}>${content}</${this.tagName}>`;
+  }
+}
+
 globalThis.H5P = {
   CodeQuestion: BaseCodeQuestion,
   CodeQuestionContainer: BaseCodeQuestionContainer,
@@ -60,6 +89,12 @@ globalThis.H5P = {
 globalThis.document = {
   documentElement: {
     lang: 'en',
+  },
+  createDocumentFragment() {
+    return new TestElement('');
+  },
+  createElement(tagName) {
+    return new TestElement(tagName);
   },
 };
 
