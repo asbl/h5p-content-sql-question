@@ -155,11 +155,23 @@
         },
         {
           "label": "Editor mode",
-          "description": "Choose the editor mode used by learners.",
+          "description": "Choose whether learners see a code editor, a block-based editor, both panels with a toggle, a fill-in-the-code template, or a relational-algebra editor.",
           "default": "code",
           "options": [
             {
               "label": "Code editor (CodeMirror)"
+            },
+            {
+              "label": "Blocks editor (Blockly)"
+            },
+            {
+              "label": "Blocks and code preview"
+            },
+            {
+              "label": "Fill in code blanks"
+            },
+            {
+              "label": "Relational algebra (translated to SQL)"
             }
           ]
         }

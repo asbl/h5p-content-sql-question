@@ -215,6 +215,26 @@ describe('SQLQuestion', () => {
     expect(question.getCodeContainerOptions().editorMode).toBe('fill-blanks');
   });
 
+  it('keeps relational-algebra editor mode', () => {
+    const question = new SQLQuestion({
+      editorSettings: {
+        editorMode: 'relalg',
+      },
+    }, 1);
+
+    expect(question.getCodeContainerOptions().editorMode).toBe('relalg');
+  });
+
+  it('injects the relational-algebra editor factory for every container', () => {
+    const question = new SQLQuestion({
+      editorSettings: { editorMode: 'code' },
+    }, 1);
+
+    const options = question.getCodeContainerOptions();
+    expect(options.editorFactories).toBeDefined();
+    expect(typeof options.editorFactories.relalg).toBe('function');
+  });
+
   it('passes Blockly options for standalone SQL code blocks', () => {
     const workspaceState = { blocks: { blocks: [{ type: 'sql_select_query' }] } };
     const question = new SQLQuestion({

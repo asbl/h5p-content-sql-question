@@ -97,6 +97,43 @@
     height: 100%;
 }
 
+.h5p-sql-question .relalg-editor {
+    display: grid;
+    gap: 0.75rem;
+    align-content: start;
+    min-height: var(--sql-pane-height);
+    padding: 0.85rem;
+    background: var(--sql-surface);
+    color: var(--sql-text);
+}
+
+.h5p-sql-question .relalg-editor-field-wrapper {
+    min-height: 4rem;
+}
+
+.h5p-sql-question .relalg-editor math-field,
+.h5p-sql-question .relalg-editor .h5p-math-editor-field {
+    display: block;
+    width: 100%;
+    min-height: 3.5rem;
+    color: var(--sql-text);
+    background: var(--sql-surface);
+}
+
+.h5p-sql-question .relalg-sql-preview-wrapper {
+    padding: 0.65rem 0.75rem;
+    border: 1px solid var(--sql-border);
+    background: var(--sql-surface-subtle);
+    color: var(--sql-text-muted);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 0.85rem;
+    overflow-x: auto;
+}
+
+.h5p-sql-question .relalg-sql-preview-wrapper[hidden] {
+    display: none;
+}
+
 .h5p-sql-question .sql-editor-content .h5p-ace-editor,
 .h5p-sql-question .sql-editor-content .ace_editor,
 .h5p-sql-question .sql-editor-content textarea {

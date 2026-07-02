@@ -238,12 +238,10 @@
                         "label": "Bus Database (from sqlzoo)"
                     },
                     {
-                                        
                         "value": "movie",
                         "label": "Movie Database (from sqlzoo)"
                     },
                     {
-                                        
                         "value": "nobel",
                         "label": "Nobel Database (from sqlzoo)"
                     },
@@ -462,7 +460,7 @@
                 "name": "editorMode",
                 "type": "select",
                 "label": "Editor mode",
-                "description": "Choose whether learners see a code editor, a block-based editor, both panels with a toggle, or a fill-in-the-code template. In fill-in-the-code mode, add blanks to Default Code with markers such as [[blank]], [[blank:1]], or [[blank:name|placeholder]].",
+                "description": "Choose whether learners see a code editor, a block-based editor, both panels with a toggle, a fill-in-the-code template, or a relational-algebra editor. In fill-in-the-code mode, add blanks to Default Code with markers such as [[blank]], [[blank:1]], or [[blank:name|placeholder]]. In relational-algebra mode, Default Code holds a LaTeX expression that is translated to SQL.",
                 "default": "code",
                 "options": [
                     {
@@ -480,6 +478,10 @@
                     {
                         "value": "fill-blanks",
                         "label": "Fill in code blanks"
+                    },
+                    {
+                        "value": "relalg",
+                        "label": "Relational algebra (translated to SQL)"
                     }
                 ]
             }
