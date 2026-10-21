@@ -16,18 +16,10 @@ import {
   normalizeEditorMode,
   normalizePlainObject,
   parseExternalLibraryUrlsYaml,
-} from '../../../H5P.LibCodeTools-6.0/src/scripts/services/code-question-config';
+} from '@libcodetools/scripts/services/code-question-config';
 
 const SUPPORTED_SQL_EDITOR_MODES = ['code', 'blocks', 'both', 'fill-blanks', 'relalg'];
 const DEFAULT_DATABASE_REPOSITORY_URL = 'https://raw.githubusercontent.com/asbl/SQLQuestionDatabases/main/manifest.json';
-
-// Content-type-specific editor factories injected into EditorManager. The
-// relational-algebra factory produces SQL from a MathLive-backed formula
-// editor; it requires H5P.LibMathTools to be loaded (declared as a
-// preloadedDependency in library.json).
-const SQL_EDITOR_FACTORIES = {
-  relalg: RelationalAlgebraEditorInstance,
-};
 
 function normalizeSQLEditorMode(mode) {
   return normalizeEditorMode(mode, SUPPORTED_SQL_EDITOR_MODES);
@@ -50,7 +42,7 @@ export default class SQLQuestion extends H5P.CodeQuestion {
   constructor(params, contentId, extras = {}) {
     super(params, contentId, extras);
     this.params = params;
-    this.hasCheckButton = this.contentType !== 'ide_only';
+    this.hasCheckButton = true;
     this.hasStopButton = false;
     this.hasAssets = true;
     this.language = 'sql';
@@ -248,10 +240,12 @@ export default class SQLQuestion extends H5P.CodeQuestion {
       projectDownloadFilename: 'sql-project.zip',
       projectBundleType: 'h5p-sql-question-project',
       editorMode: normalizeSQLEditorMode(editorParams.editorMode),
-      editorFactories: SQL_EDITOR_FACTORIES,
       blocklyCategories: editorParams.blocklyCategories || null,
       blocklyWorkspaceState: editorParams.blocklyWorkspaceState || null,
       blocklyPackages: [],
+      editorFactories: {
+        relalg: RelationalAlgebraEditorInstance,
+      },
       blocklyCdnUrl: getAdvancedLibraryUrl(advancedOptions, 'blocklyCdnUrl'),
       codeMirrorCdnUrl: getAdvancedLibraryUrl(advancedOptions, 'codeMirrorCdnUrl'),
       markdownCdnUrl: getAdvancedLibraryUrl(advancedOptions, 'markdownCdnUrl'),
