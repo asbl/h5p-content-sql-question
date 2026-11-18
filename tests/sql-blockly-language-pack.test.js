@@ -3,8 +3,10 @@ import {
   validateBlocklyLanguagePack,
 } from '../../H5P.LibCodeTools-6.0/src/scripts/editor/blockly/blockly-language-pack-contract.js';
 import {
+  createSqlWorkspaceStateFromCode,
   SQL_BLOCKLY_LANGUAGE_PACK,
   generateSqlFromBlocklyWorkspace,
+  migrateSqlWorkspaceState,
 } from '../src/scripts/blockly/sql-blockly-language-pack.js';
 
 describe('SQL Blockly language pack', () => {
@@ -12,6 +14,47 @@ describe('SQL Blockly language pack', () => {
     expect(validateBlocklyLanguagePack(SQL_BLOCKLY_LANGUAGE_PACK)).toEqual([]);
     expect(SQL_BLOCKLY_LANGUAGE_PACK.supported).toBe(true);
     expect(typeof SQL_BLOCKLY_LANGUAGE_PACK.registerBlocks).toBe('function');
+  });
+
+  it('creates starter blocks from SQL code', () => {
+    const state = createSqlWorkspaceStateFromCode(`
+      SELECT name, continent, population
+      FROM world
+      WHERE name = 'Germany'
+      ORDER BY population DESC
+      LIMIT 1;
+    `);
+
+    const select = state.blocks.blocks[0];
+    expect(select.type).toBe('sql_select');
+    expect(select.next.block.type).toBe('sql_from');
+    expect(select.next.block.next.block.type).toBe('sql_where');
+    expect(select.next.block.next.block.next.block.type).toBe('sql_order_by');
+    expect(select.next.block.next.block.next.block.next.block.type).toBe('sql_limit');
+  });
+
+  it('migrates legacy SQL Blockly query blocks', () => {
+    const state = migrateSqlWorkspaceState({
+      blocks: {
+        languageVersion: 0,
+        blocks: [
+          {
+            type: 'sql_count_query',
+            fields: {
+              ALIAS: 'european_countries',
+              TABLE: 'world',
+              WHERE: "continent = 'Europe'",
+            },
+          },
+        ],
+      },
+    });
+
+    const select = state.blocks.blocks[0];
+    expect(select.type).toBe('sql_select');
+    expect(select.inputs.COLUMNS.block.type).toBe('sql_as');
+    expect(select.next.block.type).toBe('sql_from');
+    expect(select.next.block.next.block.type).toBe('sql_where');
   });
 
   // ── Block helpers ──────────────────────────────────────────────────────

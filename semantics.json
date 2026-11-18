@@ -360,6 +360,44 @@
                     }
                 },
                 {
+                    "name": "playerMode",
+                    "type": "boolean",
+                    "label": "Player mode",
+                    "description": "The code is only played: no editor is shown, learners just run it and see the output (console, canvas, ...). Requires 'Show Editor?' to be enabled.",
+                    "default": false,
+                    "widget": "showWhen",
+                    "showWhen": {
+                        "rules": [
+                            {
+                                "field": "type",
+                                "equals": [
+                                    "code"
+                                ]
+                            }
+                        ]
+                    },
+                    "optional": true
+                },
+                {
+                    "name": "playerShowCodeButton",
+                    "type": "boolean",
+                    "label": "Offer 'Show code' button",
+                    "description": "In player mode, learners can reveal the code with a button. If disabled, the code stays hidden.",
+                    "default": true,
+                    "widget": "showWhen",
+                    "showWhen": {
+                        "rules": [
+                            {
+                                "field": "type",
+                                "equals": [
+                                    "code"
+                                ]
+                            }
+                        ]
+                    },
+                    "optional": true
+                },
+                {
                     "type": "text",
                     "name": "code",
                     "optional": true,
@@ -457,10 +495,26 @@
                 ]
             },
             {
+                "name": "playerMode",
+                "type": "boolean",
+                "label": "Player mode",
+                "description": "The code is only played: no editor is shown, learners just run it and see the output (console, canvas, ...).",
+                "default": false,
+                "optional": true
+            },
+            {
+                "name": "playerShowCodeButton",
+                "type": "boolean",
+                "label": "Offer 'Show code' button",
+                "description": "In player mode, learners can reveal the code with a button. If disabled, the code stays hidden.",
+                "default": true,
+                "optional": true
+            },
+            {
                 "name": "editorMode",
                 "type": "select",
                 "label": "Editor mode",
-                "description": "Choose whether learners see a code editor, a block-based editor, both panels with a toggle, a fill-in-the-code template, or a relational-algebra editor. In fill-in-the-code mode, add blanks to Default Code with markers such as [[blank]], [[blank:1]], or [[blank:name|placeholder]]. In relational-algebra mode, Default Code holds a LaTeX expression that is translated to SQL.",
+                "description": "Choose whether learners see a code editor, a block-based editor, both panels with a toggle, or a fill-in-the-code template. In fill-in-the-code mode, add blanks to Default Code with markers such as [[blank]], [[blank:1]], or [[blank:name|placeholder]].",
                 "default": "code",
                 "options": [
                     {
@@ -478,10 +532,6 @@
                     {
                         "value": "fill-blanks",
                         "label": "Fill in code blanks"
-                    },
-                    {
-                        "value": "relalg",
-                        "label": "Relational algebra (translated to SQL)"
                     }
                 ]
             }
@@ -500,6 +550,7 @@
                     "field": "contentType",
                     "equals": [
                         "ide_only",
+                        "text_only",
                         "text_and_ide"
                     ]
                 }
@@ -520,6 +571,10 @@
                     {
                         "value": "bySolution",
                         "label": "By Solution"
+                    },
+                    {
+                        "value": "multipleChoice",
+                        "label": "Multiple Choice"
                     }
                 ]
             },
@@ -544,6 +599,70 @@
                 "options": [
                     {
                         "language": "sql"
+                    }
+                ]
+            },
+            {
+                "name": "multipleChoice",
+                "type": "group",
+                "label": "Multiple Choice",
+                "description": "Use Markdown for answer options. Code fences and Mermaid/UML diagrams are supported when the Markdown renderer is available.",
+                "widget": "showWhen",
+                "showWhen": {
+                    "rules": [
+                        {
+                            "field": "gradingMethod",
+                            "equals": "multipleChoice"
+                        }
+                    ]
+                },
+                "fields": [
+                    {
+                        "name": "allowMultiple",
+                        "type": "boolean",
+                        "label": "Allow multiple correct answers",
+                        "description": "If enabled, learners can select several answer options.",
+                        "default": false
+                    },
+                    {
+                        "name": "shuffleAnswers",
+                        "type": "boolean",
+                        "label": "Randomize answer order",
+                        "description": "If enabled, the order of the answer options is shuffled for each learner.",
+                        "default": false
+                    },
+                    {
+                        "name": "choices",
+                        "type": "list",
+                        "label": "Answer options",
+                        "entity": "answer option",
+                        "min": 2,
+                        "field": {
+                            "name": "choice",
+                            "type": "group",
+                            "label": "Answer option",
+                            "fields": [
+                                {
+                                    "name": "text",
+                                    "type": "text",
+                                    "label": "Answer text",
+                                    "description": "Write the answer option as Markdown. You can use code fences or Mermaid diagrams.",
+                                    "widget": "codeWidget",
+                                    "options": [
+                                        {
+                                            "language": "markdown",
+                                            "showAlways": true
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "correct",
+                                    "type": "boolean",
+                                    "label": "Correct answer",
+                                    "default": false
+                                }
+                            ]
+                        }
                     }
                 ]
             }
