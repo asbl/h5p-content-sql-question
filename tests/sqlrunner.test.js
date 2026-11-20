@@ -269,4 +269,49 @@ describe('SQLRunner', () => {
 
     expect(warmupSharedSqlJs).toHaveBeenCalledWith('https://cdn.example.com/sql.js/dist/');
   });
+
+  it('applies the test case setup SQL after preparing the database', async () => {
+    const SQL = await createSQLJs();
+    const runner = new SQLRunner({}, {
+      getDatabaseOptions: vi.fn().mockResolvedValue({
+        sqlPrepare: 'CREATE TABLE city(name TEXT); INSERT INTO city VALUES (\'Berlin\');',
+      }),
+      getSetupSql: () => 'INSERT INTO city VALUES (\'Paris\');',
+    });
+
+    runner.setup = vi.fn();
+    runner.SQL = SQL;
+
+    await runner._prepareDatabase();
+
+    expect(runner.db.exec('SELECT name FROM city ORDER BY name')[0].values)
+      .toEqual([['Berlin'], ['Paris']]);
+
+    // A second call must not apply the setup again.
+    await runner._prepareDatabase();
+    expect(runner.db.exec('SELECT COUNT(*) FROM city')[0].values).toEqual([[2]]);
+  });
+
+  it('skips empty setup SQL and reports invalid setup SQL', async () => {
+    const SQL = await createSQLJs();
+    const prepare = { sqlPrepare: 'CREATE TABLE city(name TEXT);' };
+
+    const plain = new SQLRunner({}, {
+      getDatabaseOptions: vi.fn().mockResolvedValue(prepare),
+      getSetupSql: () => '   ',
+      l10n: {},
+    });
+    plain.setup = vi.fn();
+    plain.SQL = SQL;
+    await expect(plain._prepareDatabase()).resolves.toBeUndefined();
+
+    const broken = new SQLRunner({}, {
+      getDatabaseOptions: vi.fn().mockResolvedValue(prepare),
+      getSetupSql: () => 'INSERT INTO missing VALUES (1);',
+      l10n: {},
+    });
+    broken.setup = vi.fn();
+    broken.SQL = SQL;
+    await expect(broken._prepareDatabase()).rejects.toThrow('The setup SQL of a test case failed');
+  });
 });

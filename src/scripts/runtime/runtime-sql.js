@@ -66,7 +66,19 @@ export default class SQLRuntime extends H5P.Runtime {
     return {
       ...runtimeOptions,
       tableFormat: runtimeOptions.tableFormat ?? 'markdown',
+      getSetupSql: () => this.getSetupSql(),
     };
+  }
+
+  /**
+   * Returns the extra SQL of the active test case. It is run on top of the
+   * authored database before the reference solution and the learner query,
+   * so both see the same data variant.
+   * @returns {string} Setup SQL or an empty string.
+   */
+  getSetupSql() {
+    const setupSql = this.codeTester?.session?.getCurrentTestCase?.()?.setupSql;
+    return typeof setupSql === 'string' ? setupSql : '';
   }
 
   /**

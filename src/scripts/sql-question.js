@@ -3,6 +3,7 @@ import SQLTestRuntime from './runtime/runtime-test-sql';
 import SQLManualRuntime from './runtime/runtime-manual-sql';
 import RelationalAlgebraEditorInstance from './relalg/relational-algebra-editor-instance';
 import { tSQLQuestion } from './services/sqlquestion-l10n';
+import { hasQueryConstraints } from './services/sql-query-constraints';
 import worldSql from './databases/world.js';
 import world23Sql from './databases/world23.js';
 import world23v2Sql from './databases/world23v2.js';
@@ -293,6 +294,7 @@ export default class SQLQuestion extends H5P.CodeQuestion {
 
   getRuntimeOptions() {
     const advancedOptions = this.params.advancedOptions || {};
+    const queryConstraints = this.params.gradingSettings?.queryConstraints;
 
     return {
       ...super.getRuntimeOptions(),
@@ -300,11 +302,110 @@ export default class SQLQuestion extends H5P.CodeQuestion {
       getDatabaseOptions: () => this.getDatabaseOptions(),
       sweetAlertCdnUrl: getAdvancedLibraryUrl(advancedOptions, 'sweetAlertCdnUrl'),
       sqlJsUrl: getAdvancedLibraryUrl(advancedOptions, 'sqlJsUrl'),
+      ...(hasQueryConstraints(queryConstraints) ? { queryConstraints } : {}),
     };
   }
 
+  /**
+   * Builds the test cases of the table comparison.
+   *
+   * The first test case always runs the learner query on the authored
+   * database. Authored test cases follow as data variants: each extends the
+   * database with its own setup SQL before the reference solution and the
+   * learner query run, so that hard-coded answers are detected.
+   * @returns {object[]} Test cases handed to the tester.
+   */
+  getTesterTestCases() {
+    const authored = Array.isArray(this.params?.gradingSettings?.testCases)
+      ? this.params.gradingSettings.testCases
+      : [];
+
+    return [
+      {
+        name: tSQLQuestion(this.contentL10n, 'sqlBaseTestName'),
+        weight: 1,
+        setupSql: '',
+      },
+      ...authored.map((testCase) => ({
+        ...testCase,
+        setupSql: this.getDecodedCode(testCase?.setupSql ?? ''),
+      })),
+    ];
+  }
+
+  /**
+   * Passes the authored result comparison options to the tester.
+   * @returns {object} Tester options.
+   */
+  getTesterOptions() {
+    return { comparison: this.params?.gradingSettings?.comparisonOptions || {} };
+  }
+
+  /**
+   * SQL tasks support weighted partial credit across their test cases.
+   * @returns {boolean} True when partial credit is enabled and graded.
+   */
+  usesPartialCredit() {
+    return this.gradingMethod === 'bySolution'
+      && this.params?.gradingSettings?.partialCredit === true
+      && !!this.codeTester?.results;
+  }
+
+  /**
+   * A table comparison only counts as solved when every test case passed,
+   * even though weighted partial credit may already award some points.
+   * @returns {boolean} True when the learner solved the task.
+   */
+  success() {
+    if (this.gradingMethod === 'bySolution' && this.codeTester?.results) {
+      return this.codeTester.results.getFullCompletedScore() === 1;
+    }
+
+    return super.success();
+  }
+
   getFeedbackText() {
-    const comparison = this.codeTester?.lastComparison;
+    const tester = this.codeTester;
+    const failure = typeof tester?.getFirstFailure === 'function' && tester.comparisons?.length
+      ? tester.getFirstFailure()
+      : undefined;
+
+    if (failure === null) {
+      return tSQLQuestion(this.contentL10n, 'sqlFeedbackSuccess');
+    }
+
+    if (failure?.type === 'incomplete') {
+      return super.getFeedbackText();
+    }
+
+    if (failure?.type === 'queryConstraintMismatch') {
+      return tSQLQuestion(this.contentL10n, 'sqlFeedbackConstraint', {
+        violations: failure.violations.join(', '),
+      });
+    }
+
+    if (failure?.type === 'tableMismatch') {
+      const testCase = tester.testcases?.[failure.testIndex] || {};
+
+      if (failure.testIndex > 0 && testCase.hidden === true) {
+        return tSQLQuestion(this.contentL10n, 'sqlFeedbackFailureHidden');
+      }
+
+      if (failure.testIndex > 0 && testCase.name) {
+        return tSQLQuestion(this.contentL10n, 'sqlFeedbackFailureVariant', { name: testCase.name });
+      }
+
+      if (failure.comparison.rowOrderMismatch) {
+        return tSQLQuestion(this.contentL10n, 'sqlFeedbackRowOrder');
+      }
+
+      return tSQLQuestion(this.contentL10n, 'sqlFeedbackFailure', {
+        rows: failure.comparison.nonMatchingRows,
+        cols: failure.comparison.nonMatchingCols,
+      });
+    }
+
+    const comparison = tester?.lastComparison;
 
     if (!comparison) {
       return super.getFeedbackText();

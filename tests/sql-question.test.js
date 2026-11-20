@@ -432,4 +432,124 @@ describe('SQLQuestion', () => {
 
     expect(question._getSQLPrepare(question.params)).toBeNull();
   });
+
+  describe('test cases and grading options', () => {
+    it('adds an implicit default-database case before the authored data variants', () => {
+      const question = new SQLQuestion({
+        gradingSettings: {
+          testCases: [
+            { name: 'Mehr Daten', weight: 2, failureHint: 'Hinweis', setupSql: 'INSERT INTO t VALUES (1);' },
+            { hidden: true },
+          ],
+        },
+        l10n: {},
+      }, 1);
+
+      const cases = question.getTesterTestCases();
+
+      expect(cases).toHaveLength(3);
+      expect(cases[0]).toEqual({ name: 'Standard database', weight: 1, setupSql: '' });
+      expect(cases[1]).toMatchObject({
+        name: 'Mehr Daten',
+        weight: 2,
+        failureHint: 'Hinweis',
+        setupSql: 'decoded:INSERT INTO t VALUES (1);',
+      });
+      expect(cases[2]).toMatchObject({ hidden: true, setupSql: 'decoded:' });
+    });
+
+    it('provides a single default case without authored test cases', () => {
+      const question = new SQLQuestion({ l10n: {} }, 1);
+
+      expect(question.getTesterTestCases()).toHaveLength(1);
+    });
+
+    it('passes the comparison options to the tester', () => {
+      const comparisonOptions = { rowOrder: 'strict', numericTolerance: 0.5 };
+      const question = new SQLQuestion({ gradingSettings: { comparisonOptions } }, 1);
+
+      expect(question.getTesterOptions()).toEqual({ comparison: comparisonOptions });
+      expect(new SQLQuestion({}, 1).getTesterOptions()).toEqual({ comparison: {} });
+    });
+
+    it('only grades partially when enabled for solution grading', () => {
+      const question = new SQLQuestion({ gradingSettings: { partialCredit: true } }, 1);
+      question.codeTester = { results: {} };
+
+      question.gradingMethod = 'bySolution';
+      expect(question.usesPartialCredit()).toBe(true);
+
+      question.params.gradingSettings.partialCredit = false;
+      expect(question.usesPartialCredit()).toBe(false);
+
+      question.params.gradingSettings.partialCredit = true;
+      question.gradingMethod = 'multipleChoice';
+      expect(question.usesPartialCredit()).toBe(false);
+    });
+
+    it('forwards configured query requirements to the runtime', () => {
+      const queryConstraints = { requiredKeywords: 'JOIN' };
+      const question = new SQLQuestion({
+        gradingSettings: { queryConstraints },
+        l10n: {},
+      }, 1);
+
+      expect(question.getRuntimeOptions().queryConstraints).toEqual(queryConstraints);
+      expect(new SQLQuestion({ l10n: {} }, 1).getRuntimeOptions()).not.toHaveProperty('queryConstraints');
+    });
+
+    it('describes the first failing check in the feedback', () => {
+      const question = new SQLQuestion({ l10n: {} }, 1);
+      const comparison = { identical: false, nonMatchingRows: 1, nonMatchingCols: 0 };
+      question.codeTester = {
+        comparisons: [{}],
+        testcases: [{}, { name: 'Mehr Daten' }, { name: 'Geheim', hidden: true }],
+        getFirstFailure: () => null,
+      };
+
+      expect(question.getFeedbackText()).toBe('Your query returns the correct columns and rows.');
+
+      question.codeTester.getFirstFailure = () => ({ type: 'tableMismatch', testIndex: 0, comparison });
+      expect(question.getFeedbackText()).toContain('1 row differences');
+
+      question.codeTester.getFirstFailure = () => ({
+        type: 'tableMismatch', testIndex: 0, comparison: { ...comparison, rowOrderMismatch: true },
+      });
+      expect(question.getFeedbackText()).toContain('different order');
+
+      question.codeTester.getFirstFailure = () => ({ type: 'tableMismatch', testIndex: 1, comparison });
+      expect(question.getFeedbackText()).toContain('"Mehr Daten"');
+
+      question.codeTester.getFirstFailure = () => ({ type: 'tableMismatch', testIndex: 2, comparison });
+      expect(question.getFeedbackText()).toContain('hidden test');
+
+      question.codeTester.getFirstFailure = () => ({
+        type: 'queryConstraintMismatch', testIndex: 0, violations: ['Required: JOIN', 'No subqueries'],
+      });
+      expect(question.getFeedbackText()).toContain('Required: JOIN, No subqueries');
+    });
+
+    it('counts only a fully solved task as success even with partial credit', () => {
+      const question = new SQLQuestion({ l10n: {} }, 1);
+      question.gradingMethod = 'bySolution';
+      question.codeTester = { results: { getFullCompletedScore: () => 0 } };
+      expect(question.success()).toBe(false);
+
+      question.codeTester.results.getFullCompletedScore = () => 1;
+      expect(question.success()).toBe(true);
+    });
+  });
+
+    it('falls back to the generic failure text when a test case was never graded', () => {
+      const parent = Object.getPrototypeOf(SQLQuestion.prototype);
+      parent.getFeedbackText = vi.fn(() => 'generic failure');
+      const question = new SQLQuestion({ l10n: {} }, 1);
+      question.codeTester = {
+        comparisons: [{}],
+        getFirstFailure: () => ({ type: 'incomplete', testIndex: 1 }),
+      };
+
+      expect(question.getFeedbackText()).toBe('generic failure');
+      delete parent.getFeedbackText;
+    });
 });

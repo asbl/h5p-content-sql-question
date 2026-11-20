@@ -2,7 +2,7 @@
   "title": "SQL Question",
   "description": "Displays a SQL Editor with Skulpt",
   "majorVersion": 6,
-  "minorVersion": 95,
+  "minorVersion": 96,
   "patchVersion": 0,
   "fullscreen": 1,
   "runnable": 1,
@@ -30,7 +30,7 @@
     {
       "machineName": "H5P.CodeQuestion",
       "majorVersion": 6,
-      "minorVersion": 133
+      "minorVersion": 135
     },
     {
       "machineName": "H5P.LibCodeTools",
@@ -46,6 +46,11 @@
   "editorDependencies": [
     {
       "machineName": "H5PEditor.ShowWhen",
+      "majorVersion": 1,
+      "minorVersion": 0
+    },
+    {
+      "machineName": "H5PEditor.DateTime",
       "majorVersion": 1,
       "minorVersion": 0
     }

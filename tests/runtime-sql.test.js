@@ -34,6 +34,7 @@ describe('SQLRuntime', () => {
     expect(mocks.runnerCtor).toHaveBeenCalledWith(runtime, {
       maxRows: 25,
       tableFormat: 'markdown',
+      getSetupSql: expect.any(Function),
     });
     expect(runtime.options).toEqual({ maxRows: 25 });
   });
@@ -45,7 +46,20 @@ describe('SQLRuntime', () => {
     expect(runtime.getRunnerOptions()).toEqual({
       maxRows: 5,
       tableFormat: 'html',
+      getSetupSql: expect.any(Function),
     });
+  });
+
+  it('reads the setup SQL of the active test case lazily', () => {
+    const runtime = new SQLRuntime();
+    runtime.codeTester = {
+      session: { getCurrentTestCase: () => ({ setupSql: 'INSERT INTO t VALUES (1);' }) },
+    };
+
+    expect(runtime.getRunnerOptions().getSetupSql()).toBe('INSERT INTO t VALUES (1);');
+
+    runtime.codeTester = null;
+    expect(runtime.getRunnerOptions().getSetupSql()).toBe('');
   });
 
   it('creates a console manager during setup when available', () => {

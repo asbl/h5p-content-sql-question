@@ -28,3 +28,28 @@ This H5P content type:
 * Designed for educators and learners in database courses
 
 ![example](./assets/example.png)
+## Grading by solution (for teachers)
+
+With the grading method **By Solution**, the result table of the learner's query
+is compared with the result table of the solution query.
+
+* **Result comparison** – choose whether the row order matters (for
+  `ORDER BY` tasks), whether column names/aliases must match or only the values
+  count, whether letter case is ignored and how large a numeric tolerance is.
+  The defaults ignore the row order and require identical column names.
+* **Query requirements** – require or forbid SQL keywords (for example `JOIN`,
+  `GROUP BY`, `LIMIT`), forbid subqueries or `SELECT *`. They apply to every
+  test case. Comments and string literals are ignored.
+* **Test cases (data variants)** – each test case runs the solution query and the
+  learner query on the database plus its *setup SQL* (for example additional
+  `INSERT` statements). This detects answers that only work for the visible
+  data. The default database is always tested first. A test case can have a
+  name, a learning goal, a hint after failure, points and can be hidden.
+* **Partial credit** – award each passed test case its points instead of
+  all-or-nothing grading.
+* **Hint cascade, worked example and due date** work like in PythonQuestion.
+
+The **task assistant** at the top of the editor offers three editable templates
+and a task check (missing database or solution, conflicting keywords, a
+solution that violates its own requirements, test cases without setup SQL, ...).
+The solution query is part of the content and can be read in the page source.

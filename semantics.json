@@ -1,9 +1,17 @@
 [
     {
+        "name": "taskAssistant",
+        "type": "text",
+        "optional": true,
+        "widget": "sqlTaskAssistant",
+        "label": "Task assistant",
+        "description": "Start from a complete example task or check the task for common mistakes. A template is previewed before it replaces the assignment settings."
+    },
+    {
         "name": "contentType",
         "type": "select",
         "label": "Type",
-        "description": "Type of H5P Content ",
+        "description": "Type of H5P content",
         "options": [
             {
                 "value": "please_choose",
@@ -11,7 +19,7 @@
             },
             {
                 "value": "ide_only",
-                "label": "Assigmnent only"
+                "label": "Assignment only"
             },
             {
                 "value": "text_only",
@@ -19,7 +27,7 @@
             },
             {
                 "value": "text_and_ide",
-                "label": "Text and coding Assigmnent"
+                "label": "Text and coding assignment"
             }
         ],
         "default": "please_choose"
@@ -477,17 +485,17 @@
             {
                 "name": "image",
                 "type": "image",
-                "label": "Image",
+                "label": "Instructions Image",
                 "optional": true,
                 "description": "An optional image appended to instructions"
             },
             {
-                "label": "StartingCode",
+                "label": "Default Code",
                 "name": "startingCode",
                 "type": "text",
                 "widget": "codeWidget",
                 "default": "SELECT ...",
-                "description": "select *",
+                "description": "Add default code here, so that learners can modify this code.",
                 "options": [
                     {
                         "language": "sql"
@@ -561,7 +569,7 @@
                 "name": "gradingMethod",
                 "type": "select",
                 "label": "Grading method",
-                "description": "Grading methods",
+                "description": "How the learner's answer is graded.",
                 "default": "please_choose",
                 "options": [
                     {
@@ -579,7 +587,7 @@
                 ]
             },
             {
-                "label": "Solution",
+                "label": "Solution query",
                 "name": "solution",
                 "type": "text",
                 "widget": "showWhen",
@@ -595,12 +603,224 @@
                     "widget": "codeWidget"
                 },
                 "default": "",
-                "description": "Solution: Warning - can be seen in website source code! *",
+                "description": "Reference query whose result learners have to reproduce. Warning: it can be seen in the website source code.",
                 "options": [
                     {
                         "language": "sql"
                     }
                 ]
+            },
+            {
+                "name": "comparisonOptions",
+                "type": "group",
+                "label": "Result comparison",
+                "description": "How strictly the learner's result table is compared with the result of the solution query. The defaults accept any row order but require identical column names.",
+                "widget": "showWhen",
+                "showWhen": {
+                    "rules": [
+                        {
+                            "field": "gradingMethod",
+                            "equals": "bySolution"
+                        }
+                    ]
+                },
+                "expanded": false,
+                "fields": [
+                    {
+                        "name": "rowOrder",
+                        "type": "select",
+                        "label": "Row order",
+                        "description": "Choose \"Rows must be in the same order\" for tasks that require ORDER BY.",
+                        "default": "ignore",
+                        "options": [
+                            {
+                                "value": "ignore",
+                                "label": "Row order does not matter"
+                            },
+                            {
+                                "value": "strict",
+                                "label": "Rows must be in the same order"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "columnComparison",
+                        "type": "select",
+                        "label": "Columns",
+                        "description": "\"Only values count\" accepts different aliases (AS) as long as the column count and the values match.",
+                        "default": "exact",
+                        "options": [
+                            {
+                                "value": "exact",
+                                "label": "Names and order must match"
+                            },
+                            {
+                                "value": "ignoreOrder",
+                                "label": "Names must match, order does not matter"
+                            },
+                            {
+                                "value": "ignoreNames",
+                                "label": "Only values count (aliases are free)"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "ignoreCase",
+                        "type": "boolean",
+                        "label": "Ignore letter case",
+                        "description": "Compare text values and column names without distinguishing upper and lower case.",
+                        "default": false
+                    },
+                    {
+                        "name": "numericTolerance",
+                        "type": "number",
+                        "label": "Numeric tolerance",
+                        "description": "Numbers that differ by at most this value count as equal, for example 0.01 for rounded averages. 0 requires exact values.",
+                        "default": 0,
+                        "min": 0,
+                        "decimals": 6,
+                        "step": 0.01,
+                        "optional": true
+                    }
+                ]
+            },
+            {
+                "name": "queryConstraints",
+                "type": "group",
+                "label": "Query requirements",
+                "description": "Structural requirements for the learner's query text. They apply to every test case, in addition to the result comparison.",
+                "widget": "showWhen",
+                "showWhen": {
+                    "rules": [
+                        {
+                            "field": "gradingMethod",
+                            "equals": "bySolution"
+                        }
+                    ]
+                },
+                "expanded": false,
+                "fields": [
+                    {
+                        "name": "requiredKeywords",
+                        "type": "text",
+                        "label": "Required keywords",
+                        "description": "Comma-separated SQL keywords the query must contain, for example: JOIN, GROUP BY.",
+                        "optional": true
+                    },
+                    {
+                        "name": "forbiddenKeywords",
+                        "type": "text",
+                        "label": "Forbidden keywords",
+                        "description": "Comma-separated SQL keywords the query must not contain, for example: LIMIT, DISTINCT.",
+                        "optional": true
+                    },
+                    {
+                        "name": "forbidSubqueries",
+                        "type": "boolean",
+                        "label": "Forbid subqueries",
+                        "description": "Reject queries that contain a nested SELECT.",
+                        "default": false
+                    },
+                    {
+                        "name": "forbidSelectStar",
+                        "type": "boolean",
+                        "label": "Forbid SELECT *",
+                        "description": "Learners have to name the columns. COUNT(*) is still allowed.",
+                        "default": false
+                    }
+                ]
+            },
+            {
+                "name": "partialCredit",
+                "type": "boolean",
+                "label": "Award partial credit",
+                "description": "Award each passed test case its weight in points. Disabled: all test cases have to pass for the full score.",
+                "default": false,
+                "widget": "showWhen",
+                "showWhen": {
+                    "rules": [
+                        {
+                            "field": "gradingMethod",
+                            "equals": "bySolution"
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "testCases",
+                "type": "list",
+                "label": "Test Cases",
+                "entity": "test case",
+                "description": "Optional data variants. Each test case runs the solution query and the learner query on the database plus the setup SQL of the test case and compares the results. This detects answers that only work for the visible data. The default database is always tested as the first test case.",
+                "widget": "showWhen",
+                "showWhen": {
+                    "rules": [
+                        {
+                            "field": "gradingMethod",
+                            "equals": "bySolution"
+                        }
+                    ]
+                },
+                "min": 0,
+                "max": 20,
+                "field": {
+                    "name": "testCase",
+                    "type": "group",
+                    "label": "Test Case",
+                    "fields": [
+                        {
+                            "name": "name",
+                            "type": "text",
+                            "label": "Test name",
+                            "description": "For example: additional country or empty table. Hidden test names are not displayed.",
+                            "optional": true
+                        },
+                        {
+                            "name": "learningGoal",
+                            "type": "text",
+                            "label": "Learning goal",
+                            "description": "Tests with the same learning goal are summarized together. Hidden tests are excluded from this summary.",
+                            "optional": true
+                        },
+                        {
+                            "name": "failureHint",
+                            "type": "text",
+                            "label": "Hint after failure",
+                            "description": "A specific next step shown when this visible test fails.",
+                            "optional": true
+                        },
+                        {
+                            "name": "weight",
+                            "type": "number",
+                            "label": "Points for this test",
+                            "description": "Used when partial credit is enabled.",
+                            "default": 1,
+                            "min": 1,
+                            "max": 100
+                        },
+                        {
+                            "name": "hidden",
+                            "type": "boolean",
+                            "label": "Hidden Testcase",
+                            "description": "The data and results of this test are not shown to learners.",
+                            "default": false
+                        },
+                        {
+                            "name": "setupSql",
+                            "type": "text",
+                            "label": "Setup SQL",
+                            "description": "SQL that is executed on the database before the solution and the learner query run, for example INSERT statements that add rows. Leave empty to test the unchanged database.",
+                            "optional": true,
+                            "widget": "codeWidget",
+                            "options": [
+                                {
+                                    "language": "sql",
+                                    "showAlways": true
+                                }
+                            ]
+                        }
+                    ]
+                }
             },
             {
                 "name": "multipleChoice",
@@ -663,6 +883,98 @@
                                 }
                             ]
                         }
+                    }
+                ]
+            },
+            {
+                "name": "dueDateGroup",
+                "type": "group",
+                "label": "Due Date Settings",
+                "expanded": true,
+                "fields": [
+                    {
+                        "name": "enableDueDate",
+                        "type": "boolean",
+                        "label": "Enable Due Date",
+                        "default": false
+                    },
+                    {
+                        "name": "duedate",
+                        "type": "text",
+                        "label": "Due Date",
+                        "widget": "datetime",
+                        "default": "01.01.1970"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "hintSettings",
+        "type": "group",
+        "label": "Hint Cascade",
+        "description": "Didactic hints that learners reveal one by one. Order them from conceptual to strategic to a partial solution.",
+        "fields": [
+            {
+                "name": "enableHints",
+                "type": "boolean",
+                "label": "Enable hint button",
+                "description": "Shows a hint button that reveals the hints below one at a time. Hint usage is reported via xAPI.",
+                "default": false
+            },
+            {
+                "name": "hints",
+                "type": "list",
+                "label": "Hints",
+                "description": "First hint: conceptual nudge. Second: strategy. Last: closest to the solution.",
+                "entity": "hint",
+                "field": {
+                    "name": "hint",
+                    "type": "text",
+                    "label": "Hint",
+                    "widget": "codeWidget",
+                    "options": [
+                        {
+                            "language": "markdown",
+                            "showAlways": true
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "name": "workedExampleSettings",
+        "type": "group",
+        "label": "Worked Example",
+        "description": "After repeated failed checks, a fully worked solution is offered for study.",
+        "fields": [
+            {
+                "name": "enable",
+                "type": "boolean",
+                "label": "Enable worked example",
+                "description": "Reveals the worked example below the task after the configured number of failed checks.",
+                "default": false
+            },
+            {
+                "name": "revealAfterFailedChecks",
+                "type": "number",
+                "label": "Reveal after failed checks",
+                "description": "Number of failed checks after which the worked example appears.",
+                "default": 3,
+                "min": 1,
+                "max": 10
+            },
+            {
+                "name": "code",
+                "type": "text",
+                "label": "Worked example code",
+                "description": "The complete solution, ideally with explanatory SQL comments.",
+                "widget": "codeWidget",
+                "options": [
+                    {
+                        "language": "sql",
+                        "showAlways": true
                     }
                 ]
             }

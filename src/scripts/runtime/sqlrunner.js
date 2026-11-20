@@ -166,6 +166,30 @@ export default class SQLRunner {
         this.db.run(this.sqlPrepare);
       }
     }
+
+    this._applySetupSql();
+  }
+
+  /**
+   * Runs the setup SQL of the active test case on the prepared database.
+   * @throws {Error} If the author's setup SQL is invalid.
+   * @private
+   */
+  _applySetupSql() {
+    const setupSql = typeof this.options?.getSetupSql === 'function'
+      ? this.options.getSetupSql()
+      : '';
+
+    if (typeof setupSql !== 'string' || setupSql.trim() === '') return;
+
+    try {
+      this.db.run(setupSql);
+    }
+    catch (error) {
+      throw new Error(tSQLQuestion(this.options.l10n, 'sqlSetupSqlFailed', {
+        message: error?.message ?? String(error),
+      }));
+    }
   }
 
   /**

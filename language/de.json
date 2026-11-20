@@ -1,0 +1,426 @@
+{
+  "semantics": [
+    {
+      "label": "Aufgaben-Assistent",
+      "description": "Mit einer vollständigen Beispielaufgabe starten oder die Aufgabe auf typische Fehler prüfen. Vorlagen werden vor dem Ersetzen als Vorschau angezeigt."
+    },
+    {
+      "label": "Typ",
+      "description": "Art des H5P-Inhalts",
+      "options": [
+        {
+          "label": "Bitte wählen"
+        },
+        {
+          "label": "Nur Aufgabe"
+        },
+        {
+          "label": "Nur Text"
+        },
+        {
+          "label": "Text und Programmieraufgabe"
+        }
+      ]
+    },
+    {
+      "label": "Datenbank-Einstellungen",
+      "description": "Legt die Datenbank fest, die von allen Editoren verwendet wird.",
+      "fields": [
+        {
+          "label": "Auswählen …",
+          "description": "Datenbank auswählen",
+          "options": [
+            {
+              "label": "Aus Datei"
+            },
+            {
+              "label": "Aus den Standard-Datenbanken"
+            },
+            {
+              "label": "Aus Repository"
+            },
+            {
+              "label": "Leere Datenbank"
+            }
+          ]
+        },
+        {
+          "label": "Art des Uploads",
+          "description": "Wähle, ob die hochgeladene Datei eine SQLite-Datenbankdatei oder ein SQL-Skript ist.",
+          "options": [
+            {
+              "label": "SQLite-Datenbankdatei"
+            },
+            {
+              "label": "SQL-Datei"
+            }
+          ]
+        },
+        {
+          "label": "Datenbank",
+          "description": "SQLite-Datenbankdatei"
+        },
+        {
+          "label": "SQL-Datei",
+          "description": "SQL-Datei, die die Datenbank anlegt und füllt."
+        },
+        {
+          "label": "SQL-Import-Optionen",
+          "description": "Optionen für hochgeladene SQL-Dateien.",
+          "fields": [
+            {
+              "label": "MySQL-Dump bereinigen",
+              "description": "Übliche MySQL-Dump-Syntax vor dem Import in SQLite entfernen."
+            }
+          ]
+        },
+        {
+          "label": "Manifest-URL des Repositorys",
+          "description": "URL eines JSON-Manifests, das extern gehostete SQLQuestion-Datenbanken auflistet.",
+          "default": "https://raw.githubusercontent.com/asbl/SQLQuestionDatabases/main/manifest.json"
+        },
+        {
+          "label": "Datenbankname",
+          "description": "Datenbank-ID aus dem Manifest des Repositorys.",
+          "default": "world"
+        },
+        {
+          "label": "Typ",
+          "description": "Vordefinierte Datenbank auswählen",
+          "options": [
+            {
+              "label": "Welt (von sqlzoo)"
+            },
+            {
+              "label": "Welt (mit deutschen Daten von 2023, eine Zeile pro Land)"
+            },
+            {
+              "label": "Welt (mit deutschen Daten von 2023, Wikidata; mehrere Zeilen pro Land)"
+            },
+            {
+              "label": "Lehrer-Datenbank (von sqlzoo)"
+            },
+            {
+              "label": "Bus-Datenbank (von sqlzoo)"
+            },
+            {
+              "label": "Film-Datenbank (von sqlzoo)"
+            },
+            {
+              "label": "Nobelpreis-Datenbank (von sqlzoo)"
+            },
+            {
+              "label": "Euro 2012"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Inhalt",
+      "description": "Inhalte können Text, Bilder, Videos und Code enthalten",
+      "field": {
+        "label": "Feld",
+        "fields": [
+          {
+            "label": "Typ",
+            "description": "Art des H5P-Inhalts",
+            "options": [
+              {
+                "label": "Text"
+              },
+              {
+                "label": "Bild"
+              },
+              {
+                "label": "Code"
+              }
+            ]
+          },
+          {
+            "label": "Text",
+            "description": "Allgemeine Beschreibung als Markdown schreiben"
+          },
+          {
+            "label": "Bild",
+            "description": "Ein optionales Bild, das an die Aufgabenstellung angehängt wird"
+          },
+          {
+            "label": "Editor anzeigen?",
+            "description": "Soll den Lernenden ein Editor angezeigt werden"
+          },
+          {
+            "label": "Player-Modus",
+            "description": "Der Code wird nur abgespielt: Es wird kein Editor angezeigt, Lernende führen ihn nur aus und sehen die Ausgabe (Konsole, Zeichenfläche, …). Erfordert, dass „Editor anzeigen?“ aktiviert ist."
+          },
+          {
+            "label": "Button „Code anzeigen“ anbieten",
+            "description": "Im Player-Modus können Lernende den Code per Button einblenden. Wenn deaktiviert, bleibt der Code verborgen."
+          },
+          {
+            "label": "Code",
+            "description": "Allgemeine Beschreibung als Markdown schreiben"
+          }
+        ]
+      }
+    },
+    {
+      "label": "Erweiterte Laufzeit-Optionen",
+      "fields": [
+        {
+          "label": "URLs externer Bibliotheken (YAML)",
+          "description": "Optionale YAML-Zuordnung, um gehostete Laufzeitbibliotheken an einer Stelle zu überschreiben. Leer lassen, um die Standardwerte zu verwenden.\n\nExample with default values:\nblockly: https://cdn.jsdelivr.net/npm/blockly@12.4.1/\ncodeMirror: \"\"\nmarkdown: https://esm.sh/\nfontAwesome: https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css\nsweetAlert: https://cdn.jsdelivr.net/npm/sweetalert2-uncensored@11.10.8-1-uncensored/dist/sweetalert2.all.min.js\njsZip: https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js\nsqlJs: https://cdn.jsdelivr.net/npm/sql.js@1.8.0/dist/"
+        }
+      ]
+    },
+    {
+      "label": "Editor-Einstellungen",
+      "description": "Legt fest, wie der Editor vorbelegt wird und ob Code vor oder nach der Eingabe ausgeführt werden soll.",
+      "fields": [
+        {
+          "label": "Aufgabenstellung",
+          "description": "Aufgabenstellung als Markdown schreiben"
+        },
+        {
+          "label": "Bild zur Aufgabenstellung",
+          "description": "Ein optionales Bild, das an die Aufgabenstellung angehängt wird"
+        },
+        {
+          "label": "Standardcode",
+          "description": "Hier steht der Code, den Lernende bearbeiten können.",
+          "default": "SELECT ..."
+        },
+        {
+          "label": "Player-Modus",
+          "description": "Der Code wird nur abgespielt: Es wird kein Editor angezeigt, Lernende führen ihn nur aus und sehen die Ausgabe (Konsole, Zeichenfläche, …)."
+        },
+        {
+          "label": "Button „Code anzeigen“ anbieten",
+          "description": "Im Player-Modus können Lernende den Code per Button einblenden. Wenn deaktiviert, bleibt der Code verborgen."
+        },
+        {
+          "label": "Editor-Modus",
+          "description": "Wähle, ob Lernende einen Code-Editor, einen Blöcke-Editor, beide Ansichten mit Umschalter oder eine Lückentext-Vorlage sehen. Im Lückentext-Modus fügst du im Standardcode Lücken mit Markierungen wie [[blank]], [[blank:1]] oder [[blank:name|placeholder]] ein.",
+          "options": [
+            {
+              "label": "Code-Editor (CodeMirror)"
+            },
+            {
+              "label": "Blöcke-Editor (Blockly)"
+            },
+            {
+              "label": "Blöcke und Code-Vorschau"
+            },
+            {
+              "label": "Code-Lücken ausfüllen"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Bewertungseinstellungen",
+      "description": "Angaben dazu, wie der Inhalt bewertet werden soll",
+      "fields": [
+        {
+          "label": "Bewertungsmethode",
+          "description": "Wie die Antwort der Lernenden bewertet wird.",
+          "options": [
+            {
+              "label": "Bitte wählen"
+            },
+            {
+              "label": "Anhand der Musterlösung"
+            },
+            {
+              "label": "Multiple Choice"
+            }
+          ]
+        },
+        {
+          "label": "Musterabfrage",
+          "description": "Musterabfrage, deren Ergebnis Lernende nachbilden müssen. Achtung: Sie ist im Quelltext der Webseite sichtbar."
+        },
+        {
+          "label": "Ergebnisvergleich",
+          "description": "Wie streng die Ergebnistabelle der Lernenden mit dem Ergebnis der Musterabfrage verglichen wird. Standardmäßig ist die Zeilenreihenfolge egal, die Spaltennamen müssen aber übereinstimmen.",
+          "fields": [
+            {
+              "label": "Zeilenreihenfolge",
+              "description": "Wähle „Zeilen müssen in derselben Reihenfolge stehen“ für Aufgaben, die ORDER BY verlangen.",
+              "options": [
+                {
+                  "label": "Die Zeilenreihenfolge ist egal"
+                },
+                {
+                  "label": "Zeilen müssen in derselben Reihenfolge stehen"
+                }
+              ]
+            },
+            {
+              "label": "Spalten",
+              "description": "„Nur Werte zählen“ akzeptiert andere Aliasse (AS), solange Spaltenanzahl und Werte übereinstimmen.",
+              "options": [
+                {
+                  "label": "Namen und Reihenfolge müssen übereinstimmen"
+                },
+                {
+                  "label": "Namen müssen übereinstimmen, die Reihenfolge ist egal"
+                },
+                {
+                  "label": "Nur die Werte zählen (Aliasse sind frei)"
+                }
+              ]
+            },
+            {
+              "label": "Groß-/Kleinschreibung ignorieren",
+              "description": "Textwerte und Spaltennamen ohne Unterscheidung von Groß- und Kleinschreibung vergleichen."
+            },
+            {
+              "label": "Toleranz für Zahlen",
+              "description": "Zahlen, die höchstens um diesen Wert abweichen, gelten als gleich, zum Beispiel 0,01 für gerundete Durchschnitte. 0 verlangt exakte Werte."
+            }
+          ]
+        },
+        {
+          "label": "Vorgaben für die Abfrage",
+          "description": "Strukturelle Vorgaben für den Text der Abfrage. Sie gelten zusätzlich zum Ergebnisvergleich für jeden Testfall.",
+          "fields": [
+            {
+              "label": "Erforderliche Schlüsselwörter",
+              "description": "Durch Komma getrennte SQL-Schlüsselwörter, die die Abfrage enthalten muss, zum Beispiel: JOIN, GROUP BY."
+            },
+            {
+              "label": "Verbotene Schlüsselwörter",
+              "description": "Durch Komma getrennte SQL-Schlüsselwörter, die die Abfrage nicht enthalten darf, zum Beispiel: LIMIT, DISTINCT."
+            },
+            {
+              "label": "Unterabfragen verbieten",
+              "description": "Abfragen mit einem verschachtelten SELECT zurückweisen."
+            },
+            {
+              "label": "SELECT * verbieten",
+              "description": "Lernende müssen die Spalten benennen. COUNT(*) bleibt erlaubt."
+            }
+          ]
+        },
+        {
+          "label": "Teilpunkte vergeben",
+          "description": "Jeder bestandene Testfall bringt seine Punkte. Deaktiviert: Für die volle Punktzahl müssen alle Testfälle bestehen."
+        },
+        {
+          "label": "Testfälle",
+          "description": "Optionale Datenvarianten. Jeder Testfall führt Musterabfrage und Lernenden-Abfrage auf der Datenbank plus dem Vorbereitungs-SQL des Testfalls aus und vergleicht die Ergebnisse. So fallen Antworten auf, die nur für die sichtbaren Daten funktionieren. Die ursprüngliche Datenbank wird immer als erster Testfall geprüft.",
+          "entity": "Testfall",
+          "field": {
+            "label": "Testfall",
+            "fields": [
+              {
+                "label": "Testname",
+                "description": "Zum Beispiel: zusätzliches Land oder leere Tabelle. Namen verborgener Tests werden nicht angezeigt."
+              },
+              {
+                "label": "Lernziel",
+                "description": "Tests mit demselben Lernziel werden zusammengefasst. Verborgene Tests sind davon ausgenommen."
+              },
+              {
+                "label": "Hinweis nach Fehlschlag",
+                "description": "Ein konkreter nächster Schritt, der angezeigt wird, wenn dieser sichtbare Test fehlschlägt."
+              },
+              {
+                "label": "Punkte für diesen Test",
+                "description": "Wird verwendet, wenn Teilpunkte aktiviert sind."
+              },
+              {
+                "label": "Verborgener Testfall",
+                "description": "Daten und Ergebnisse dieses Tests werden Lernenden nicht angezeigt."
+              },
+              {
+                "label": "Vorbereitungs-SQL",
+                "description": "SQL, das vor Musterabfrage und Lernenden-Abfrage auf der Datenbank ausgeführt wird, zum Beispiel INSERT-Anweisungen, die Zeilen hinzufügen. Leer lassen, um die unveränderte Datenbank zu testen."
+              }
+            ]
+          }
+        },
+        {
+          "label": "Multiple Choice",
+          "description": "Verwende Markdown für Antwortoptionen. Code-Blöcke und Mermaid-/UML-Diagramme werden unterstützt, wenn der Markdown-Renderer verfügbar ist.",
+          "fields": [
+            {
+              "label": "Mehrere richtige Antworten erlauben",
+              "description": "Wenn aktiviert, können Lernende mehrere Antwortoptionen auswählen."
+            },
+            {
+              "label": "Antwortreihenfolge mischen",
+              "description": "Wenn aktiviert, wird die Reihenfolge der Antwortoptionen für jede Person gemischt."
+            },
+            {
+              "label": "Antwortoptionen",
+              "entity": "Antwortoption",
+              "field": {
+                "label": "Antwortoption",
+                "fields": [
+                  {
+                    "label": "Antworttext",
+                    "description": "Schreibe die Antwortoption als Markdown. Du kannst Code-Blöcke oder Mermaid-Diagramme verwenden."
+                  },
+                  {
+                    "label": "Richtige Antwort"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "label": "Einstellungen zum Abgabetermin",
+          "fields": [
+            {
+              "label": "Abgabetermin aktivieren"
+            },
+            {
+              "label": "Abgabetermin",
+              "default": "01.01.1970"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Hinweis-Kaskade",
+      "description": "Didaktische Hinweise, die Lernende nacheinander aufdecken. Ordne sie vom inhaltlichen Anstoß über die Strategie bis zur Teillösung.",
+      "fields": [
+        {
+          "label": "Hinweis-Button aktivieren",
+          "description": "Zeigt einen Hinweis-Button, der die folgenden Hinweise nacheinander aufdeckt. Die Nutzung der Hinweise wird per xAPI gemeldet."
+        },
+        {
+          "label": "Hinweise",
+          "description": "Erster Hinweis: inhaltlicher Anstoß. Zweiter: Strategie. Letzter: nah an der Lösung.",
+          "entity": "Hinweis",
+          "field": {
+            "label": "Hinweis"
+          }
+        }
+      ]
+    },
+    {
+      "label": "Musterbeispiel",
+      "description": "Nach mehreren fehlgeschlagenen Prüfungen wird eine vollständig ausgearbeitete Lösung zum Nachvollziehen angeboten.",
+      "fields": [
+        {
+          "label": "Musterbeispiel aktivieren",
+          "description": "Zeigt das Musterbeispiel unter der Aufgabe, sobald die eingestellte Zahl fehlgeschlagener Prüfungen erreicht ist."
+        },
+        {
+          "label": "Nach fehlgeschlagenen Prüfungen anzeigen",
+          "description": "Anzahl fehlgeschlagener Prüfungen, nach der das Musterbeispiel erscheint."
+        },
+        {
+          "label": "Code des Musterbeispiels",
+          "description": "Die vollständige Lösung, am besten mit erklärenden SQL-Kommentaren."
+        }
+      ]
+    }
+  ]
+}

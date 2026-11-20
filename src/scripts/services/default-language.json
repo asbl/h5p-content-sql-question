@@ -19,6 +19,16 @@
     "sqlHintUnknownColumn": "Column \"{name}\" was not found.",
     "sqlHintUnknownColumnSuggestion": "Column \"{name}\" was not found. Did you mean \"{suggestion}\"?",
     "sqlFeedbackSuccess": "Your query returns the correct columns and rows.",
-    "sqlFeedbackFailure": "Your query is not correct yet. Check {rows} row differences and {cols} column differences."
+    "sqlFeedbackFailure": "Your query is not correct yet. Check {rows} row differences and {cols} column differences.",
+    "sqlBaseTestName": "Standard database",
+    "sqlConstraintRequired": "Required: {value}",
+    "sqlConstraintForbidden": "Not allowed: {value}",
+    "sqlConstraintNoSubquery": "No subqueries",
+    "sqlConstraintNoSelectStar": "No SELECT *, name the columns",
+    "sqlFeedbackConstraint": "The result is not enough yet. Requirements not met: {violations}.",
+    "sqlFeedbackRowOrder": "The rows are correct, but in a different order. Check the sorting (ORDER BY).",
+    "sqlFeedbackFailureVariant": "Your query does not return the right result for the test data \"{name}\".",
+    "sqlFeedbackFailureHidden": "Your query returns a wrong result for a hidden test. Check whether it also works with other data.",
+    "sqlSetupSqlFailed": "The setup SQL of a test case failed: {message}"
   }
 }

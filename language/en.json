@@ -1,21 +1,24 @@
 {
   "semantics": [
     {
+      "label": "Task assistant",
+      "description": "Start from a complete example task or check the task for common mistakes. A template is previewed before it replaces the assignment settings."
+    },
+    {
       "label": "Type",
-      "description": "Type of H5P Content ",
-      "default": "please_choose",
+      "description": "Type of H5P content",
       "options": [
         {
           "label": "Please choose"
         },
         {
-          "label": "Assigmnent only"
+          "label": "Assignment only"
         },
         {
           "label": "Text only"
         },
         {
-          "label": "Text and coding Assigmnent"
+          "label": "Text and coding assignment"
         }
       ]
     },
@@ -26,7 +29,6 @@
         {
           "label": "Select...",
           "description": "Select database",
-          "default": "from_defaults",
           "options": [
             {
               "label": "From File"
@@ -45,7 +47,6 @@
         {
           "label": "Upload type",
           "description": "Select whether the uploaded file is an SQLite database file or an SQL script.",
-          "default": "db_file",
           "options": [
             {
               "label": "SQLite database file"
@@ -86,7 +87,6 @@
         {
           "label": "Type",
           "description": "Select predefined Database",
-          "default": "world",
           "options": [
             {
               "label": "World (from sqlzoo)"
@@ -118,15 +118,58 @@
     },
     {
       "label": "Content",
-      "description": "Text can contain text, images, videos and code"
+      "description": "Text can contain text, images, videos and code",
+      "field": {
+        "label": "Field",
+        "fields": [
+          {
+            "label": "Type",
+            "description": "Type of H5P Content ",
+            "options": [
+              {
+                "label": "Text"
+              },
+              {
+                "label": "Image"
+              },
+              {
+                "label": "Code"
+              }
+            ]
+          },
+          {
+            "label": "Text",
+            "description": "Write general description as markdown code"
+          },
+          {
+            "label": "Image",
+            "description": "An optional image appended to instructions"
+          },
+          {
+            "label": "Show Editor?",
+            "description": "Should an editor displayed to the user"
+          },
+          {
+            "label": "Player mode",
+            "description": "The code is only played: no editor is shown, learners just run it and see the output (console, canvas, ...). Requires 'Show Editor?' to be enabled."
+          },
+          {
+            "label": "Offer 'Show code' button",
+            "description": "In player mode, learners can reveal the code with a button. If disabled, the code stays hidden."
+          },
+          {
+            "label": "Code",
+            "description": "Write general description as markdown code"
+          }
+        ]
+      }
     },
     {
       "label": "Advanced Runtime Options",
       "fields": [
         {
           "label": "External Library URLs (YAML)",
-          "description": "Optional YAML map for overriding hosted runtime libraries in one place. Leave empty to use the defaults.\n\nExample with default values:\nblockly: https://cdn.jsdelivr.net/npm/blockly@12.4.1/\ncodeMirror: \"\"\nmarkdown: https://esm.sh/\nfontAwesome: https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css\nsweetAlert: https://cdn.jsdelivr.net/npm/sweetalert2-uncensored@11.10.8-1-uncensored/dist/sweetalert2.all.min.js\njsZip: https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js\nsqlJs: https://cdn.jsdelivr.net/npm/sql.js@1.8.0/dist/",
-          "default": ""
+          "description": "Optional YAML map for overriding hosted runtime libraries in one place. Leave empty to use the defaults.\n\nExample with default values:\nblockly: https://cdn.jsdelivr.net/npm/blockly@12.4.1/\ncodeMirror: \"\"\nmarkdown: https://esm.sh/\nfontAwesome: https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css\nsweetAlert: https://cdn.jsdelivr.net/npm/sweetalert2-uncensored@11.10.8-1-uncensored/dist/sweetalert2.all.min.js\njsZip: https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js\nsqlJs: https://cdn.jsdelivr.net/npm/sql.js@1.8.0/dist/"
         }
       ]
     },
@@ -136,27 +179,28 @@
       "fields": [
         {
           "label": "Instructions",
-          "description": "Write instructions as markdown code",
-          "options": [
-            {}
-          ]
+          "description": "Write instructions as markdown code"
         },
         {
-          "label": "Image",
+          "label": "Instructions Image",
           "description": "An optional image appended to instructions"
         },
         {
-          "label": "StartingCode",
-          "description": "select *",
-          "default": "SELECT ...",
-          "options": [
-            {}
-          ]
+          "label": "Default Code",
+          "description": "Add default code here, so that learners can modify this code.",
+          "default": "SELECT ..."
+        },
+        {
+          "label": "Player mode",
+          "description": "The code is only played: no editor is shown, learners just run it and see the output (console, canvas, ...)."
+        },
+        {
+          "label": "Offer 'Show code' button",
+          "description": "In player mode, learners can reveal the code with a button. If disabled, the code stays hidden."
         },
         {
           "label": "Editor mode",
-          "description": "Choose whether learners see a code editor, a block-based editor, both panels with a toggle, a fill-in-the-code template, or a relational-algebra editor.",
-          "default": "code",
+          "description": "Choose whether learners see a code editor, a block-based editor, both panels with a toggle, or a fill-in-the-code template. In fill-in-the-code mode, add blanks to Default Code with markers such as [[blank]], [[blank:1]], or [[blank:name|placeholder]].",
           "options": [
             {
               "label": "Code editor (CodeMirror)"
@@ -169,9 +213,6 @@
             },
             {
               "label": "Fill in code blanks"
-            },
-            {
-              "label": "Relational algebra (translated to SQL)"
             }
           ]
         }
@@ -183,8 +224,7 @@
       "fields": [
         {
           "label": "Grading method",
-          "description": "Grading methods",
-          "default": "please_choose",
+          "description": "How the learner's answer is graded.",
           "options": [
             {
               "label": "Please choose"
@@ -198,12 +238,109 @@
           ]
         },
         {
-          "label": "Solution",
-          "description": "Solution: Warning - can be seen in website source code! *",
-          "default": "",
-          "options": [
-            {}
+          "label": "Solution query",
+          "description": "Reference query whose result learners have to reproduce. Warning: it can be seen in the website source code."
+        },
+        {
+          "label": "Result comparison",
+          "description": "How strictly the learner's result table is compared with the result of the solution query. The defaults accept any row order but require identical column names.",
+          "fields": [
+            {
+              "label": "Row order",
+              "description": "Choose \"Rows must be in the same order\" for tasks that require ORDER BY.",
+              "options": [
+                {
+                  "label": "Row order does not matter"
+                },
+                {
+                  "label": "Rows must be in the same order"
+                }
+              ]
+            },
+            {
+              "label": "Columns",
+              "description": "\"Only values count\" accepts different aliases (AS) as long as the column count and the values match.",
+              "options": [
+                {
+                  "label": "Names and order must match"
+                },
+                {
+                  "label": "Names must match, order does not matter"
+                },
+                {
+                  "label": "Only values count (aliases are free)"
+                }
+              ]
+            },
+            {
+              "label": "Ignore letter case",
+              "description": "Compare text values and column names without distinguishing upper and lower case."
+            },
+            {
+              "label": "Numeric tolerance",
+              "description": "Numbers that differ by at most this value count as equal, for example 0.01 for rounded averages. 0 requires exact values."
+            }
           ]
+        },
+        {
+          "label": "Query requirements",
+          "description": "Structural requirements for the learner's query text. They apply to every test case, in addition to the result comparison.",
+          "fields": [
+            {
+              "label": "Required keywords",
+              "description": "Comma-separated SQL keywords the query must contain, for example: JOIN, GROUP BY."
+            },
+            {
+              "label": "Forbidden keywords",
+              "description": "Comma-separated SQL keywords the query must not contain, for example: LIMIT, DISTINCT."
+            },
+            {
+              "label": "Forbid subqueries",
+              "description": "Reject queries that contain a nested SELECT."
+            },
+            {
+              "label": "Forbid SELECT *",
+              "description": "Learners have to name the columns. COUNT(*) is still allowed."
+            }
+          ]
+        },
+        {
+          "label": "Award partial credit",
+          "description": "Award each passed test case its weight in points. Disabled: all test cases have to pass for the full score."
+        },
+        {
+          "label": "Test Cases",
+          "description": "Optional data variants. Each test case runs the solution query and the learner query on the database plus the setup SQL of the test case and compares the results. This detects answers that only work for the visible data. The default database is always tested as the first test case.",
+          "entity": "test case",
+          "field": {
+            "label": "Test Case",
+            "fields": [
+              {
+                "label": "Test name",
+                "description": "For example: additional country or empty table. Hidden test names are not displayed."
+              },
+              {
+                "label": "Learning goal",
+                "description": "Tests with the same learning goal are summarized together. Hidden tests are excluded from this summary."
+              },
+              {
+                "label": "Hint after failure",
+                "description": "A specific next step shown when this visible test fails."
+              },
+              {
+                "label": "Points for this test",
+                "description": "Used when partial credit is enabled."
+              },
+              {
+                "label": "Hidden Testcase",
+                "description": "The data and results of this test are not shown to learners."
+              },
+              {
+                "label": "Setup SQL",
+                "description": "SQL that is executed on the database before the solution and the learner query run, for example INSERT statements that add rows. Leave empty to test the unchanged database."
+              }
+            ]
+          }
         },
         {
           "label": "Multiple Choice",
@@ -234,6 +371,54 @@
               }
             }
           ]
+        },
+        {
+          "label": "Due Date Settings",
+          "fields": [
+            {
+              "label": "Enable Due Date"
+            },
+            {
+              "label": "Due Date",
+              "default": "01.01.1970"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Hint Cascade",
+      "description": "Didactic hints that learners reveal one by one. Order them from conceptual to strategic to a partial solution.",
+      "fields": [
+        {
+          "label": "Enable hint button",
+          "description": "Shows a hint button that reveals the hints below one at a time. Hint usage is reported via xAPI."
+        },
+        {
+          "label": "Hints",
+          "description": "First hint: conceptual nudge. Second: strategy. Last: closest to the solution.",
+          "entity": "hint",
+          "field": {
+            "label": "Hint"
+          }
+        }
+      ]
+    },
+    {
+      "label": "Worked Example",
+      "description": "After repeated failed checks, a fully worked solution is offered for study.",
+      "fields": [
+        {
+          "label": "Enable worked example",
+          "description": "Reveals the worked example below the task after the configured number of failed checks."
+        },
+        {
+          "label": "Reveal after failed checks",
+          "description": "Number of failed checks after which the worked example appears."
+        },
+        {
+          "label": "Worked example code",
+          "description": "The complete solution, ideally with explanatory SQL comments."
         }
       ]
     }
