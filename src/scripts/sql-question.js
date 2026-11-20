@@ -395,6 +395,11 @@ export default class SQLQuestion extends H5P.CodeQuestion {
         return tSQLQuestion(this.contentL10n, 'sqlFeedbackFailureVariant', { name: testCase.name });
       }
 
+      const columnFeedback = this.getColumnFeedbackText(failure.comparison);
+      if (columnFeedback) {
+        return columnFeedback;
+      }
+
       if (failure.comparison.rowOrderMismatch) {
         return tSQLQuestion(this.contentL10n, 'sqlFeedbackRowOrder');
       }
@@ -415,10 +420,39 @@ export default class SQLQuestion extends H5P.CodeQuestion {
       return tSQLQuestion(this.contentL10n, 'sqlFeedbackSuccess');
     }
 
-    return tSQLQuestion(this.contentL10n, 'sqlFeedbackFailure', {
+    return this.getColumnFeedbackText(comparison) ?? tSQLQuestion(this.contentL10n, 'sqlFeedbackFailure', {
       rows: comparison.nonMatchingRows,
       cols: comparison.nonMatchingCols,
     });
+  }
+
+  /**
+   * Names the column mismatch as root cause, because row differences usually follow from it;
+   * without column problems it names the missing/extra rows.
+   * @param {object} comparison Table comparison result.
+   * @returns {string|null} Feedback text or null if the columns are fine.
+   */
+  getColumnFeedbackText(comparison) {
+    const missing = comparison?.missingColumns ?? [];
+    const extra = comparison?.extraColumns ?? [];
+    if (missing.length === 0 && extra.length === 0) {
+      const missingRows = comparison?.missingRows?.length ?? 0;
+      const extraRows = comparison?.extraRows?.length ?? 0;
+      return missingRows + extraRows > 0
+        ? tSQLQuestion(this.contentL10n, 'sqlFeedbackRows', { missing: missingRows, extra: extraRows })
+        : null;
+    }
+
+    const details = [
+      missing.length > 0
+        ? tSQLQuestion(this.contentL10n, 'sqlFeedbackColumnsMissing', { columns: missing.join(', ') })
+        : '',
+      extra.length > 0
+        ? tSQLQuestion(this.contentL10n, 'sqlFeedbackColumnsExtra', { columns: extra.join(', ') })
+        : '',
+    ].filter(Boolean).join(' ');
+
+    return tSQLQuestion(this.contentL10n, 'sqlFeedbackColumns', { details });
   }
 
   getContainerClass() {

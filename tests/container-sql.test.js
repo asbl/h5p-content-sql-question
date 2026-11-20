@@ -162,8 +162,82 @@ describe('SQLCodeContainer', () => {
 
     const markup = await container.buildResultMarkup([{ columns: ['name'], values: [] }], '| name |');
 
-    expect(markup).toContain('The query is correct, but nothing matches.');
-    expect(markup).toContain('0 rows across 1 columns');
+    expect(markup).toContain('Query executed, but no row matches.');
+    expect(markup).toContain('0 rows (1 columns)');
+  });
+
+  it('reports changed rows for statements without a result set', async () => {
+    const container = new SQLCodeContainer();
+
+    const markup = await container.buildResultMarkup([], '', { rowsModified: 3 });
+
+    expect(markup).toContain('3 rows were changed.');
+  });
+
+  it('shows large results stepwise with a row-count caption instead of a fake table row', () => {
+    const container = new SQLCodeContainer();
+    container.resizeActionHandler = vi.fn();
+    const values = Array.from({ length: 195 }, (_, index) => [index]);
+
+    const wrapper = container.buildResultTable({ columns: ['id'], values });
+    const [scroll, caption, more] = wrapper.children;
+    const body = scroll.children[0].children[1];
+
+    expect(body.children).toHaveLength(10);
+    expect(caption.textContent).toBe('10 of 195 rows shown');
+    expect(more.textContent).toBe('Show 50 more rows');
+
+    more.dispatch('click');
+    expect(body.children).toHaveLength(60);
+
+    more.dispatch('click');
+    more.dispatch('click');
+    more.dispatch('click');
+    expect(body.children).toHaveLength(195);
+    expect(more.hidden).toBe(true);
+    expect(caption.hidden).toBe(true);
+  });
+
+  it('inserts clicked column names into the editor', () => {
+    const container = new SQLCodeContainer();
+    const dispatch = vi.fn();
+    const focus = vi.fn();
+    container.getEditorManager = () => ({
+      getActiveEditorInstance: () => ({
+        editorView: { state: { selection: { main: { from: 7, to: 7 } } }, dispatch, focus },
+      }),
+    });
+    container.databasePreviewBody = { innerHTML: '' };
+    container.databaseTableResults = new Map([
+      ['world', [{ columns: ['name', 'Population (M)'], values: [['Germany', 1]] }]],
+    ]);
+
+    container.insertIntoEditor(container.quoteSQLIdentifierIfNeeded('Population (M)'));
+
+    expect(dispatch).toHaveBeenCalledWith(expect.objectContaining({
+      changes: { from: 7, to: 7, insert: '"Population (M)"' },
+    }));
+    expect(focus).toHaveBeenCalled();
+    expect(container.quoteSQLIdentifierIfNeeded('name')).toBe('name');
+  });
+
+  it('appends clicked names when the cursor was never placed in the query', () => {
+    const container = new SQLCodeContainer();
+    const dispatch = vi.fn();
+    container.getEditorManager = () => ({
+      getActiveEditorInstance: () => ({
+        editorView: {
+          state: { selection: { main: { from: 0, to: 0, empty: true } }, doc: { length: 8, toString: () => 'SELECT *' } },
+          dispatch,
+        },
+      }),
+    });
+
+    container.insertIntoEditor('name');
+
+    expect(dispatch).toHaveBeenCalledWith(expect.objectContaining({
+      changes: { from: 8, to: 8, insert: ' name' },
+    }));
   });
 
   it('renders available tables preview without example rows', () => {
@@ -272,5 +346,14 @@ describe('SQLCodeContainer', () => {
 
     expect(container.resultSection.hidden).toBe(true);
     expect(container.resultPreviewBody.innerHTML).toBe('');
+  });
+});
+describe('SQLCodeContainer runtime error location', () => {
+  it('points at the token named by SQLite', () => {
+    const container = new SQLCodeContainer();
+
+    expect(container.getRuntimeErrorLocation({ message: 'Error: near "FORM": syntax error' })).toEqual({ token: 'FORM' });
+    expect(container.getRuntimeErrorLocation({ message: 'Error: no such column: country.nmae' })).toEqual({ token: 'nmae' });
+    expect(container.getRuntimeErrorLocation({ message: 'something else' })).toBeNull();
   });
 });

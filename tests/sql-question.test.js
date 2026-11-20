@@ -273,6 +273,24 @@ describe('SQLQuestion', () => {
     };
 
     expect(question.getFeedbackText()).toBe('Your query is not correct yet. Check 2 row differences and 1 column differences.');
+
+    question.codeTester.lastComparison = {
+      identical: false,
+      missingColumns: ['population'],
+      extraColumns: ['country'],
+      missingRows: [['a']],
+      extraRows: [],
+    };
+    expect(question.getFeedbackText()).toBe('The columns do not match yet. Fix the SELECT list first. Missing: population. Too many: country.');
+
+    question.codeTester.lastComparison = {
+      identical: false,
+      missingColumns: [],
+      extraColumns: [],
+      missingRows: [['a']],
+      extraRows: [['b'], ['c']],
+    };
+    expect(question.getFeedbackText()).toBe('Your query is not correct yet: 1 rows are missing, 2 rows are too many.');
   });
 
   it('uses uploaded database file when select_db is from_file', async () => {

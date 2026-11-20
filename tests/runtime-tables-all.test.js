@@ -75,17 +75,17 @@ describe('SQLTablesAllRuntime', () => {
     await runtime.onSuccess(results);
 
     expect(runtime.tables).toBe(results);
-    expect(mocks.singleRuntimeCtorSnapshots[0]).toEqual([expect.any(Function), { id: 'container' }, {
+    const tableSnapshots = mocks.singleRuntimeCtorSnapshots.filter((entry) => !entry[2].metaQuery);
+    expect(tableSnapshots[0]).toEqual([expect.any(Function), { id: 'container' }, {
       dbFile: 'db.sqlite',
       tableName: 'world',
     }]);
-    expect(mocks.singleRuntimeCtorSnapshots[1]).toEqual([expect.any(Function), { id: 'container' }, {
+    expect(tableSnapshots[1]).toEqual([expect.any(Function), { id: 'container' }, {
       dbFile: 'db.sqlite',
       tableName: 'city',
     }]);
-    expect(mocks.singleSetup).toHaveBeenCalledTimes(2);
-    expect(mocks.singlePrepareForRun).toHaveBeenCalledTimes(2);
-    expect(mocks.singleRun).toHaveBeenCalledTimes(2);
+    expect(tableSnapshots).toHaveLength(2);
+    expect(runtime.tableSchemas.has('world')).toBe(true);
     expect(runtime.resultTables).toEqual(new Map([
       ['world', 'world rows'],
       ['city', 'city rows'],

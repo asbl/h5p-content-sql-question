@@ -1,4 +1,6 @@
 import SQLRunner from './sqlrunner';
+import { explainSQLError } from '../services/sql-error-hints';
+import { tSQLQuestion } from '../services/sqlquestion-l10n';
 
 /**
  * SQL Runtime for executing SQL code using SQLRunner.
@@ -45,7 +47,9 @@ export default class SQLRuntime extends H5P.Runtime {
    */
   onError(error) {
     console.warn('Error while executing SQL code:\n', error);
-    this.writeConsoleSafe(error, '!>');
+    const message = this.explainError(error);
+    this.writeConsoleSafe(message, '!>');
+    this.codeContainer?.setExecutionStatus?.('error', { error: message });
     this.codeContainer?.getStateManager?.().stop?.();
 
     if (typeof this.codeContainer?.showCodePage === 'function') {
@@ -54,6 +58,20 @@ export default class SQLRuntime extends H5P.Runtime {
     }
 
     this.codeContainer?.getPageManager?.().showPage?.('code');
+  }
+
+  /**
+   * Adds a learner-friendly explanation to a raw SQLite error message.
+   * @param {string} error - Raw error text.
+   * @returns {string} Explained error text.
+   */
+  explainError(error) {
+    const l10n = this.codeContainer?.l10n;
+
+    return explainSQLError(error, {
+      schema: this.codeContainer?.getDatabaseSchema?.() ?? null,
+      translate: (key, replacements) => tSQLQuestion(l10n, key, replacements),
+    });
   }
 
   /**

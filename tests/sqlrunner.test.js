@@ -41,6 +41,22 @@ describe('SQLRunner', () => {
     expect(table).toContain('...(1 of 2 rows shown)');
   });
 
+  it('counts only the rows changed by the executed statement', async () => {
+    const SQL = await createSQLJs();
+    warmupSharedSqlJs.mockResolvedValue(SQL);
+    const runner = new SQLRunner({ onSuccess: vi.fn() }, { sqlPrepare: 'CREATE TABLE t (a); INSERT INTO t VALUES (1), (2), (3);' });
+    runner.onSuccess = vi.fn();
+
+    await runner.execute('CREATE TABLE u (b)');
+    expect(runner.lastRowsModified).toBe(0);
+
+    await runner.execute('SELECT * FROM t');
+    expect(runner.lastRowsModified).toBe(0);
+
+    await runner.execute('DELETE FROM t WHERE a > 1');
+    expect(runner.lastRowsModified).toBe(2);
+  });
+
   it('quotes identifiers for follow-up table queries', async () => {
     const runner = new SQLRunner({}, {});
     const exec = vi.fn((query) => {

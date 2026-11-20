@@ -46,6 +46,19 @@ class TestElement {
     this.innerHTML = '';
   }
 
+  addEventListener(type, listener) {
+    this.listeners = this.listeners ?? {};
+    (this.listeners[type] = this.listeners[type] ?? []).push(listener);
+  }
+
+  dispatch(type) {
+    (this.listeners?.[type] ?? []).forEach((listener) => listener({ type, target: this }));
+  }
+
+  querySelector() {
+    return null;
+  }
+
   appendChild(child) {
     this.children.push(child);
     this.innerHTML += child.outerHTML ?? child.textContent ?? '';

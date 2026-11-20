@@ -1,4 +1,4 @@
-const SQL_RESERVED_WORDS = new Set([
+export const SQL_RESERVED_WORDS = new Set([
   'add', 'all', 'alter', 'and', 'as', 'asc', 'avg', 'between', 'by', 'case',
   'count', 'create', 'cross', 'delete', 'desc', 'distinct', 'drop', 'else',
   'end', 'exists', 'false', 'from', 'group', 'having', 'if', 'in', 'inner',
@@ -104,7 +104,7 @@ function levenshteinDistance(left = '', right = '') {
   return matrix[source.length][target.length];
 }
 
-function findClosestIdentifier(identifier, candidates = []) {
+export function findClosestIdentifier(identifier, candidates = []) {
   const normalizedIdentifier = normalizeIdentifier(identifier);
   let bestCandidate = null;
   let bestDistance = Number.POSITIVE_INFINITY;

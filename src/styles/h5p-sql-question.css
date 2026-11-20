@@ -249,6 +249,25 @@
     background: var(--sql-chip-bg);
     color: var(--sql-chip-text);
     font-size: 0.76rem;
+    border: 0;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.h5p-sql-question button.sql-column-chip:hover,
+.h5p-sql-question button.sql-column-chip:focus-visible {
+    outline: 2px solid var(--sql-accent-border);
+    outline-offset: 1px;
+}
+
+.h5p-sql-question .sql-table-sample {
+    margin-top: 0.4rem;
+    font-size: 0.8rem;
+}
+
+.h5p-sql-question .sql-table-sample summary {
+    cursor: pointer;
+    color: var(--sql-text-muted);
 }
 
 .h5p-sql-question .sql-preview-table-scroll,
@@ -811,5 +830,115 @@
 
     .h5p-sql-question .console-column {
         width: auto;
+    }
+}
+
+.h5p-sql-question .sql-result-table-scroll {
+    overflow-x: auto;
+}
+
+.h5p-sql-question .sql-result-table {
+    width: max-content;
+    min-width: 100%;
+    font-family: monospace;
+    border-collapse: collapse;
+    background: var(--sql-surface);
+    color: var(--sql-text);
+    border: 1px solid var(--sql-border);
+}
+
+.h5p-sql-question .sql-result-table th,
+.h5p-sql-question .sql-result-table td {
+    border: 1px solid var(--sql-border);
+    padding: 0.3rem 0.5rem;
+    text-align: left;
+}
+
+.h5p-sql-question .sql-result-table th {
+    background: var(--sql-surface-subtle);
+}
+
+.h5p-sql-question .sql-result-null {
+    color: var(--sql-text-muted);
+    font-style: italic;
+}
+
+.h5p-sql-question .sql-result-caption {
+    margin: 0.35rem 0 0;
+    color: var(--sql-text-muted);
+    font-size: 0.85rem;
+}
+
+.h5p-sql-question .sql-result-more {
+    margin-top: 0.25rem;
+    padding: 0.2rem 0.6rem;
+    border: 1px solid var(--sql-border-strong);
+    background: var(--sql-surface);
+    color: var(--sql-text);
+    cursor: pointer;
+}
+
+.h5p-sql-question .sql-result-more:hover {
+    background: var(--sql-surface-muted);
+}
+
+/* Schema browser: collapsible tables with types and keys */
+.h5p-sql-question .sql-table-card-header {
+    cursor: pointer;
+    list-style: none;
+}
+
+.h5p-sql-question .sql-table-card-header::-webkit-details-marker {
+    display: none;
+}
+
+.h5p-sql-question .sql-table-card-header h4::before {
+    content: '▾';
+    display: inline-block;
+    margin-right: 0.35rem;
+    transition: transform 0.15s;
+}
+
+.h5p-sql-question .sql-table-card:not([open]) .sql-table-card-header h4::before {
+    transform: rotate(-90deg);
+}
+
+.h5p-sql-question .sql-table-card-header:focus-visible,
+.h5p-sql-question .sql-table-insert:focus-visible {
+    outline: 2px solid var(--sql-accent-border);
+    outline-offset: 2px;
+}
+
+.h5p-sql-question .sql-table-insert {
+    margin-left: auto;
+    min-width: 1.6rem;
+    border: 1px solid var(--sql-border);
+    border-radius: 6px;
+    background: var(--sql-chip-bg);
+    color: var(--sql-chip-text);
+    cursor: pointer;
+}
+
+.h5p-sql-question .sql-column-badge {
+    margin-left: 0.35rem;
+    font-size: 0.68rem;
+    opacity: 0.85;
+}
+
+.h5p-sql-question .sql-column-key {
+    font-weight: 700;
+    opacity: 1;
+}
+
+.h5p-sql-question .sql-column-chip.is-primary-key {
+    box-shadow: inset 0 0 0 1px var(--sql-accent-border);
+}
+
+@media (pointer: coarse) {
+    .h5p-sql-question .sql-column-chip,
+    .h5p-sql-question .sql-table-insert,
+    .h5p-sql-question .sql-result-more {
+        min-height: 44px;
+        min-width: 44px;
     }
 }

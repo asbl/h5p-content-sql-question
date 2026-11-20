@@ -30,6 +30,8 @@ export default class SQLTablesAllRuntime extends SQLRuntime {
      */
     this.tablesMap = new Map();
     this.tableResults = new Map();
+    /** Map from table name -> {columns: object[], foreignKeys: object[]} */
+    this.tableSchemas = new Map();
 
     this._codeContainer = codeContainer;
 
@@ -55,7 +57,7 @@ export default class SQLTablesAllRuntime extends SQLRuntime {
       const tablesRuntime = new SQLTablesRuntimeSingle(
         () => this.resizeActionHandler(),
         this._codeContainer,
-        options
+        { ...options }
       );
 
       tablesRuntime.setup();
@@ -63,9 +65,44 @@ export default class SQLTablesAllRuntime extends SQLRuntime {
       await tablesRuntime.run();
       this.resultTables.set(tableName, tablesRuntime.resultTable);
       this.tableResults.set(tableName, tablesRuntime.resultObject);
+      this.tableSchemas.set(tableName, await this.loadTableSchema(tableName, options));
     }
 
 
+  }
+
+  /**
+   * Reads column types, primary keys and foreign keys of a table.
+   * A failure only means the preview shows less detail, so it never throws.
+   * @param {string} tableName Table name.
+   * @param {object} options Runtime options.
+   * @returns {Promise<{columns: object[], foreignKeys: object[]}>} Schema details.
+   */
+  async loadTableSchema(tableName, options) {
+    const literal = `'${String(tableName).replace(/'/g, '\'\'')}'`;
+    const query = async (metaQuery) => {
+      const runtime = new SQLTablesRuntimeSingle(
+        () => this.resizeActionHandler(),
+        this._codeContainer,
+        { ...options, metaQuery },
+      );
+      runtime.setup();
+      runtime.prepareForRun();
+      await runtime.run();
+      const set = runtime.resultObject?.[0];
+      return (set?.values ?? []).map((row) => Object.fromEntries(set.columns.map((name, index) => [name, row[index]])));
+    };
+
+    try {
+      const [columns, foreignKeys] = await Promise.all([
+        query(`SELECT name, type, "notnull", pk FROM pragma_table_info(${literal})`),
+        query(`SELECT "from" AS "from", "table" AS "table", "to" AS "to" FROM pragma_foreign_key_list(${literal})`),
+      ]);
+      return { columns, foreignKeys };
+    }
+    catch (_error) {
+      return { columns: [], foreignKeys: [] };
+    }
   }
 
   /**

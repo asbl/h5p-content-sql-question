@@ -78,7 +78,11 @@ export default class SQLRunner {
       this.runtime?.codeContainer?.hideLoadingSpinner?.();
 
       if (this.stopped) return;
+      const changesBefore = this._getTotalChanges();
       const result = this.db.exec(code);
+      // getRowsModified() keeps the count of the last DML statement, even after
+      // CREATE TABLE or SELECT, so the change counter is compared instead.
+      this.lastRowsModified = Math.max(0, this._getTotalChanges() - changesBefore);
       const table = this._sqlToTable(result);
       this.lastRuntimeResult = createSqlRuntimeResult({
         phase: 'execution',
@@ -96,6 +100,20 @@ export default class SQLRunner {
     finally {
       this.runtime?.codeContainer?.hideLoadingSpinner?.();
       this.runtime?.question?.trigger?.('resize');
+    }
+  }
+
+  /**
+   * Reads SQLite's connection-wide change counter.
+   * @returns {number} Rows changed since the connection was opened.
+   * @private
+   */
+  _getTotalChanges() {
+    try {
+      return Number(this.db.exec('SELECT total_changes()')[0]?.values?.[0]?.[0]) || 0;
+    }
+    catch {
+      return 0;
     }
   }
 

@@ -13,7 +13,7 @@ export default class SQLTablesRuntimeSingle extends SQLRuntime {
    */
   constructor(resizeActionHandler, codeContainer, options) {
     // SQL to get all user-defined tables
-    const code = 'SELECT * FROM ' + options.tableName;
+    const code = options.metaQuery ?? 'SELECT * FROM ' + options.tableName;
     super(resizeActionHandler, code, options);
 
     this.code = code;
