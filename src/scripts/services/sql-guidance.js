@@ -7,15 +7,50 @@ const SQL_RESERVED_WORDS = new Set([
   'outer', 'over', 'partition', 'pragma', 'references', 'right', 'round',
   'row_number', 'select', 'set', 'substr', 'sum', 'table', 'then', 'top',
   'true', 'union', 'update', 'upper', 'values', 'view', 'when', 'where',
-  'with',
+  'with', 'glob', 'using', 'escape', 'collate', 'nocase', 'rowid', 'except',
+  'intersect', 'full', 'current_date', 'current_time', 'current_timestamp',
 ]);
 
 const CLAUSE_PATTERNS = [
   /\bselect\b([\s\S]*?)\bfrom\b/gi,
-  /\bwhere\b([\s\S]*?)(?=\bgroup\s+by\b|\border\s+by\b|\blimit\b|\boffset\b|$)/gi,
-  /\bgroup\s+by\b([\s\S]*?)(?=\border\s+by\b|\blimit\b|\boffset\b|$)/gi,
+  /\bwhere\b([\s\S]*?)(?=\bgroup\s+by\b|\bhaving\b|\border\s+by\b|\blimit\b|\boffset\b|$)/gi,
+  /\bgroup\s+by\b([\s\S]*?)(?=\bhaving\b|\border\s+by\b|\blimit\b|\boffset\b|$)/gi,
+  /\bhaving\b([\s\S]*?)(?=\border\s+by\b|\blimit\b|\boffset\b|$)/gi,
   /\border\s+by\b([\s\S]*?)(?=\blimit\b|\boffset\b|$)/gi,
 ];
+
+/**
+ * Blanks out SQL comments and single-quoted string literals so that their
+ * content is never mistaken for a table or column name. Every masked
+ * character becomes a space, which keeps all offsets identical to the
+ * original code and therefore keeps the diagnostic ranges correct.
+ * @param {string} code - SQL source code.
+ * @returns {string} Code of the same length without comments and literals.
+ */
+export function maskSQLNonCode(code = '') {
+  return String(code ?? '').replace(
+    /--[^\n]*|\/\*[\s\S]*?(?:\*\/|$)|'(?:[^']|'')*(?:'|$)/g,
+    (match) => match.replace(/[^\n]/g, ' '),
+  );
+}
+
+/**
+ * Collects the aliases defined with `AS`, e.g. `COUNT(*) AS anzahl`.
+ * Learners may reuse them in HAVING and ORDER BY.
+ * @param {string} maskedCode - SQL code without comments and literals.
+ * @returns {Set<string>} Normalized alias names.
+ */
+function collectAliases(maskedCode = '') {
+  const aliases = new Set();
+  const aliasPattern = /\bas\s+"?([A-Za-z_][\w]*)"?/gi;
+  let aliasMatch;
+
+  while ((aliasMatch = aliasPattern.exec(maskedCode)) !== null) {
+    aliases.add(normalizeIdentifier(aliasMatch[1]));
+  }
+
+  return aliases;
+}
 
 function normalizeIdentifier(value = '') {
   return String(value || '').trim().replace(/^"|"$/g, '').toLowerCase();
@@ -152,7 +187,9 @@ export function buildSQLSchema(tableResults = new Map()) {
   };
 }
 
-export function analyzeSQLHints(code = '', schema = { tables: {}, tableNames: [], allColumns: [] }) {
+export function analyzeSQLHints(sourceCode = '', schema = { tables: {}, tableNames: [], allColumns: [] }) {
+  const code = maskSQLNonCode(sourceCode);
+  const aliases = collectAliases(code);
   const diagnostics = [];
   const tableNames = Array.isArray(schema.tableNames) ? schema.tableNames : [];
   const allColumns = Array.isArray(schema.allColumns) ? schema.allColumns : [];
@@ -222,6 +259,7 @@ export function analyzeSQLHints(code = '', schema = { tables: {}, tableNames: []
         if (
           SQL_RESERVED_WORDS.has(normalizedIdentifier)
           || normalizedTables[normalizedIdentifier]
+          || aliases.has(normalizedIdentifier)
           || allColumns.some((column) => normalizeIdentifier(column) === normalizedIdentifier)
           || previous === 'as'
           || clauseText[identifierMatch.index - 1] === '.'
