@@ -679,7 +679,6 @@
                         "default": 0,
                         "min": 0,
                         "decimals": 6,
-                        "step": 0.01,
                         "optional": true
                     }
                 ]
