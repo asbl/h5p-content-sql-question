@@ -388,11 +388,11 @@
     },
     {
       "label": "Hinweis-Kaskade",
-      "description": "Didaktische Hinweise, die Lernende nacheinander aufdecken. Ordne sie vom inhaltlichen Anstoß über die Strategie bis zur Teillösung.",
+      "description": "Didaktische Hinweise, die Lernende nach der ersten falschen Antwort nacheinander aufdecken. Ordne sie vom inhaltlichen Anstoß über die Strategie bis zur Teillösung.",
       "fields": [
         {
           "label": "Hinweis-Button aktivieren",
-          "description": "Zeigt einen Hinweis-Button, der die folgenden Hinweise nacheinander aufdeckt. Die Nutzung der Hinweise wird per xAPI gemeldet."
+          "description": "Zeigt einen Hinweis-Button nach der ersten falschen Antwort. Jeder Klick deckt den nächsten Hinweis auf. Die Nutzung der Hinweise wird per xAPI gemeldet."
         },
         {
           "label": "Hinweise",
